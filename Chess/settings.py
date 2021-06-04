@@ -146,7 +146,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
+"""
 # additional settings
 #SECURE_SSL_REDIRECT = True
 #SECURE_REDIRECT_EXEMPT = [r'^no-ssl/$']
@@ -172,3 +172,4 @@ CACHES = {
 }
 CACHE_MIDDLEWARE_KEY_PREFIX = ''
 CACHE_MIDDLEWARE_SECONDS = 600
+"""

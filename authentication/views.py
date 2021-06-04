@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, HttpResponseNotAllowed
 from UserAuth.models import User
 import sqlite3 as sql
@@ -37,10 +37,10 @@ def database_check(response):
         if has_email:
             logged_in = database('db.sqlite3',"SELECT logged_in FROM User WHERE user_email = ?;",(email,))
         if not logged_in:
-            return HttpResponseRedirect(URLHOST+'register/login')
+            return redirect('authentication:login')
         else:
             response.session['email'] = email
-            return HttpResponseRedirect(URLHOST+'register/register/')
+            return redirect('authentication:register')
 
 def forum(request):
     form = RegistrationForm
@@ -60,7 +60,7 @@ def create_user_account(response):
             if password1 == password2:
                 u = User(user_name=name,user_username=username,user_email=email,user_password=password1,user_birth_date=date_of_birth,logged_in=True)
                 u.save()
-                return HttpResponseRedirect('register/profile/')
+                return redirect('authentication:profile')
             else:
                 form = NewUserAccountForm()
                 heading = "The passwords do not match. Try again."
@@ -90,7 +90,7 @@ def login(response):
                 return HttpResponse("You have successfully logged into your account!")
             else:
                 if data == None:
-                    return HttpResponseRedirect('/register/register/')
+                    return redirect('authentication:register')
                 elif password != data_password:
                     context_vars = {'form':form,'heading':'The passwords do not match.','method':'post','action':'/register/login/','val':'Login'}
                     return render(response,'UserAuth/login.html',context_vars)
@@ -107,7 +107,7 @@ def profile(response):
             email = response.session['email']
             pin = form.cleaned_data['pin']
             database('db.sqlite3',"UPDATE User SET security_pin = '"+pin+"' WHERE user_email = '"+email+"';")
-            return HttpResponseRedirect('/settings/')
+            return redirect('settings:')
     else:
         email = response.session['email']
         form = ProfileForm(initial={'email':email})
