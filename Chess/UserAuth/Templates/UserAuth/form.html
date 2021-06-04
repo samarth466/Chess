@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        {% load static %}
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script type="text/javascript" src="{% static 'UserAuth/user.js' %}"></script>
+        <link rel="stylesheet" type="text/css" href="{% static 'UserAuth/style.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'UserAuth/change_color.css' %}">
+    </head>
+    <body>
+        <h1>{{ heading }}</h1>
+        <form action="{{ action }}" method="{{ method }}" id="form">
+            {% csrf_token %}
+            {% block form %}
+                {{ form.as_ul }}<br>
+            {% endblock %}
+            <input id="Next" type="submit" name="Next" value="{{ val }}">
+            {% block javascript %}{% endblock %}
+        </form>
+    </body>
+</html>
