@@ -32,7 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-#    'google_oauth2.apps.GoogleOAuth2Config',
+    #    'google_oauth2.apps.GoogleOAuth2Config',
     'tournaments.apps.TournamentsConfig',
     'game.apps.GameConfig',
     'UserAuth.apps.UserauthConfig',
@@ -55,7 +55,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'Chess.urls'
+ROOT_URLCONF = 'chess.urls'
 
 TEMPLATES = [
     {
@@ -151,7 +151,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 #SECURE_SSL_REDIRECT = True
 #SECURE_REDIRECT_EXEMPT = [r'^no-ssl/$']
 EMAIL_HOST = 'localhost'
-#EMAIL_HOST_USER = 'localhost@gameisland.com'
+EMAIL_HOST_USER = 'localhost@gameisland.com'
 EMAIL_HOST_PASSWORD = 'archer_home'
 EMAIL_PORT = 25
 SERVER_EMAIL = 'server@gameisland.com'
