@@ -1,15 +1,20 @@
 from django.db import models
 from datetime import date, datetime
+from django.utils import timezone as tz
 from django import forms
+from django.contrib.auth.password_validation im (
+    MinimumLengthValidator, UserAttributeSimilarityValidator, CommonPasswordValidator, NumericPasswordValidator
+)
 
 
 class DateField(models.Field):
 
-    def __init__(self, date=None, default=date(date.today().year, 1, 1), *args, **kwargs):
+    def __init__(self, date=None, default=date(tz.now().year, 1, 1), *args, **kwargs):
         self.date = date
         if self.date == None:
-            self.date = kwargs['default'] = datetime(
-                default.year, default.month, default.day)
+            self.date = kwargs['default'] = default
+        else:
+            kwargs['date'] = self.date
         kwargs['unique'] = False
         kwargs['blank'] = False
         kwargs['null'] = True
@@ -34,4 +39,21 @@ class DateField(models.Field):
         defaults.update(kwargs)
         return super().formfield(**defaults)
 
-# class ForeignKey(models.ForeignKey)
+
+class PasswordField(models.CharField):
+
+    def __init__(self, max_length=30, min_length=5, *args, **kwargs):
+        kwargs['null'] = False
+        kwargs['max_length'] = max_length
+        kwargs['min_length'] = min_length
+        kwargs['blank'] = False
+        kwargs['validators'] = [MinimumLengthValidator, UserAttributeSimilarityValidator, CommonPasswordValidator, NumericPasswordValidator]
+        super().__init__(*args, **kwargs)
+
+    def deconstruct(self):
+        name, path, args, kwargs = super().deconstruct()
+        return name, path, args, kwargs
+
+    def db_type(self, connection: BaseDatabaseWrapper) -> str:
+        return super().db_type(connection)(self, connection):
+        return 'Password'

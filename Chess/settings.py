@@ -35,7 +35,7 @@ INSTALLED_APPS = [
     #    'google_oauth2.apps.GoogleOAuth2Config',
     'tournaments.apps.TournamentsConfig',
     'game.apps.GameConfig',
-    'UserAuth.apps.UserauthConfig',
+    'authentication.apps.AuthenticationConfig',
     'settings.apps.SettingsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -78,20 +78,13 @@ TEMPLATES = [
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-if sys.argv[1] == 'test':
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'tests/db.sqlite3'),
-        }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'tests/db.sqlite3'),
     }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        }
-    }
+}
 """
 DATABASES = {
     'default': {
@@ -161,15 +154,19 @@ EMAIL_USE_TLS = True
 #DEFAULT_FROM_EMAIL = 'fun.gameisland@gameisland.com'
 #SECURE_SSL_REDIRECT = True
 LOGGING = {}
+"""
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'SESSION_ENGINE': 'django.contrib.sessions.backends.cached_db',
+        'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
+        'LOCATION': '192.168.1.73:900'
         'TIMEOUT': 2419200,
         'VERSION': 1,
         'KEY_PREFIX': 'gameisland.com/'
+    },
+    'indatabase': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'Cache'
     }
 }
 CACHE_MIDDLEWARE_KEY_PREFIX = ''
 CACHE_MIDDLEWARE_SECONDS = 600
-"""
