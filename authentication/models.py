@@ -10,9 +10,9 @@ from django.utils.translation import gettext_lazy as _
 
 
 class User(AbstractUser):
-    super.().first_name.max_length, super().first_name.blank = (400, False)
+    super().first_name.max_length, super().first_name.blank = (400, False)
     super().username.max_length, super().username.primary_key = (128, True)
-    super.().last_name.max_length, super().last_name.blank = (400, False)
+    super().last_name.max_length, super().last_name.blank = (400, False)
     super().email.max_length, super().email.blank, super().email.unique = (256, False, True)
     password = PasswordField()
     birth_date = DateField()

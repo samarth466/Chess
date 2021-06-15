@@ -2,9 +2,10 @@ from django.db import models
 from datetime import date, datetime
 from django.utils import timezone as tz
 from django import forms
-from django.contrib.auth.password_validation im (
+from django.contrib.auth.password_validation import (
     MinimumLengthValidator, UserAttributeSimilarityValidator, CommonPasswordValidator, NumericPasswordValidator
 )
+from django.db.backends.base.base import BaseDatabaseWrapper
 
 
 class DateField(models.Field):
@@ -47,13 +48,13 @@ class PasswordField(models.CharField):
         kwargs['max_length'] = max_length
         kwargs['min_length'] = min_length
         kwargs['blank'] = False
-        kwargs['validators'] = [MinimumLengthValidator, UserAttributeSimilarityValidator, CommonPasswordValidator, NumericPasswordValidator]
+        kwargs['validators'] = [MinimumLengthValidator, UserAttributeSimilarityValidator,
+                                CommonPasswordValidator, NumericPasswordValidator]
         super().__init__(*args, **kwargs)
 
     def deconstruct(self):
         name, path, args, kwargs = super().deconstruct()
         return name, path, args, kwargs
 
-    def db_type(self, connection: BaseDatabaseWrapper) -> str:
-        return super().db_type(connection)(self, connection):
+    def db_type(self, connection):
         return 'Password'

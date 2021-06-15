@@ -158,7 +158,7 @@ LOGGING = {}
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
-        'LOCATION': '192.168.1.73:900'
+        'LOCATION': '192.168.1.73:900',
         'TIMEOUT': 2419200,
         'VERSION': 1,
         'KEY_PREFIX': 'gameisland.com/'
