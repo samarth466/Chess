@@ -1,12 +1,12 @@
 from django.urls import path
-from UserAuth import views as UA_views
+from authentication import views as auth_views
 
 app_name = 'authentication'
 
 urlpatterns = [
-    path('sign-in/',UA_views.database_check,name='view'),
-    path('',UA_views.forum,name=''),
-    path('register/',UA_views.create_user_account,name='register'),
-    path('login/',UA_views.login,name='login'),
-    path('profile/',UA_views.profile,name="Profile")
-    ]
+    path('sign-in/', auth_views.database_check, name='view'),
+    path('', auth_views.forum, name=''),
+    path('register/', auth_views.create_user_account, name='register'),
+    path('login/', auth_views.login, name='login'),
+    path('profile/', auth_views.profile, name="Profile")
+]

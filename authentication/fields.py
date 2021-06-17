@@ -11,15 +11,15 @@ from django.db.backends.base.base import BaseDatabaseWrapper
 class DateField(models.Field):
 
     def __init__(self, date=None, default=date(tz.now().year, 1, 1), *args, **kwargs):
+        kwargs['unique'] = False
+        kwargs['blank'] = False
+        kwargs['null'] = True
+        super().__init__(*args, **kwargs)
         self.date = date
         if self.date == None:
             self.date = kwargs['default'] = default
         else:
             kwargs['date'] = self.date
-        kwargs['unique'] = False
-        kwargs['blank'] = False
-        kwargs['null'] = True
-        super().__init__(*args, **kwargs)
 
     def deconstruct(self):
         name, path, args, kwargs = super().deconstruct()
@@ -46,11 +46,11 @@ class PasswordField(models.CharField):
     def __init__(self, max_length=30, min_length=5, *args, **kwargs):
         kwargs['null'] = False
         kwargs['max_length'] = max_length
-        kwargs['min_length'] = min_length
         kwargs['blank'] = False
         kwargs['validators'] = [MinimumLengthValidator, UserAttributeSimilarityValidator,
                                 CommonPasswordValidator, NumericPasswordValidator]
         super().__init__(*args, **kwargs)
+        kwargs['min_length'] = min_length
 
     def deconstruct(self):
         name, path, args, kwargs = super().deconstruct()

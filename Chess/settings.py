@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -98,7 +100,7 @@ DATABASES = {
 }
 """
 # Authentication
-AUTH_USER_MODEL = 'UserAuth.User'
+AUTH_USER_MODEL = 'authentication.User'
 
 LOGIN_URL = '/register/'
 

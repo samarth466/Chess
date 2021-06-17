@@ -1,5 +1,5 @@
 from .models import GoogleTokens
-from UserAuth.models import User
+from authentication.models import User
 from requests import post
 from json import load
 from datetime import datetime, timedelta

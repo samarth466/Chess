@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
     dependencies = [
         ('game', '0001_initial'),
         ('auth', '0014_auto_20201126_2338'),
-        ('UserAuth', '0003_auto_20200822_0229'),
+        ('authentication', '0003_auto_20200822_0229'),
     ]
 
     operations = [

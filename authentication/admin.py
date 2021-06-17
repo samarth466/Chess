@@ -1,5 +1,5 @@
 from django.contrib import admin
-from UserAuth.models import User
+from authentication.models import User
 
 # Register your models here.
 user_admin = admin.sites.AdminSite(name='User')

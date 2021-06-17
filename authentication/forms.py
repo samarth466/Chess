@@ -1,6 +1,6 @@
 from django import forms
-from UserAuth.models import User
-from UserAuth.validators import validate_isnumeric
+from authentication.models import User
+from authentication.validators import validate_isnumeric
 import datetime
 from django.contrib.auth.password_validation import MinimumLengthValidator, UserAttributeSimilarityValidator, NumericPasswordValidator
 

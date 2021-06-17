@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('tournaments', '0002_auto_20201127_0039'),
-        ('UserAuth', '0003_auto_20200822_0229'),
+        ('authentication', '0003_auto_20200822_0229'),
     ]
 
     operations = [
