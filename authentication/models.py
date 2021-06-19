@@ -27,6 +27,12 @@ class User(AbstractUser):
         Room, on_delete=models.PROTECT, related_name='members', null=True, blank=True, default=None)
     current_page = models.URLField(
         _('current_page'), default='authentication/')
+    account_type = models.TextField(choices=[
+        ('ST', 'Student'),
+        ('TR', 'Teacher'),
+        ('PT', 'Parent'),
+        ('PL', 'Personal')
+    ])
 
     def __str__(self):
         s = "You are signed in as {}"
