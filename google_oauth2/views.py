@@ -20,7 +20,7 @@ class AuthURL(APIView):
 def google_callback(request,format=None):
     code = request.get.get('code')
     vars = json.load('secrets.json')
-    data = {'grant_type':'authorization_code','code':code,'redirect_uri':vars['REDIRECT_URI'],'client_id':vars['CLIENT_ID'],'client_secret':vars['client_secret']}
+    data = {'grant_type':'authorization_code','code':code,'redirect_uri':vars['REDIRECT_URI'],'client_id':vars['CLIENT_ID'],'client_secret':vars['CLIENT_SECRET']}
     response = post('https://www.googleapis.com/oauth2/v4/token',data=data).json()
     access_token = response.get('access_token')
     token_type = response.get('token_type')

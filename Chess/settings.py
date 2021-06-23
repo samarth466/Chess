@@ -32,10 +32,9 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    #    'google_oauth2.apps.GoogleOAuth2Config',
+        'google_oauth2.apps.GoogleOAuth2Config',
     'tournaments.apps.TournamentsConfig',
     'game.apps.GameConfig',
-    'authentication.apps.AuthenticationConfig',
     'settings.apps.SettingsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -43,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'authentication.apps.AuthenticationConfig',
 ]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

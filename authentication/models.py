@@ -5,6 +5,7 @@ from tournaments.models import Room
 from authentication.fields import DateField, PasswordField
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
+from django.core.mail.message import EmailMessage
 
 # Create your models here.
 
@@ -40,3 +41,12 @@ class User(AbstractUser):
 
     class Meta:
         db_table = "User"
+    
+    def send_message(self,subject,body,from_email=None,to=None,cc=None,bcc=None,headers=None,path=''):
+        if to == None:
+            to = self.email
+        email = EmailMessage(subject=subject,body=body,from_email=from_email,to=to,cc=cc,bcc=bcc,headers=headers)
+        if path:
+            email.attach_file(path)
+        email.message()
+        email.send()
