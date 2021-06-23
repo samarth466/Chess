@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from authentication.forms import ProfileForm
-from chess.utils import database
+from Chess.utils import database
 from django.http import HttpResponse, HttpResponseNotAllowed, HttpRequest
 
 # Create your views here.
