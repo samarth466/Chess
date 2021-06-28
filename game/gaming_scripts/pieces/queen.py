@@ -1,4 +1,5 @@
 import pygame
+from pygame.constants import K_KP6, K_RCTRL
 from game.gaming_scripts.pieces.piece import Piece
 
 class Queen(Piece):
@@ -25,7 +26,7 @@ class Queen(Piece):
         self.attackers = []      # list of pieces attacking self
         super().__init__(self.image,self.file,self.rank,self.name,self.color)
     
-    def move(self,matterial: dict,win: pygame.Surface) -> list:
+    def move(self,squares: dict,win: pygame.Surface) -> list:
         # we need to loop through squares, so we must make sure that square is a list as we need to associate the position with a Square instance
         if not isinstance(squares,dict):
             raise TypeError('The squares attribute must be a dict.')
@@ -38,7 +39,8 @@ class Queen(Piece):
         direction = 0
         max_direction = 8
         pygame.font.init()
-        for other_piece in matterial.values():
+        for other in squares.values():
+            other_piece = other.piece
             while (self.x in limiting_pos[0] and self.y in limiting_pos[1]):
                 if len(pieces) > max_length:
                     fnt = pygame.font.SysFont("comicsans",40)
@@ -54,80 +56,179 @@ class Queen(Piece):
                             selected = True
                             pieces.append((self.x,self.y,self.name))
                 keys = pygame.key.get_pressed()
-
-                if keys[pygame.K_KP2] or keys[pygame.K_2]:
+                if ((keys[pygame.K_RCTRL] and keys[pygame.K_1]) or (keys[pygame.K_RCTRL] and keys[pygame.K_KP1])) and not ((keys[pygame.K_RCTRL] and keys[pygame.K_1]) and (keys[pygame.K_RCTRL] and keys[pygame.K_KP1])):
+                    self.x -= self.square_width
+                    self.y += self.square_height
+                    if self.x == other_piece.piece_x and self.y == other_piece.piece_y:
+                        if self.color == other_piece.color:
+                            self.x += self.square_width
+                            self.y -= self.square_height
+                        else:
+                            other_piece.attackers.append(self)
+                            self.attacked_pieces.append(other_piece)
+                        self.piece_x, self.piece_y = self.x,self.y
+                if ((keys[pygame.K_RCTRL] and keys[pygame.K_2]) or (keys[pygame.K_RCTRL] and keys[pygame.K_KP2])) and not ((keys[pygame.K_RCTRL] and keys[pygame.K_2]) and (keys[pygame.K_RCTRL] and keys[pygame.K_RCTRL] and keys[pygame.K_KP2])):
                     self.y += self.square_height
                     if self.y == other.piece_y and self.x == other.piece_x:
-                        self.y -= self.square_height
+                        if self.color == other_piece.color:
+                            self.y -= self.square_height
+                        else:
+                            other_piece.attackers.append(self)
+                            self.attacking_pieces.append(other_piece)
                     self.piece_y = self.y
-                if keys[pygame.K_KP4] or keys[pygame.K_4]:
+                if ((keys[pygame.K_RCTRL] and keys[pygame.K_3]) or (keys[pygame.K_RCTRL] and keys[pygame.K_KP3])) and not ((keys[pygame.K_RCTRL] and keys[pygame.K_3]) and (keys[pygame.K_RCTRL] and keys[pygame.K_KP3])):
+                    self.x += self.square_width
+                    self.y += self.square_height
+                    if self.x == other_piece.piece_x and self.y == other_piece.piece_y:
+                        if self.color == other_piece.color:
+                            self.x -= self.square_width
+                            self.y -= self.square_height
+                        else:
+                            other_piece.attackers.append(self)
+                            self.attacked_pieces.append(other_piece)
+                        self.piece_x, self.piece_y = self.x,self.y
+                if ((keys[pygame.K_RCTRL] and keys[pygame.K_KP4]) or (keys[pygame.K_RCTRL] and keys[pygame.K_4])) and not ((keys[pygame.K_RCTRL] and keys[pygame.K_4]) and (keys[pygame.K_RCTRL] and keys[pygame.K_KP4])):
                     self.x -= self.square_width
                     if self.x == other.piece_x and self.y == other.piece_y:
-                        self.x += self.square_width
+                        if self.color == other_piece.color:
+                            self.x += self.square_width
+                        else:
+                            other_piece.attackers.append(self)
+                            self.attacked_pieces.append(other_pieces)
                     self.piece_x = self.x
-                    self.has_moved = True
-                if keys[pygame.K_KP6] or keys[pygame.K_6]:
+                if ((keys[pygame.K_RCTRL] and keys[pygame.K_6]) or (keys[pygame.K_KP6] and keys[pygame.K_6])) and not ((keys[pygame.K_RCTRL] and keys[pygame.K_6]) and (keys[pygame.K_RCTRL] and keys[pygame.K_KP6])):
                     self.x += self.square_width
                     if self.x == other.piece_x and self.y == other.piece_y:
-                        self.x -= self.square_width
+                        if self.color == other_piece.color:
+                            self.x -= self.square_width
+                        else:
+                            other_piece.attackers.append(self)
+                            self.attacked_pieces.append(other_piece)
                     self.piece_x = self.x
-                    self.has_moved = True
-                if keys[pygame.K_KP8] or keys[pygame.K_8]:
+                if ((keys[pygame.K_RCTRL] and keys[pygame.K_7]) or (keys[pygame.K_RCTRL] and keys[pygame.K_KP7])) and not ((keys[pygame.K_RCTRL] and keys[pygame.K_7]) and (keys[pygame.K_RCTRL] and keys[pygame.K_KP7])):
+                    self.x -= self.square_width
+                    self.y -= self.square_height
+                    if self.x == other_piece.piece_x and self.y == other_piece.piece_y:
+                        if self.color == other_piece.color:
+                            self.x += self.square_width
+                            self.y += self.square_height
+                        else:
+                            other_piece.attackers.append(self)
+                            self.attacked_pieces.append(other_piece)
+                        self.piece_x, self.piece_y = self.x,self.y
+                if ((keys[pygame.K_RCTRL] and keys[pygame.K_KP8]) or (keys[pygame.K_RCTRL] and keys[pygame.K_8])) and not ((keys[pygame.K_RCTRL] and keys[pygame.K_8]) and (keys[pygame.K_RCTRL] and keys[pygame.K_KP8])):
                     self.y -= self.square_height
                     if self.y == other.piece_y and self.x == other.piece_x:
-                        self.x += self.square_height
+                        if self.color == other_piece.color:
+                            self.x += self.square_height
+                        else:
+                            other_piece.attackers.append(self)
+                            self.attacked_pieces.append(other_piece)
                     self.piece_y = self.y
-                    self.has_moved = True
-                while (self.x in limiting_pos[0] and self.y in limiting_pos[1]):
-                    if direction == max_direction:
-                        break
-                    if direction == 0:
-                        while self.y <= win_height-self.square_height:
+                if ((keys[pygame.K_RCTRL] and keys[pygame.K_1]) or (keys[pygame.K_RCTRL] and keys[pygame.K_KP1])) and not ((keys[pygame.K_RCTRL] and keys[pygame.K_1]) and (keys[pygame.K_RCTRL] and keys[pygame.K_KP1])):
+                    self.x += self.square_width
+                    self.y -= self.square_height
+                    if self.x == other_piece.piece_x and self.y == other_piece.piece_y:
+                        if self.color == other_piece.color:
+                            self.x -= self.square_width
                             self.y += self.square_height
-                            if self.y == other.piece_y and self.x == other.piece_x:
+                        else:
+                            other_piece.attackers.append(self)
+                            self.attacked_pieces.append(other_piece)
+                        self.piece_x, self.piece_y = self.x,self.y
+                while direction != max_direction:
+                    if direction == 0:
+                        while self.y <= win_height-self.square_height and self.x >= 0:
+                            self.x -= self.square_width
+                            self.y += self.square_height
+                            if not (self.y == other_piece.piece_y and self.x == other_piece.piece_x):
+                                self.attacked_pieces(((self.x,self.y),))
+                                continue
+                        else:
+                            self.x += self.square_width
+                            self.y -= self.square_height
                                 if other.color != self.color:
-                                    self.attacked_pieces.append((self.x,self.y))
-                                    self.y -= self.square_height
-                                else:
-                                    self.y -= self.square_height
+                                    self.attacked_pieces.append((other_piece,(self.x,self.y)))
                                     break
+                    elif direction == 1:
+                        while self.y <= self.win_height-self.square_height:
+                            self.y -= self.square_height
+                            if not (self.x == other_piece.piece_x and self.y == other_piece.piece_y):
+                                self.attacked_pieces.append(((self.x,self.y),))
+                                continue
+                        else:
+                            self.y += self.square_height
+                                if other.color != self.color:
+                                    self.attacked_pieces.append(other_piece) if not other_piece in self.attacked_pieces
+                                    break
+                    elif direction == 2:
+                        while self.x <= win_width-self.square_width and self.y <= self.win_height-self.square_height:
+                            self.x += self.square_width
+                            self.y += self.square_height
+                            if not (self.x == other_piece.piece_x and self.y == other_piece.piece_y):
+                                self.attacked_pieces.append(((self.x,self.y),))
+                                continue
                             else:
-                                self.attacked_pieces.append((self.x,self.y))
-                    if direction == 1:
+                                self.x -= self.square_width
+                                self.y -= self.square_height
+                                if other.color != self.color:
+                                    self.attacked_pieces.append((other_piece,(self.x,self.y)))
+                                    self.y -= self.square_height
+                    elif direction == 3:
                         while self.x >= 0:
                             self.x -= self.square_width
-                            if self.x == self.other.piece_x and self.y == other.piece_y:
-                                if other.color != self.color:
-                                    self.attacked_pieces.append((self.x,self.y))
-                                    self.x += self.square_width
-                                else:
-                                    self.x += self.square_width
-                                    break
-                            else:
-                                self.attacked_pieces.append((self.x,self.y))
-                    if direction == 2:
-                        while self.x <= win_width-self.square_width:
+                            if not (self.x == other_piece.piece_x and self.y == other_piece.piece_y):
+                                self.attacked_pieces.append(((self.x,self.y),))
+                                continue
+                        else:
                             self.x += self.square_width
-                            if self.x == other.piece_x and self.x == other.piece_y:
                                 if other.color != self.color:
-                                    self.attacked_pieces.append((self.x,self.y))
-                                    self.x -= self.square_width
-                                else:
-                                    self.x -= self.square_width
+                                    self.attacked_pieces.append((other_piece,(self.x,self.y)))
                                     break
-                            else:
-                                self.attacked_pieces.append((self.x,self.y))
-                    if direction == 3:
+                    elif direction == 4:
+                        self.x += self.square_width
+                        if not (self.x == other_piece.piece_x and self.y == other_piece.piece_y):
+                            self.attacked_pieces.append(((self.x,self.y),))
+                            continue
+                        else:
+                            self.x -= self.square_width
+                            if self.color != other_piece.color:
+                                self.attacked_pieces.append((other_piece,(self.x,self.y)))
+                                break
+                    elif direction == 5:
+                        self.x -= self.square_width
+                        self.y -= self.square_height
+                        if not (self.x == other_piece.piece_x self.y == other_piece.piece_y):
+                            self.attacked_pieces.append(((self.x,self.y),))
+                            continue
+                        else:
+                            self.x += self.square_width
+                            self.y += self.square_height
+                            if self.color != other_piece.color:
+                                self.attacked_pieces.append((other_piece,(self.x,self.y)))
+                                break
+                    elif direction == 6:
                         while self.y >= 0:
                             self.y -= self.square_height
-                            if self.x == other.piece_x and self.y == other.piece_y:
-                                if other.color != self.color:
-                                    self.attacked_pieces.append((self.x,self.y))
-                                    self.y += self.square_height
-                                else:
+                            if not (self.x == other_piece.piece_x and self.y == other_piece.piece_y):
+                                self.attacked_pieces.append(((self.x,self.y)))
+                                continue
+                            else:
+                                self.y += self.square_height
+                                if self.color != other_piece.color:
+                                    self.attacked_pieces.append((other_piece,(self.x,self.y)))
                                     self.y += self.square_height
                                     break
-                            else:
-                                self.attacked_pieces.append((self.x,self.y))
+                    elif direction == 7:
+                        self.x += self.square_width
+                        self.y -= self.square_height
+                        if not (self.x == other_piece.piece_x and self.y == other_piece.piece_y):
+                            self.attacked_pieces.append(((self.x,self.y),))
+                            continue
+                        else:
+                            if self.color != other_piece.color:
+                                self.attacked_pieces.append((other_pieces,(self.x,self.y)))
+                                break
         self.x,self.y = self.piece_x,self.piece_y
+        self.attacked_pieces = list(set(self.attacked_pieces))
         return (self.attacked_pieces,(self.piece_x,self.piece_y),pieces)
