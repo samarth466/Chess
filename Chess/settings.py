@@ -32,18 +32,20 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-#    'rest_framework',
-#    'tournaments.apps.TournamentsConfig',
+        'google_oauth2.apps.GoogleOAuth2Config',
+    'tournaments.apps.TournamentsConfig',
     'game.apps.GameConfig',
     'settings.apps.SettingsConfig',
-    'UserAuth.apps.UserauthConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'authentication.apps.AuthenticationConfig',
 ]
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -60,7 +62,9 @@ ROOT_URLCONF = 'Chess.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates'),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -76,20 +80,13 @@ TEMPLATES = [
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-if sys.argv[1] == 'test':
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'tests/db.sqlite3'),
-        }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        }
-    }
+}
 """
 DATABASES = {
     'default': {
@@ -102,6 +99,12 @@ DATABASES = {
     }
 }
 """
+# Authentication
+AUTH_USER_MODEL = 'authentication.User'
+
+LOGIN_URL = '/register/'
+
+LOGIN_REDIRECT_URL = '/google/log-in/'
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -137,3 +140,35 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+"""
+# additional settings
+#SECURE_SSL_REDIRECT = True
+#SECURE_REDIRECT_EXEMPT = [r'^no-ssl/$']
+EMAIL_HOST = 'localhost'
+EMAIL_HOST_USER = 'localhost@gameisland.com'
+EMAIL_HOST_PASSWORD = 'archer_home'
+EMAIL_PORT = 25
+SERVER_EMAIL = 'server@gameisland.com'
+EMAIL_SUBJECT_PREFIX = '[Django/Gameisland]\n'
+EMAIL_USE_LOCALTIME = True
+EMAIL_USE_TLS = True
+#DEFAULT_FROM_EMAIL = 'fun.gameisland@gameisland.com'
+#SECURE_SSL_REDIRECT = True
+LOGGING = {}
+"""
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
+        'LOCATION': '192.168.1.73:900',
+        'TIMEOUT': 2419200,
+        'VERSION': 1,
+        'KEY_PREFIX': 'gameisland.com/'
+    },
+    'indatabase': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'Cache'
+    }
+}
+CACHE_MIDDLEWARE_KEY_PREFIX = ''
+CACHE_MIDDLEWARE_SECONDS = 600
