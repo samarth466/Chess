@@ -5,9 +5,6 @@ from authentication.models import User
 
 
 class GoogleTokens(models.Model):
-
-
-<< << << < HEAD
 user = models.OneToOneField(
     to=User, on_delete=models.CASCADE, related_name='tokens', null=True)
 created_at = models.DateTimeField(auto_now_add=True)
