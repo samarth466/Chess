@@ -4,5 +4,5 @@ from settings import views as ST_views
 app_name = 'settings'
 
 urlpatterns = [
-    path('',ST_views.root,name='')
+    path('<str:email>/', ST_views.root, name='')
 ]

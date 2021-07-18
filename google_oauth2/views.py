@@ -5,6 +5,8 @@ from rest_framework import status
 from rest_framework.response import Response
 from requests import Request, post
 from .utils import *
+from os.path import join
+from django.conf import settings
 
 # Create your views here.
 
@@ -12,14 +14,19 @@ from .utils import *
 class AuthURL(APIView):
 
     def get(self, request, format=None):
-        scopes = ['.../auth/userinfo.email',
-                  '.../auth/userinfo.profile', 'openid']
-        data = json.load('credentials.json')
-        headers = {'scope': scopes, 'response_type': 'code',
-                   'redirect_uri': data['REDIRECT_URI'], 'client_id': data['CLIENT_ID']}
-        url = Request(
-            'get', 'https://accounts.google.com/o/oauth2/auth/oauthchooseaccount', headers).prepare().url()
-        return Response({'url': url}, status.HTTP_200_OK)
+        scopes = '...auth/userinfo.email,...auth/userinfo.profile,openid'.encode(
+            encoding='utf-8')
+        data = {}
+        with open(str(join(settings.BASE_DIR, 'google_oauth2/secrets.json'))) as f:
+            data = json.load(f)
+        if data:
+            headers = {'scope': scopes, 'response_type': 'code',
+                       'redirect_uri': data['REDIRECT_URI'], 'client_id': data['CLIENT_ID']}
+            url = Request(
+                'get', 'https://accounts.google.com/o/oauth2/auth/oauthchooseaccount', headers).prepare().url()
+            return Response({'url': url}, status.HTTP_200_OK)
+        else:
+            return Response({}, status.HTTP_400_BAD_REQUEST)
 
 
 def google_callback(request, format=None):

@@ -1,3 +1,5 @@
+import datetime
+from os import truncate
 from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, HttpResponseNotAllowed
 from authentication.models import User
@@ -5,8 +7,15 @@ from authentication.forms import RegistrationForm, LogInForm, NewUserAccountForm
 from django.views.decorators.http import require_http_methods
 from django.urls import reverse
 from Chess.utils import database
+from django.utils import timezone as tz
+from datetime import date
 
 # Create your views here.
+
+
+@require_http_methods(['GET'])
+def authentication_method_chooser(response):
+    return render(response, 'authentication/choose_login_method.html')
 
 
 @require_http_methods("POST")
@@ -15,11 +24,11 @@ def database_check(response):
     if form.is_valid():
         email = form.cleaned_data["email"]
         has_email = database(
-            'db.sqlite3', "SELECT user_email FROM User WHERE user_email = ?;", (email,))
+            'db.sqlite3', "SELECT email FROM User WHERE email = ?;", (email,))
         logged_in = None
         if has_email:
             logged_in = database(
-                'db.sqlite3', "SELECT logged_in FROM User WHERE user_email = ?;", (email,))
+                'db.sqlite3', "SELECT logged_in FROM User WHERE email = ?;", (email,))
         if not logged_in:
             return redirect('authentication:login')
         else:
@@ -30,8 +39,8 @@ def database_check(response):
 def forum(request):
     form = RegistrationForm
     context_vars = {'form': form, 'heading': 'Please fill out the form below',
-                    'method': 'post', 'action': '/register/sign-in/', 'val': 'Next'}
-    return render(request, 'UserAuth/Sign In.html', context_vars)
+                    'method': 'post', 'action': '/register/database-check-in/', 'val': 'Next'}
+    return render(request, 'authentication/Sign_In.html', context_vars)
 
 
 def create_user_account(response):
@@ -41,13 +50,12 @@ def create_user_account(response):
             email = form.cleaned_data["email"]
             password1 = form.cleaned_data["password1"]
             password2 = form.cleaned_data["password2"]
-            name = "{} {}".format(
-                form.cleaned_data["first_name"], form.cleaned_data["last_name"])
+            first_name, last_name = form.cleaned_data['first_name'], form.cleaned_data['last_name']
             username = form.cleaned_data["user_name"]
-            date_of_birth = form.cleaned_data["date_of_birth"]
+            date_of_birth = response.POST['birth_date']
             if password1 == password2:
-                u = User(user_name=name, user_username=username, user_email=email,
-                         user_password=password1, user_birth_date=date_of_birth, logged_in=True)
+                u = User(first_name=first_name, last_name=last_name, username=username, email=email,
+                         password=password1, birth_date=date_of_birth, logged_in=True)
                 u.save()
                 return redirect('authentication:profile')
             else:
@@ -55,13 +63,15 @@ def create_user_account(response):
                 heading = "The passwords do not match. Try again."
                 context_vars = {'form': form,
                                 'heading': heading, 'val': 'CREATE ACCOUNT'}
-                return render(response, "UserAuth/new_user_account.html", context_vars)
+                return render(response, "authenticationh/new_user_account.html", context_vars)
     elif response.method == "GET":
-        email = response.session['email']
+        email = response.session.get('email', None)
         form = NewUserAccountForm(initial={'email': email})
+        min_date = tz.localtime(tz.now()).date()
+        min_year = min_date.year-100
         context_vars = {'method': 'post', 'action': '/register/register/', 'form': form,
-                        'heading': 'Welcome to my Chess Website! Please create your account here.', 'val': 'CREATE ACCOUNT'}
-        return render(response, 'UserAuth/new_user_account.html', context_vars)
+                        'heading': 'Welcome to my Chess Website! Please create your account here.', 'val': 'CREATE ACCOUNT', 'max': tz.localtime(tz.now()).date(), 'min': datetime.date(min_year, min_date.month, min_date.day), 'date_val': date(tz.localtime(tz.now()).date().year, 1, 1), 'date': True}
+        return render(response, 'authentication/new_user_account.html', context_vars)
     else:
         return HttpResponseNotAllowed(['GET', 'POST'])
 
@@ -73,27 +83,29 @@ def login(response):
         if form.is_valid():
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
-            data = tuple(database('db.sqlite3', "SELECT user_email, user_password FROM User WHERE user_email = '" +
-                                  email+"' and user_password = '"+password+"';"))
+            data_email = None
+            data_password = None
+            data = database(
+                'db.sqlite3', "SELECT email, password FROM User WHERE email = ? and password = ?;", (email, password))
             if data != None:
                 data_email = data[0]
                 data_password = data[1]
             if data_email == email and data_password == password:
-                database('db.sqlite3', "UPDATE User SET logged_in = True WHERE user_email = '" +
-                         email+"' and user_password = '"+password+"';")
-                return HttpResponse("You have successfully logged into your account!")
+                database(
+                    'db.sqlite3', "UPDATE User SET logged_in = True WHERE email = ? and password = ?;", (email, password))
+                return redirect('authentication:profile')
             else:
                 if data == None:
                     return redirect('authentication:register')
                 elif password != data_password:
                     context_vars = {'form': form, 'heading': 'The passwords do not match.',
                                     'method': 'post', 'action': '/register/login/', 'val': 'Login'}
-                    return render(response, 'UserAuth/login.html', context_vars)
+                    return render(response, 'authentication/login.html', context_vars)
     else:
         form = LogInForm()
         context_vars = {'form': form, 'heading': 'Please sign in to your account here.',
                         'action': '/register/login/', 'method': 'post', 'val': 'Login'}
-        return render(response, 'UserAuth/login.html', context_vars)
+        return render(response, 'authentication/login.html', context_vars)
 
 
 @require_http_methods(["POST", "GET"])
@@ -110,4 +122,4 @@ def profile(response):
         email = response.session['email']
         form = ProfileForm(initial={'email': email})
         context_vars = {'form': form}
-        return render(response, "UserAuth/profile.html", context_vars)
+        return render(response, "authentication/profile.html", context_vars)

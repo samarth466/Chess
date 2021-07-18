@@ -2,7 +2,7 @@ from django.db import models
 from datetime import date
 from authentication.validators import validate_isnumeric
 from tournaments.models import Room
-from authentication.fields import DateField, PasswordField
+from authentication.fields import PasswordField
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 from django.core.mail.message import EmailMessage
@@ -20,7 +20,7 @@ class User(AbstractUser):
     AbstractUser.email.max_length, AbstractUser.email.blank, AbstractUser.email.unique = (
         256, False, True)
     password = PasswordField()
-    birth_date = DateField()
+    birth_date = models.DateField()
     logged_in = models.BooleanField(default=False)
     security_pin = models.CharField(max_length=20, blank=False, null=True, default=None, validators=[
                                     validate_isnumeric], unique=True)
