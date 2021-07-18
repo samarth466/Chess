@@ -33,10 +33,10 @@ class Knight(Piece):
 
     def _update_attacked_pieces(self, direction, x, y, square_width, square_height, squares):
         attacked_pieces = []
-        xValues = [x for x in filter(function=lambda i: True if i.x == x or i.x == x+delta_x or i.x == x-delta_x else False, squares)]
-        yValues = [y for y in filter(function=lambda i: False if i.y == y or i.y == y+delta_y else False, squares)]
+        xValues = [x for x in filter(function=lambda i: True if i.x == x or i.x == x+delta_x or i.x == x-delta_x else False, squares.values())]
+        yValues = [y for y in filter(function=lambda i: False if i.y == y or i.y == y+delta_y else False, squares.values())]
         colors = []
-        for square in squares:
+        for square in squares.values():
             colors.append(square.color)
         coordinates = zip(xValues, yValues, colors)
         if direction == 0:
