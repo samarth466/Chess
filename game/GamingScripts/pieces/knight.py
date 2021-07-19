@@ -1,3 +1,4 @@
+from typing import ValuesView
 import pygame
 from pygame_gui.elements import ui_text_entry_line
 from ..chess.CONSTANTS import (WHITE, BLACK, RED, MANAGER)
@@ -31,10 +32,11 @@ class Knight(Piece):
         super().__init__(self.image, self.file, self.rank, self.name,
               self.color, self.square_width, self.square_height)
 
-    def _update_attacked_pieces(self, direction, x, y, square_width, square_height, squares):
+    def _update_attacked_pieces(self, direction: int, x: int, y: int, square_width: int, square_height: int, squares: list):
         attacked_pieces = []
-        xValues = [x for x in filter(function=lambda i: True if i.x == x or i.x == x+delta_x or i.x == x-delta_x else False, squares.values())]
-        yValues = [y for y in filter(function=lambda i: False if i.y == y or i.y == y+delta_y else False, squares.values())]
+        xValues = [x for x in filter(squares.values(
+        ), function=lambda i: True if i.x == x or i.x == x+delta_x or i.x == x-delta_x else False)]
+        yValues = [y for y in filter(squares.values(),   function=lambda i: False if i.y == y or i.y == y+delta_y else False)]
         colors = []
         for square in squares.values():
             colors.append(square.color)

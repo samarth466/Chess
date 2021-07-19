@@ -1,7 +1,8 @@
 from django.test import TestCase
-from UserAuth.forms import RegistrationForm
+from authentication.forms import RegistrationForm
 
-class UserAuthTest(TestCase):
+
+class AuthenticationTest(TestCase):
     def test_registration_form_email(self):
         form = RegistrationForm(data={"email": ''})
         self.assertFalse(form.is_valid())
