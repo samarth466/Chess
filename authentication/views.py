@@ -1,5 +1,6 @@
 import datetime
 from os import truncate
+from django.http.response import HttpResponseForbidden
 from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, HttpResponseNotAllowed
 from authentication.models import User
@@ -113,13 +114,19 @@ def profile(response):
     if response.method == 'POST':
         form = ProfileForm(response.post)
         if form.is_valid():
-            email = response.session['email']
-            pin = form.cleaned_data['pin']
-            database('db.sqlite3', "UPDATE User SET security_pin = '" +
-                     pin+"' WHERE user_email = '"+email+"';")
-            return redirect('settings:')
+            if response.user.is_authenticated:
+                email = response.user.email
+                pin = form.cleaned_data['pin']
+                database(
+                    'db.sqlite3', "UPDATE User SET security_pin = ? WHERE email = ?;", (str(pin), email))
+                return redirect('settings:')
+            else:
+                return HttpResponseForbidden()
     else:
-        email = response.session['email']
-        form = ProfileForm(initial={'email': email})
-        context_vars = {'form': form}
-        return render(response, "authentication/profile.html", context_vars)
+        if response.user.is_authenticated:
+            email = response.user.email
+            form = ProfileForm(initial={'email': email})
+            context_vars = {'form': form}
+            return render(response, "authentication/profile.html", context_vars)
+        else:
+            return HttpResponseForbidden()

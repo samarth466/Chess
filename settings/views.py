@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from authentication.forms import ProfileForm
 from Chess.utils import database
 from django.http import HttpResponseNotAllowed, HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 
 # Create your views here.
 
@@ -20,8 +21,9 @@ def root(response, email):
         return render(response, 'settings/form.html', context_vars)
 
 
-def settings(response):
-    email = response.session['email']
-    data = database(
-        'db.SQLite3', 'FROM Settings SELECT * WHERE user.email = ?;', (email,))
-    return HttpResponse(data)
+def settings(request):
+    if request.user.is_authenticated:
+        data = database('db.SQLite3',"SELECT * FROM settings WHERE user.email = ?;",(request.user.email,))
+        return HttpResponse(data)
+    else:
+        return HttpResponseForbidden()
