@@ -1,9 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Game
-from UserAuth.models import User
+from authentication.models import User
 from .forms import JoinGameForm
-from django.http import HttpResponseRedirect, HttpResponseNotFound, HttpResponseNotAllowed,Http404,HttpResponse
-from .GamingScripts.Chess.game import main
+from django.http import HttpResponseRedirect, HttpResponseNotFound, HttpResponseNotAllowed,Http404,HttpResponse, FileResponse, response
 
 # Create your views here.
 
@@ -33,7 +32,8 @@ def game(request,code):
         u.game = game
         u.save(update_fields=['game'])
         users = User.objects.filter(game=game)
-        return render(request,'game/game.html',{'game':main,'u1':users[0],'u2':users[1],'color1':(0,0,0),'color2':(255,255,255)})
+        response = FileResponse(open('GamingScripts/chess.exe'))
+        return render(request,'game/.html',{'game':response})
     elif len(game.members.objects.all()) == 0:
         if not request.session.exists(request.session.get('email')):
             request.session['email'] = ''

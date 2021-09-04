@@ -238,4 +238,4 @@ class Queen(Piece):
                                 break
                     direction += 1
         self.x, self.y = self.piece_x, self.piece_y
-        return (self.attacked_pieces, (self.piece_x, self.piece_y), pieces)
+        return self.attacked_pieces, (self.piece_x, self.piece_y), pieces

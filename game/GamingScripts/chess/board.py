@@ -1,19 +1,22 @@
+from _typeshed import Self
 from pathlib import Path
 from os.path import join
 from typing import Any, Tuple
 import pygame
-from ..pieces import Bishop,Pawn,Knight,Rook
+
+from ..pieces import Bishop, Knight, Queen, Rook
 from ..board_utils.square import Square
-from ..chess.CONSTANTS import (WHITE,BLACK,GREY)
+from .CONSTANTS import (WHITE,BLACK,GREY)
 from .player import Player
 
-class Board(object):
+class Board:
 
-    def __init__(self,size: Tuple[int,int],square_width: int,square_height: int,player1: Player,player2: Player,window: pygame.Surface,upper_offset: int = 0,lower_offset: int = 0) -> Any:
+    def __init__(self,size: Tuple[int,int],square_width: int,square_height: int,player1: Player,player2: Player,window: pygame.Surface,upper_offset: int = 0,lower_offset: int = 0):
         """
         Initialize the Board class.
         """
         pygame.init()
+        pygame.display.init()
         self.win_width,self.win_height = size
         self.square_width = square_width
         self.square_height = square_height
@@ -25,7 +28,7 @@ class Board(object):
         self.captured_pieces = []
         self.possible_files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
 #        self.file,self.rank = self.get_game_pos(x=column,y=row)
-        self.path = Path("C:/Users/samar/OneDrive/Desktop/Python Programming/Chess/game/GamingScripts/Chessmen")
+        self.path = Path(join("C:","Users","samar","OneDrive","Desktop","Python_Programming","Chess","game","GamingScripts","Chessmen"))
         self.images = {
             'BLACK': {
                 'Bishop': join(self.path,'B_Bishop.png'),
@@ -55,17 +58,10 @@ class Board(object):
                     Knight(self.images['BLACK']['Knight'],'B',8,BLACK,0,self.win_width,0,self.win_height,self.square_width,self.square_height,self.win_width,self.win_height),
                     Knight(self.images['BLACK']['Knight'],'G',8,BLACK,0,self.win_width,0,self.win_height,self.square_width,self.square_height,self.win_width,self.win_height)
                 ],
-                'Pawn': [
-                    Pawn(self.images['BLACK']['Pawn'],'A',7,BLACK,0,self.win_width,0,self.win_height,self.square_width,self.square_height,self.win_width,self.win_height),
-                    Pawn(self.images['BLACK']['Pawn'],'B',7,BLACK,0,self.win_width,0,self.win_height,self.square_width,self.square_height,self.win_width,self.win_height),
-                    Pawn(self.images['BLACK']['Pawn'],'C',7,BLACK,0,self.win_width,0,self.win_height,self.square_width,self.square_height,self.win_width,self.win_height),
-                    Pawn(self.images['BLACK']['Pawn'],'D',7,BLACK,0,self.win_width,0,self.win_height,self.square_width,self.square_height,self.win_width,self.win_height),
-                    Pawn(self.images['BLACK']['Pawn'],'E',7,BLACK,0,self.win_width,0,self.win_height,self.square_width,self.square_height,self.win_width,self.win_height),
-                    Pawn(self.images['BLACK']['Pawn'],'F',7,BLACK,0,self.win_width,0,self.win_height,self.square_width,self.square_height,self.win_width,self.win_height),
-                    Pawn(self.images['BLACK']['Pawn'],'G',7,BLACK,0,self.win_width,0,self.win_height,self.square_width,self.square_height,self.win_width,self.win_height),
-                    Pawn(self.images['BLACK']['Pawn'],'H',7,BLACK,0,self.win_width,0,self.win_height,self.square_width,self.square_height,self.win_width,self.win_height)
-                ],
-                'Queen': None,
+                'Pawn': None
+                 'Queen': [
+                     Queen(self.images['BLACK']['Queen'],'D',8,BLACK,0,self.win_width,0,self.win_height,self.square_width,self.square_height,self.win_width,self.win_height)
+                 ],
                 'Rook': [
                     Rook(self.images['BLACK']['Rook'],'A',8,BLACK,0,self.win_width,0,self.win_height,self.square_width,self.square_height,self.win_width,self.win_height),
                     Rook(self.images['BLACK']['Rook'],'H',8,BLACK,0,self.win_width,0,self.win_height,self.square_width,self.square_height,self.win_width,self.win_height)
@@ -81,87 +77,110 @@ class Board(object):
                     Knight(self.images['WHITE']['Knight'],'B',2,WHITE,0,self.win_width,0,self.win_height,self.square_width,self.square_height,self.win_width,self.win_height),
                     Knight(self.images['WHITE']['Knight'],'G',2,WHITE,0,self.win_width,0,self.win_height,self.square_width,self.square_height,self.win_width,self.win_height)
                 ],
-                'Pawn': [
-                    Pawn(self.images['WHITE']['Pawn'],'A',2,WHITE,0,self.win_width,0,self.win_height,self.square_width,self.square_height,self.win_width,self.win_height),
-                    Pawn(self.images['WHITE']['Pawn'],'B',2,WHITE,0,self.win_width,0,self.win_height,self.square_width,self.square_height,self.win_width,self.win_height),
-                    Pawn(self.images['WHITE']['Pawn'],'C',2,WHITE,0,self.win_width,0,self.win_height,self.square_width,self.square_height,self.win_width,self.win_height),
-                    Pawn(self.images['WHITE']['Pawn'],'D',2,WHITE,0,self.win_width,0,self.win_height,self.square_width,self.square_height,self.win_width,self.win_height),
-                    Pawn(self.images['WHITE']['Pawn'],'E',2,WHITE,0,self.win_width,0,self.win_height,self.square_width,self.square_height,self.win_width,self.win_height),
-                    Pawn(self.images['WHITE']['Pawn'],'F',2,WHITE,0,self.win_width,0,self.win_height,self.square_width,self.square_height,self.win_width,self.win_height),
-                    Pawn(self.images['WHITE']['Pawn'],'G',2,WHITE,0,self.win_width,0,self.win_height,self.square_width,self.square_height,self.win_width,self.win_height),
-                    Pawn(self.images['WHITE']['Pawn'],'H',2,WHITE,0,self.win_width,0,self.win_height,self.square_width,self.square_height,self.win_width,self.win_height)
-                ],
-                'Queen': None,
+                'Pawn': None,
+                 'Queen': [
+                     Queen(self.images['WHITE']['Queen'],'D',1,WHITE,0,self.win_width,0,self.win_height,self.square_width,self.square_height,self.win_width,self.win_height)
+                 ],
                 'Rook': [
                     Rook(self.images['WHITE']['Rook'],'A',1,WHITE,0,self.win_width,0,self.win_height,self.square_width,self.square_height,self.win_width,self.win_height),
                     Rook(self.images['WHITE']['Rook'],'H',1,WHITE,0,self.win_width,0,self.win_height,self.square_width,self.square_height,self.win_width,self.win_height)
                 ]
             }
         }
+        self.squares = {
+            'A1': Square(1,'A',BLACK,self.matterial['WHITE']['Rook'][0],self.square_width),
+            'A2': Square(2,'A',WHITE,None,self.square_width),
+            'A3': Square(3,'A',BLACK,None,self.square_width),
+            'A4': Square(4,'A',WHITE,None,self.square_width),
+            'A5': Square(5,'A',BLACK,None,self.square_width),
+            'A6': Square(6,'A',WHITE,None,self.square_width),
+            'A7': Square(7,'A',BLACK,None,self.square_width),
+            'A8': Square(8,'A',WHITE,self.matterial['BLACK']['Rook'][0],self.square_width),
+            'B1': Square(1,'B',WHITE,self.matterial['WHITE']['Knight'][0],self.square_width),
+            'B2': Square(2,'B',BLACK,None,self.square_width),
+            'B3': Square(3,'B',WHITE,None,self.square_width),
+            'B4': Square(4,'B',BLACK,None,self.square_width),
+            'B5': Square(5,'B',WHITE,None,self.square_width),
+            'B6': Square(2,'B',BLACK,None,self.square_width),
+            'B7': Square(7,'B',WHITE,None,self.square_width),
+            'B8': Square(8,'B',BLACK,self.matterial['BLACK']['Knight'][0],self.square_width),
+            'C1': Square(1,'C',BLACK,self.matterial['WHITE']['Bishop'][0],self.square_width),
+            'C2': Square(2,'C',WHITE,None,self.square_width),
+            'C3': Square(3,'C',BLACK,None,self.square_width),
+            'C4': Square(2,'C',WHITE,None,self.square_width),            'C2': Square(2,'C',WHITE,None,self.square_width),
+            'C5': Square(5,'C',BLACK,None,self.square_width),
+            'C6': Square(6,'C',WHITE,None,self.square_width),
+            'C7': Square(7,'C',BLACK,None,self.square_width),
+            'C8': Square(8,'C',WHITE,self.matterial['BLACK']['Bishop'][0],self.square_width),
+            'D1': Square(1,'D',WHITE,self.matterial['WHITE']['Queen'][0],self.square_width),
+            'D2': Square(2,'D',BLACK,None,self.square_width),
+            'D3': Square(3,'D',WHITE,None,self.square_width),
+            'D4': Square(2,'D',BLACK,None,self.square_width),
+            'D5': Square(5,'D',WHITE,None,self.square_width),
+            'D6': Square(6,'D',BLACK,None,self.square_width),
+            'D7': Square(7,'D',WHITE,None,self.square_width),
+            'D8': Square(8,'D',BLACK,self.matterial['BLACK']['Queen'][0],self.square_width),
+            'E1': Square(1,'E',BLACK,None,self.square_width),
+            'E2': Square(2,'E',WHITE,None,self.square_width),
+            'E3': Square(3,'E',BLACK,None,self.square_width),
+            'E4': Square(4,'E',WHITE,None,self.square_width),
+            'E5': Square(5,'E',BLACK,None,self.square_width),
+            'E6': Square(6,'E',WHITE,None,self.square_width),
+            'E7': Square(2,'E',BLACK,None,self.square_width),
+            'E8': Square(8,'E',WHITE,None,self.square_width),
+            'F1': Square(1,'F',WHITE,self.matterial['WHITE']['Bishop'][1],self.square_width),
+            'F2': Square(2,'F',BLACK,None,self.square_width),
+            'F3': Square(3,'F',WHITE,None,self.square_width),
+            'F4': Square(4,'F',BLACK,None,self.square_width),
+            'F5': Square(5,'F',WHITE,None,self.square_width),
+            'F6': Square(6,'F',BLACK,None,self.square_width),
+            'F7': Square(7,'F',WHITE,None,self.square_width),
+            'F8': Square(1,'F',BLACK,self.matterial['WHITE']['Bishop'][1],self.square_width),
+            'G1': Square(1,'G',BLACK,self.matterial['WHITE']['Knight'][1],self.square_width),
+            'G2': Square(2,'G',WHITE,None,self.square_width),
+            'G3': Square(2,'G',BLACK,None,self.square_width),
+            'G4': Square(4,'G',WHITE,None,self.square_width),
+            'G5': Square(5,'G',BLACK,None,self.square_width),
+            'G6': Square(6,'G',WHITE,None,self.square_width),
+            'G7': Square(7,'G',BLACK,None,self.square_width),
+            'G8': Square(8,'G',WHITE,self.matterial['WHITE']['Knight'][1],self.square_width),
+            'H1': Square(1,'H',WHITE,self.matterial['WHITE']['Rook'][1],self.square_width),
+            'H2': Square(2,'H',BLACK,None,self.square_width),
+            'H3': Square(3,'H',WHITE,None,self.square_width),
+            'H4': Square(4,'H',BLACK,None,self.square_width),
+            'H5': Square(5,'H',WHITE,None,self.square_width),
+            'H6': Square(6,'H',BLACK,None,self.square_width),
+            'H7': Square(7,'H',WHITE,None,self.square_width),
+            'H8': Square(8,'H',BLACK,self.matterial['WHITE']['Rook'][1],self.square_width)
+        }
     
     def get_window_pos(self, rank: int, file: str) -> Tuple[int,int]:
         x = self.possible_files.index(file.lower())*self.square_width
         y = (rank-1)*self.square_height
-        return (x, y)
+        return x, y
 
     def get_game_pos(self, x: int, y: int) -> Tuple[str,int]:
-        file = self.possible_files[x*self.square_width]
+        file = self.possible_files[x//self.square_width]
         rank = y/self.square_height+1
-        return (file, rank)
+        return file, rank
     
     def move(self):
-        squares = {}
-        for rank in range(1,9):
-            for file in self.possible_files:
-                for piece in self.matterial['BLACK'].values()+[None for _ in range(32)]+self.matterial['WHITE'].values():
-                    squares[self.get_window_pos(rank,file.upper())] = Square(rank,file,WHITE if rank%2 == 1 and file.lower() in self.possible_files[::2] else BLACK,piece,self.square_width,self.square_height)
         for color in self.matterial.values():
             for piece_list in color.values():
                 if piece_list:
                     for piece in piece_list:
-                        piece.move(self.window,squares,self)
+                        move_info =  piece.move(self.window,self.squares)
     
-    def create_board(self):
-        self.board = pygame.Surface((self.win_width,self.win_height))
+    def draw_board(self):
+        board = pygame.Surface((self.win_width,self.win_height))
         self.offset_box_1 = pygame.Surface((self.win_width,self.upper_offset))
         self.offset_box_2 = pygame.Surface((self.win_width,self.lower_offset))
-        pygame.draw.rect(self.window,GREY,self.board)
-        pygame.draw.rect(self.window,GREY,self.offset_box_1)
-        pygame.draw.rect(self.window,GREY,self.offset_box_2)
-        for row in range(self.win_height/self.square_height):
-            for column in range(self.win_width/self.square_width):
-                s = Square(self.rank,self.file,WHITE if row%2 == 0 and column%2 == 0 else BLACK,None,self.square_width,self.square_height)
-                if row == 0:
-                    if collumn == 0:
-                        s.piece = self.matterial['WHITE']['Rook'][0]
-                    elif column == 1:
-                        s.piece = self.matterial['WHITE']['Knight'][0]
-                    elif column == 2:
-                        s.piece = self.matterial['WHITE']['Bishop'][0]
-                    elif column == 5:
-                        s.piece = self.matterial['WHITE']['Bishop'][1]
-                    elif column == 6:
-                        s.piece = self.matterial['WHITE']['Knight'][1]
-                    elif column == 7:
-                        s.piece = self.matterial['WHITE']['Rook'][1]
-                elif row == 1:
-                    s.piece = self.matterial['WHITE']['Pawn'][column]
-                elif row == 6:
-                    s.piece = self.matterial['BLACK']['Pawn'][column]
-                elif row == 7:
-                    if column == 0:
-                        s.piece = self.matterial['BLACK']['Rook'][0]
-                    elif column == 1:
-                        s.piece = self.matterial['BLACK']['Knight'][0]
-                    elif column == 2:
-                        s.piece = self.matterial['BLACK']['Bishop'][0]
-                    elif column == 5:
-                        s.piece = self.matterial['BLACK']['Bishop'][1]
-                    elif column == 6:
-                        s.piece = self.matterial['BLACK']['Knight'][1]
-                    elif column == 7:
-                        s.piece = self.matterial['BLACK']['Rook'][1]
-                self.board.blit(s,(column,row))
+        self.offset_box_1.fill(GREY), board.fill(GREY), self.offset_box_2.fill(GREY)
+        for square in self.squares.values():
+            square.draw(board)
+        self.window.blit(self.offset_box_1,(0,0))
+        self.window.blit(board,(0,self.offset_box_1.get_height()))
+        self.window.blit(self.offset_box_2,(0,self.offset_box_1.get_height()+board.get_height()))
     
     def capture_piece(self,x,y):
         for color,color_pieces in self.matterial.values:
@@ -184,5 +203,10 @@ class Board(object):
             for x in range(0,self.win_width,100):
                 for y in range(0,self.lower_offset,100):
                     pixel_color = self.offset_box_2.get_at((x,y))
-                    if (pixel_color.index(0),pixel_color.index(1),pixel_color.index(3)) == GREY:
+                    if (pixel_color.r,pixel_color.g,pixel_color.b) == GREY:
                         self.offset_box_2.blit(captured_piece,(x,y))
+        pygame.display.update()
+    
+    def update_screen(self):
+        self.draw_board()
+        pygame.display.update()

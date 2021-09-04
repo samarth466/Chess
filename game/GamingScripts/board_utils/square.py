@@ -1,10 +1,11 @@
+from typing import Any
 import pygame
-import chess_py
+
 
 class Square:
 
-    def __init__(self,rank:int
-    ,file:str,color:str,piece,square_length:int,is_empty:bool = False):
+    def __init__(self, rank: int, file: str, color: tuple[int,int,int], piece: Any, square_length: int, is_empty: bool = False):
+        pygame.init()
         self.rank = rank
         self.file = file
         self.color = color
@@ -12,16 +13,16 @@ class Square:
         self.piece = piece
         self.square_length = square_length
         self.is_emptiable = True
-    
+
     def get_window_pos(self):
-        self.y = (self.rank-1)*100
-        possible_files = ['a','b','c','d','e','f','g','h']
-        self.x = possible_files.index(self.file.lower())*100
-        return (self.x,self.y)
-    
-    def draw(self,win:pygame.Surface):
-        x,y = self.get_window_pos()
-        pygame.init()
-        self.rect = pygame.Rect(x,y,self.square_length,self.square_length)
-        self.draw_square = pygame.gfxdraw.rectangle(win,self.rect,self.color)
-        return self.draw_square
+        y = (self.rank-1)*100
+        possible_files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
+        x = possible_files.index(self.file.lower())*100
+        return x, y
+
+    def draw(self, win: pygame.Surface):
+        x, y = self.get_window_pos()
+        self.rect = pygame.Rect(x, y, self.square_length, self.square_length)
+        pygame.gfxdraw.rectangle(win, self.rect, self.color)
+        if self.piece != None:
+            win.blit(self.piece.image_surface, (x, y))
