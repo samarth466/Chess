@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        {% load static %}
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script type="text/javascript" src="{% static 'UserAuth/user.js' %}"></script>
+        <link rel="stylesheet" type="text/css" href="{% static 'UserAuth/style.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'UserAuth/change_color.css' %}">
+    </head>
+    <body>
+        <h1>{{ heading }}</h1>
+        {% block form %}
+        <form action="{{ action }}" method="{{ method }}" id="form">
+            {% csrf_token %}
+                {{ form.as_ul }}<br>
+                {% if date %}
+                <label for="birth_date">Enter Birth Date:</label>
+                    <input type="date" id="birth_date" name="birth_date" value="{{ date_val }}" max="{{ max }}" min="{{ min }}">
+                {% endif %}
+            <input id="Next" type="submit" name="Next" value="{{ val }}">
+        </form>
+        {% endblock %}
+    </body>
+</html>
