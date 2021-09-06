@@ -17,13 +17,19 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='GoogleTokens',
             fields=[
+<<<<<<< Updated upstream
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+=======
+                ('id', models.BigAutoField(auto_created=True,
+                                           primary_key=True, serialize=False, verbose_name='ID')),
+>>>>>>> Stashed changes
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('refresh_token', models.CharField(max_length=150)),
                 ('access_token', models.CharField(max_length=150)),
                 ('expiry', models.DateTimeField()),
                 ('token_type', models.CharField(max_length=50)),
-                ('user', models.OneToOneField(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='tokens', to=settings.AUTH_USER_MODEL)),
+                ('user', models.OneToOneField(null=True, on_delete=django.db.models.deletion.CASCADE,
+                                              related_name='tokens', to=settings.AUTH_USER_MODEL)),
             ],
         ),
     ]
