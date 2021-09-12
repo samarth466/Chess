@@ -1,9 +1,7 @@
-from _typeshed import Self
-from os import X_OK
-from game.GamingScripts import pieces
 import pygame
-from .piece import Piece
+from .piece import Piece, Rook
 from ..board_utils.square import Square
+from ..chess.
 
 
 class King(Piece):
@@ -29,9 +27,10 @@ class King(Piece):
         self.piece_x, self.piece_y = self.x, self.y
         self.attacked_pieces = []      # list of pieces being attacked by self
         self.attackers = []      # list of pieces attacking self
+        self.has_moved = False
         super().__init__(self.image, self.file, self.rank, self.name, self.color)
 
-    def move(self, squares: dict, win: pygame.Surface) -> tuple:
+    def move(self, squares: dict, win: pygame.Surface,matterial: dict) -> tuple:
         # we need to loop through squares and keep track of the position of the piece, so we must make sure that squares is a dict as we need to associate the position with a Square instance
         if not isinstance(squares, dict):
             raise TypeError('The squares attribute must be a dict.')
@@ -73,8 +72,13 @@ class King(Piece):
                         self.y -= self.square_height
                     else:
                         self.attacked_pieces.append(other_piece)
+                    if self.check(matterial):
+                        if self.attacked_pieces[other_piece]:
+                            self.attacked_pieces.pop(self.attacked_pieces.index(other_piece))
+                        self.x += self.square_width
+                        self.y -= self.square_height
                 self.piece_x, self.piece_y = self.x, self.y
-                has_moved = True
+                self.has_moved = True
             if ((keys[pygame.K_LCTRL] and keys[pygame.K_2]) or (keys[pygame.K_LCTRL] and keys[pygame.K_KP_2])) and not ((keys[pygame.K_LCTRL] and keys[pygame.K_2]) and (keys[pygame.K_LCTRL] and keys[pygame.K_LCTRL] and keys[pygame.K_KP_2])):
                 self.y += self.square_height
                 if self.y == other.piece_y and self.x == other.piece_x:
@@ -82,8 +86,12 @@ class King(Piece):
                         self.y -= self.square_height
                     else:
                         self.attacked_pieces.append(other_piece)
+                    if self.check(matterial):
+                        if self.attacked_pieces[other_piece]:
+                            self.attacked_pieces.pop(self.attacked_pieces.index(other_piece))
+                        self.y -= self.square_height
                 self.piece_y = self.y
-                has_moved = True
+                self.has_moved = True
             if ((keys[pygame.K_LCTRL] and keys[pygame.K_3]) or (keys[pygame.K_LCTRL] and keys[pygame.K_KP_3])) and not ((keys[pygame.K_LCTRL] and keys[pygame.K_3]) and (keys[pygame.K_LCTRL] and keys[pygame.K_KP_3])):
                 self.x += self.square_width
                 self.y += self.square_height
@@ -93,8 +101,13 @@ class King(Piece):
                         self.y -= self.square_height
                     else:
                         self.attacked_pieces.append(other_piece)
+                    if self.check(matterial):
+                        if self.attacked_pieces[other_piece]:
+                            self.attacked_pieces.pop(self.attacked_pieces.index(other_piece))
+                        self.x -= self.square_width
+                        self.y -= self.square_height
                 self.piece_x, self.piece_y = self.x, self.y
-                has_moved = True
+                self.has_moved = True
             if ((keys[pygame.K_LCTRL] and keys[pygame.K_KP_4]) or (keys[pygame.K_LCTRL] and keys[pygame.K_4])) and not ((keys[pygame.K_LCTRL] and keys[pygame.K_4]) and (keys[pygame.K_LCTRL] and keys[pygame.K_KP_4])):
                 self.x -= self.square_width
                 if self.x == other.piece_x and self.y == other.piece_y:
@@ -102,8 +115,13 @@ class King(Piece):
                         self.x += self.square_width
                     else:
                         self.attacked_pieces.append(other_pieces)
+                    if self.check(matterial):
+                        if self.attacked_pieces[other_piece]:
+                            self.attacked_pieces.pop(
+                                self.attacked_pieces.index(other_piece))
+                        self.x += self.square_width
                 self.piece_x = self.x
-                has_moved = True
+                self.has_moved = True
             if ((keys[pygame.K_LCTRL] and keys[pygame.K_6]) or (keys[pygame.K_LCTRL] and keys[pygame.K_KP_6])) and not ((keys[pygame.K_LCTRL] and keys[pygame.K_6]) and (keys[pygame.K_LCTRL] and keys[pygame.K_KP_6])):
                 self.x += self.square_width
                 if self.x == other.piece_x and self.y == other.piece_y:
@@ -111,8 +129,13 @@ class King(Piece):
                         self.x -= self.square_width
                     else:
                         self.attacked_pieces.append(other_piece)
+                    if self.check(matterial):
+                        if self.attacked_pieces[other_piece]:
+                            self.attacked_pieces.pop(
+                                self.attacked_pieces.index(other_piece))
+                        self.x -= self.square_width
                 self.piece_x = self.x
-                has_moved = True
+                self.has_moved = True
             if ((keys[pygame.K_LCTRL] and keys[pygame.K_7]) or (keys[pygame.K_LCTRL] and keys[pygame.K_KP_7])) and not ((keys[pygame.K_LCTRL] and keys[pygame.K_7]) and (keys[pygame.K_LCTRL] and keys[pygame.K_KP_7])):
                 self.x -= self.square_width
                 self.y -= self.square_height
@@ -122,8 +145,14 @@ class King(Piece):
                         self.y += self.square_height
                     else:
                         self.attacked_pieces.append(other_piece)
+                    if self.check(matterial):
+                        if self.attacked_pieces[other_piece]:
+                            self.attacked_pieces.pop(
+                                self.attacked_pieces.index(other_piece))
+                        self.x += self.square_width
+                        self.y += self.square_height
                 self.piece_x, self.piece_y = self.x, self.y
-                has_moved = True
+                self.has_moved = True
             if ((keys[pygame.K_LCTRL] and keys[pygame.K_KP_8]) or (keys[pygame.K_LCTRL] and keys[pygame.K_8])) and not ((keys[pygame.K_LCTRL] and keys[pygame.K_8]) and (keys[pygame.K_LCTRL] and keys[pygame.K_KP_8])):
                 self.y -= self.square_height
                 if self.y == other.piece_y and self.x == other.piece_x:
@@ -131,8 +160,12 @@ class King(Piece):
                         self.x += self.square_height
                     else:
                         self.attacked_pieces.append(other_piece)
+                    if self.check(matterial):
+                        if self.attacked_pieces[other_piece]:
+                            self.attacked_pieces.pop(self.attacked_pieces.index(other_piece))
+                        self.y += self.square_height
                 self.piece_y = self.y
-                has_moved = True
+                self.has_moved = True
             if ((keys[pygame.K_LCTRL] and keys[pygame.K_9]) or (keys[pygame.K_LCTRL] and keys[pygame.K_KP_9])) and not ((keys[pygame.K_LCTRL] and keys[pygame.K_9]) and (keys[pygame.K_LCTRL] and keys[pygame.K_KP_9])):
                 self.x += self.square_width
                 self.y -= self.square_height
@@ -142,8 +175,14 @@ class King(Piece):
                         self.y += self.square_height
                     else:
                         self.attacked_pieces.append(other_piece)
+                    if self.check(matterial):
+                        if self.attacked_pieces[other_piece]:
+                            self.attacked_pieces.pop(
+                                self.attacked_pieces.index(other_piece))
+                        self.x -= self.square_width
+                        self.y -= self.square_height
                 self.piece_x, self.piece_y = self.x, self.y
-                has_moved = True
+                selfhas_moved = True
             while direction <= max_direction:
                 if direction == 0:
                     self.x -= self.square_width
@@ -154,7 +193,8 @@ class King(Piece):
                         self.x += self.square_width
                         self.y -= self.square_height
                         if other.color != self.color:
-                            self.attacked_pieces.append(((self.x, self.y), other_piece))
+                            self.attacked_pieces.append(
+                                ((self.x, self.y), other_piece))
                 elif direction == 1:
                     self.y -= self.square_height
                     if not (self.x == other_piece.piece_x and self.y == other_piece.piece_y):
@@ -162,7 +202,8 @@ class King(Piece):
                     else:
                         self.y += self.square_height
                         if other.color != self.color:
-                            self.attacked_pieces.append(((self.x,self.y),other_piece))
+                            self.attacked_pieces.append(
+                                ((self.x, self.y), other_piece))
                 elif direction == 2
                     self.x += self.square_width
                     self.y += self.square_height
@@ -172,7 +213,8 @@ class King(Piece):
                         self.x -= self.square_width
                         self.y -= self.square_height
                         if other.color != self.color:
-                            self.attacked_pieces.append(((self.x,self.y),other_piece))
+                            self.attacked_pieces.append(
+                                ((self.x, self.y), other_piece))
                 elif direction == 3:
                     self.x -= self.square_width
                     if not (self.x == other_piece.piece_x and self.y == other_piece.piece_y):
@@ -180,7 +222,8 @@ class King(Piece):
                     else:
                         self.x += self.square_width
                         if other.color != self.color:
-                            self.attacked_pieces.append(((self.x,self.y),other_piece))
+                            self.attacked_pieces.append(
+                                ((self.x, self.y), other_piece))
                 elif direction == 4:
                     self.x += self.square_width
                     if not (self.x == other_piece.piece_x and self.y == other_piece.piece_y):
@@ -188,7 +231,8 @@ class King(Piece):
                     else:
                         self.x -= self.square_width
                         if self.color != other_piece.color:
-                            self.attacked_pieces.append(((self.x,self.y),other_piece))
+                            self.attacked_pieces.append(
+                                ((self.x, self.y), other_piece))
                 elif direction == 5:
                     self.x -= self.square_width
                     self.y -= self.square_height
@@ -198,7 +242,8 @@ class King(Piece):
                         self.x += self.square_width
                         self.y += self.square_height
                         if self.color != other_piece.color:
-                            self.attacked_pieces.append(((self.x,self.y),other_piece))
+                            self.attacked_pieces.append(
+                                ((self.x, self.y), other_piece))
                 elif direction == 6:
                     self.y -= self.square_height
                     if not (self.x == other_piece.piece_x and self.y == other_piece.piece_y):
@@ -206,7 +251,8 @@ class King(Piece):
                         else:
                             self.y += self.square_height
                             if self.color != other_piece.color:
-                            self.attacked_pieces.append(((self.x,self.y),other_piece))
+                            self.attacked_pieces.append(
+                                ((self.x, self.y), other_piece))
                 elif direction == 7:
                     self.x += self.square_width
                     self.y -= self.square_height
@@ -214,36 +260,43 @@ class King(Piece):
                         self.attacked_pieces.append(((self.x, self.y),))
                     else:
                         if self.color != other_piece.color:
-                            self.attacked_pieces.append(((self.x,self.y),other_pieces))
+                            self.attacked_pieces.append(
+                                ((self.x, self.y), other_pieces))
                 direction += 1
         self.x, self.y = self.piece_x, self.piece_y
         return (self.attacked_pieces, (self.piece_x, self.piece_y), pieces)
-    
-    def check(self, pieces: list[Piece],position: tuple[str,int] = tuple(), squares: dict[str,Square] = dict()) -> bool:
+
+    def check(self, pieces: list[Piece], position: tuple[str, int] = tuple(), squares: dict[str, Square] = dict()) -> bool:
         if position and squares:
             if squares[position[0]+str(position[1])].attacked:
                 return True
             return False
         else:
             for piece in pieces:
-                if Self.attackers or ((Self.x,self.y),Self) in piece.attacked_pieces():
+                if Self.attackers or ((Self.x, self.y), Self) in piece.attacked_pieces():
                     return True
             return False
-    
-    def get_possible_positions_from_current_position(self,position: tuple[int,int]):
-        file,rank = position
+
+    def get_possible_positions_from_current_position(self, position: tuple[int, int], squares: [str, Square]) -> list:
+        file, rank = position
         prev_rank = rank-1 if rank > 1 else None
         next_rank = rank+1 if rank < 8 else None
-        prev_file = self.possible_files[self.possible_files.index(file)-1] if file != self.possible_files[0] else None
-        next_file = self.possible_files[sefl.possible_files.index(file)+1] if self.possible_files[-1] else None
-        return list(filter(lambda i: all(i), [(prev_file,prev_rank),(file,prev_rank),(prev_file,rank),(file,rank),(next_file,rank),(prev_file,next_rank),(file,next_rank),(next_file,next_rank)]
-    
+        prev_file = self.possible_files[self.possible_files.index(
+            file)-1] if file != self.possible_files[0] else None
+        next_file = self.possible_files[self.possible_files.index(
+            file)+1] if self.possible_files[-1] else None
+        return list(filter(lambda i: squares[i[0]+str(i[1])].piece.color != self.color and all(i), [(prev_file, prev_rank), (file, prev_rank), (prev_file, rank), (file, rank), (next_file, rank), (prev_file, next_rank), (file, next_rank), (next_file, next_rank)]
+
     def checkmate(self, pieces: list[Piece], squares: dict[str, Square]) -> bool:
         if self.check(pieces):
-            possible_positions = self.get_possible_positions_from_current_position((self.file,self.rank))
-            filtered_possible_positions = list(filter(lambda i: self.check(pieces,i,squares), possible_positions))
-            if possible_files.length() == filtered_possible_positions:
+            possible_positions=self.get_possible_positions_from_current_position(
+                (self.file, self.rank))
+            filtered_possible_positions=list(
+                filter(lambda i: self.check(pieces, i, squares), possible_positions))
+            if possible_positions.length() == filtered_possible_positions:
                 return True
             return False
         return False
-        
+    
+    def castle(self,rook: Rook,squares: dict[str,Square],normal: bool) -> bool:
+        if self.color == WHITE

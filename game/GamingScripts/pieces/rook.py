@@ -22,6 +22,7 @@ class Rook(Piece):
         self.win_height = win_height
         self.x, self.y = self.piece_x, self.piece_y
         self.attacked_pieces = []
+        self.has_moved = False
         super().__init__(self.image, self.file, self.rank, self.name, self.color)
 
     def move(self, squares, win):
@@ -60,6 +61,7 @@ class Rook(Piece):
                     if self.y == other.piece_y and self.x == other.piece_x:
                         self.y -= self.square_height
                     self.piece_y = self.y
+                    self.has_moved = True
                 if keys[pygame.K_KP4] or keys[pygame.K_4]:
                     self.x -= self.square_width
                     if self.x == other.piece_x and self.y == other.piece_y:
