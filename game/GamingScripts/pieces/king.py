@@ -1,7 +1,8 @@
 import pygame
+from pygame import key
 from .piece import Piece, Rook
 from ..board_utils.square import Square
-from ..chess.
+from ..chess.CONSTANTS import WHITE, BLACK
 
 
 class King(Piece):
@@ -30,7 +31,7 @@ class King(Piece):
         self.has_moved = False
         super().__init__(self.image, self.file, self.rank, self.name, self.color)
 
-    def move(self, squares: dict, win: pygame.Surface,matterial: dict) -> tuple:
+    def move(self, squares: dict, win: pygame.Surface, matterial: dict) -> tuple:
         # we need to loop through squares and keep track of the position of the piece, so we must make sure that squares is a dict as we need to associate the position with a Square instance
         if not isinstance(squares, dict):
             raise TypeError('The squares attribute must be a dict.')
@@ -74,7 +75,8 @@ class King(Piece):
                         self.attacked_pieces.append(other_piece)
                     if self.check(matterial):
                         if self.attacked_pieces[other_piece]:
-                            self.attacked_pieces.pop(self.attacked_pieces.index(other_piece))
+                            self.attacked_pieces.pop(
+                                self.attacked_pieces.index(other_piece))
                         self.x += self.square_width
                         self.y -= self.square_height
                 self.piece_x, self.piece_y = self.x, self.y
@@ -88,7 +90,8 @@ class King(Piece):
                         self.attacked_pieces.append(other_piece)
                     if self.check(matterial):
                         if self.attacked_pieces[other_piece]:
-                            self.attacked_pieces.pop(self.attacked_pieces.index(other_piece))
+                            self.attacked_pieces.pop(
+                                self.attacked_pieces.index(other_piece))
                         self.y -= self.square_height
                 self.piece_y = self.y
                 self.has_moved = True
@@ -103,7 +106,8 @@ class King(Piece):
                         self.attacked_pieces.append(other_piece)
                     if self.check(matterial):
                         if self.attacked_pieces[other_piece]:
-                            self.attacked_pieces.pop(self.attacked_pieces.index(other_piece))
+                            self.attacked_pieces.pop(
+                                self.attacked_pieces.index(other_piece))
                         self.x -= self.square_width
                         self.y -= self.square_height
                 self.piece_x, self.piece_y = self.x, self.y
@@ -162,7 +166,8 @@ class King(Piece):
                         self.attacked_pieces.append(other_piece)
                     if self.check(matterial):
                         if self.attacked_pieces[other_piece]:
-                            self.attacked_pieces.pop(self.attacked_pieces.index(other_piece))
+                            self.attacked_pieces.pop(
+                                self.attacked_pieces.index(other_piece))
                         self.y += self.square_height
                 self.piece_y = self.y
                 self.has_moved = True
@@ -182,7 +187,21 @@ class King(Piece):
                         self.x -= self.square_width
                         self.y -= self.square_height
                 self.piece_x, self.piece_y = self.x, self.y
-                selfhas_moved = True
+                self.has_moved = True
+            if keys[pygame.K_c]:
+                if self.color == WHITE:
+                    self.castle(squares, matterial, True,
+                                matterial['WHITE']['Rook'][1])
+                elif self.color == BLACK:
+                    self.castle(squares, matterial, True,
+                                matterial['BLACK']['Rook'][1])
+            if ((keys[pygame.K_LSHIFT] and keys[pygame.K_c]) or (keys[pygame.K_RSHIFT] and keys[pygame.K_c])) and not ((keys[pygame.K_LSHIFT] and keys[pygame.K_c]) and (keys[pygame.K_RSHIFT] and keys[pygame.K_c])):
+                if self.color == WHITE:
+                    self.castle(squares, matterial, False,
+                                matterial['WHITE']['Rook'][0])
+                elif self.color == BLACK:
+                    self.castle(squares, matterial, False,
+                                matterial['BLACK'][0])
             while direction <= max_direction:
                 if direction == 0:
                     self.x -= self.square_width
@@ -204,7 +223,7 @@ class King(Piece):
                         if other.color != self.color:
                             self.attacked_pieces.append(
                                 ((self.x, self.y), other_piece))
-                elif direction == 2
+                elif direction == 2:
                     self.x += self.square_width
                     self.y += self.square_height
                     if not (self.x == other_piece.piece_x and self.y == other_piece.piece_y):
@@ -236,7 +255,7 @@ class King(Piece):
                 elif direction == 5:
                     self.x -= self.square_width
                     self.y -= self.square_height
-                    if not (self.x == other_piece.piece_x self.y == other_piece.piece_y):
+                    if not (self.x == other_piece.piece_x and self.y == other_piece.piece_y):
                         self.attacked_pieces.append(((self.x, self.y),))
                     else:
                         self.x += self.square_width
@@ -247,10 +266,10 @@ class King(Piece):
                 elif direction == 6:
                     self.y -= self.square_height
                     if not (self.x == other_piece.piece_x and self.y == other_piece.piece_y):
-                        self.attacked_pieces.append(((self.x, self.y)))
-                        else:
-                            self.y += self.square_height
-                            if self.color != other_piece.color:
+                        self.attacked_pieces.append(((self.x, self.y),))
+                    else:
+                        self.y += self.square_height
+                        if self.color != other_piece.color:
                             self.attacked_pieces.append(
                                 ((self.x, self.y), other_piece))
                 elif direction == 7:
@@ -286,8 +305,8 @@ class King(Piece):
         next_file = self.possible_files[self.possible_files.index(
             file)+1] if self.possible_files[-1] else None
         return list(filter(lambda i: squares[i[0]+str(i[1])].piece.color != self.color and all(i), [(prev_file, prev_rank), (file, prev_rank), (prev_file, rank), (file, rank), (next_file, rank), (prev_file, next_rank), (file, next_rank), (next_file, next_rank)]
-
-    def checkmate(self, pieces: list[Piece], squares: dict[str, Square]) -> bool:
+    
+    def     checkmate(self):
         if self.check(pieces):
             possible_positions=self.get_possible_positions_from_current_position(
                 (self.file, self.rank))
@@ -297,6 +316,31 @@ class King(Piece):
                 return True
             return False
         return False
-    
-    def castle(self,rook: Rook,squares: dict[str,Square],normal: bool) -> bool:
-        if self.color == WHITE
+
+    def castle(self, rook: Rook, squares: dict[str, Square], normal: bool, matterial: dict[str, Any]) -> bool:
+        if self.color == WHITE:
+            if normal:
+                if squares['F1'].empty() and squares['G1'].empty():
+                    if not (self.check(matterial, ('F', 1), squares) and self.check(matterial, ('G', 1), squares)):
+                        if not (self.has_moved and rook.has_moved):
+                            self.file='G'
+                            rook.file='F'
+            else:
+                if squares['B1'].empty() and squares['C1'].empty() and squares['D1'].empty():
+                    if not (self.check(matterial, ('B', 1), squares) and self.check(matterial, ('C', 1), squares) and self.check(matterial, ('D', 1), squares)):
+                        if not (self.has_moved and rook.has_moved):
+                            self.file='B'
+                            rook.file='C'
+        if self.color == BLACK:
+            if normal:
+                if squares['F8'].empty() and squares['G8'].empty():
+                    if not (self.check(matterial, ('F', 8), squares) and self.check(matterial, ('G', 8), squares)):
+                        if not (self.has_moved and rook.has_moved):
+                            self.file='G'
+                            rook.file='F'
+            else:
+                if squares['B8'].empty() and squares['C8'].empty() and squares['D8'].empty():
+                    if not (self.check(matterial, ('B', 8), squares) and self.check(matterial, ('C', 8), squares) and self.check(matterial, ('D', 8), squares)):
+                        if not (self.has_moved and rook.has_moved):
+                            self.file='B'
+                            rook.file='C'
