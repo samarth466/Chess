@@ -2,8 +2,8 @@ import pygame
 from .piece import Piece
 from . import Bishop, Knight, Queen, Rook
 from ..chess.CONSTANTS import WHITE, BLACK
-from ..board_utils.square import Square
-from game.GamingScripts.board_utils import square
+from ..board_utils import Square
+from ..utils.types import Squares
 
 
 class Pawn(Piece):
@@ -148,7 +148,7 @@ class Pawn(Piece):
         self.x, self.y = self.piece_x, self.piece_y
         return self.attacked_pieces, (self.piece_x, self.piece_y), pieces
 
-    def move_forward_twice(rank: int, file: str, squares: dict[str, Square]) -> tuple[in , int]:
+    def move_forward_twice(rank: int, file: str, squares: Squares) -> tuple[int, int]:
         if Self.color == WHITE and rank == 2:
             rank += 2
             if squares[file+str(rank)].piece:
