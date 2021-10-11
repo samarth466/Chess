@@ -158,7 +158,7 @@ class Queen(Piece):
                         else:
                             self.y += self.square_height
                             if other.color != self.color:
-                                self.attacked_pieces.append(other_piece) if not other_piece in self.attacked_pieces
+                                self.attacked_pieces.append(((self.x,self.y), other_piece))
                                 break
                     elif direction == 2:
                         while self.x <= win_width-self.square_width and self.y <= self.win_height-self.square_height:
@@ -186,7 +186,7 @@ class Queen(Piece):
                             self.x += self.square_width
                             if other.color != self.color:
                                 self.attacked_pieces.append(
-                                    (other_piece, (self.x, self.y)))
+                                    ((self.x,self.y), other_piece))
                                 break
                     elif direction == 4:
                         self.x += self.square_width
@@ -202,7 +202,7 @@ class Queen(Piece):
                     elif direction == 5:
                         self.x -= self.square_width
                         self.y -= self.square_height
-                        if not (self.x == other_piece.piece_x self.y == other_piece.piece_y):
+                        if not (self.x == other_piece.piece_x and self.y == other_piece.piece_y):
                             self.attacked_pieces.append(((self.x, self.y),))
                             continue
                         else:

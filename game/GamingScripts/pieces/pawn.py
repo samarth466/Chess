@@ -1,6 +1,9 @@
 import pygame
 from .piece import Piece
-from . import Bishop, Knight, Queen, Rook
+from .bishop import Bishop
+from .knight import Knight
+from .queen import Queen
+from .rook import Rook
 from ..chess.CONSTANTS import WHITE, BLACK
 from ..board_utils import Square
 from ..utils.types import Squares
@@ -159,7 +162,7 @@ class Pawn(Piece):
                 rank -= 2
         return self.get_window_pos(file, rank)
 
-    def promotion(self, promoted_piece: str, images: dict[tuple[int, int, int], dict[str, str]]) -> self.__class__:
+    def promotion(self, promoted_piece: str, images: dict[pygame.Color, dict[str, list]]):
         promoted_pieces = [Rook, Knight, Bishop, Queen]
         if promoted_piece in promoted_pieces:
             return promoted_piece(images[self.color][promoted_piece], self.file, self.rank, self.color, self.min_x, self.max_x, self.min_y, self.max_y, self.square_width, self.square_height, self.win_width, self.win_height)
