@@ -193,18 +193,14 @@ class King(Piece):
                 self.has_moved = True
             if keys[pygame.K_c]:
                 if self.color == WHITE:
-                    self.castle(squares, matterial, True,
-                                matterial['WHITE']['Rook'][1])
+                    self.castle(matterial[WHITE]['Rook'][1], True, matterial)
                 elif self.color == BLACK:
-                    self.castle(squares, matterial, True,
-                                matterial['BLACK']['Rook'][1])
+                    self.castle(matterial[BLACK]['Rook'][1], True, matterial)
             if ((keys[pygame.K_LSHIFT] and keys[pygame.K_c]) or (keys[pygame.K_RSHIFT] and keys[pygame.K_c])) and not ((keys[pygame.K_LSHIFT] and keys[pygame.K_c]) and (keys[pygame.K_RSHIFT] and keys[pygame.K_c])):
                 if self.color == WHITE:
-                    self.castle(squares, matterial, False,
-                                matterial['WHITE']['Rook'][0])
+                    self.castle(matterial[WHITE]['Rook'][0], False, matterial)
                 elif self.color == BLACK:
-                    self.castle(squares, matterial, False,
-                                matterial['BLACK'][0])
+                    self.castle(matterial[BLACK]['Rook'][0], False)
             while direction <= max_direction:
                 if direction == 0:
                     self.x -= self.square_width
