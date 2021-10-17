@@ -32,7 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-        'google_oauth2.apps.GoogleOAuth2Config',
+    'google_oauth2.apps.GoogleOAuth2Config',
     'tournaments.apps.TournamentsConfig',
     'game.apps.GameConfig',
     'settings.apps.SettingsConfig',
@@ -167,7 +167,7 @@ CACHES = {
     },
     'indatabase': {
         'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
-        'LOCATION': 'Cache'
+        'LOCATION': 'ChessCache'
     }
 }
 CACHE_MIDDLEWARE_KEY_PREFIX = ''
