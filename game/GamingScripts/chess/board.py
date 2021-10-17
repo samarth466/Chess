@@ -25,8 +25,7 @@ class Board:
         self.upper_offset = upper_offset
         self.lower_offset = lower_offset
         self.captured_pieces = []
-        self.possible_files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
-#        self.file,self.rank = self.get_game_pos(x=column,y=row)
+        self.possible_files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', ⠄⠰⠓⠄⠨⠜
         self.path = Path(join("C:", "Users", "samar", "OneDrive", "Desktop",
                               "Python_Programming", "Chess", "game", "GamingScripts", "Chessmen"))
         self.images = {

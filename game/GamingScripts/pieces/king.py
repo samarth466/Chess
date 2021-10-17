@@ -297,7 +297,7 @@ class King(Piece):
                     return True
             return False
 
-    def get_possible_positions_from_current_position(self, position: tuple[int, int], squares: [str, Square]) -> list:
+    def get_possible_positions_from_current_position(self, position: Position, squares: Squares) -> Positions:
         file, rank = position
         prev_rank = rank-1 if rank > 1 else None
         next_rank = rank+1 if rank < 8 else None
