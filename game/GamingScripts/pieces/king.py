@@ -4,11 +4,12 @@ from .piece import Piece
 from .rook import Rook
 from ..board_utils.square import Square
 from ..chess.CONSTANTS import WHITE, BLACK
+from ..utils.types import Position, Positions, Squares
 
 
 class King(Piece):
 
-    def __init__(self, image: str, file: str, rank: int, color: pygame.Color, min_x: int, max_x: int, min_y: int, max_y: int, square_width: int, square_height: int, win_width: int, win_height: int) -> None:
+    def __init__(self, image: str, file: str, rank: int, color: pygame.Color, min_x: int, max_x: int, min_y: int, max_y: int, square_width: int, square_height: int, win_width: int, win_height: int, squares: Squares) -> None:
         pygame.init()       # initialize pygame
         self.image = image      # location of the image representation of piece
         # loads the image for piece into pygame
@@ -30,11 +31,12 @@ class King(Piece):
         self.attacked_pieces = []      # list of pieces being attacked by self
         self.attackers = []      # list of pieces attacking self
         self.has_moved = False
+        self.squares = squares
         super().__init__(self.image, self.file, self.rank, self.name, self.color)
 
-    def move(self, squares: dict, win: pygame.Surface, matterial: dict) -> tuple:
+    def move(self, win: pygame.Surface, matterial: dict) -> tuple:
         # we need to loop through squares and keep track of the position of the piece, so we must make sure that squares is a dict as we need to associate the position with a Square instance
-        if not isinstance(squares, dict):
+        if not isinstance(self.squares, dict):
             raise TypeError('The squares attribute must be a dict.')
         if self.square_height != self.square_width:
             raise TypeError(
@@ -46,7 +48,7 @@ class King(Piece):
         direction = 0
         max_direction = 8
         pygame.font.init()
-        for other in squares.values():
+        for other in self.squares.values():
             other_piece = other.piece
             while (self.x in limiting_pos[0] and self.y in limiting_pos[1]):
                 if len(pieces) > max_length:
@@ -310,7 +312,7 @@ class King(Piece):
     def checkmate(self):
         if self.check(pieces):
             possible_positions = self.get_possible_positions_from_current_position(
-                (self.file, self.rank))
+                (self.file, self.rank), self.squares)
             filtered_possible_positions = list(
                 filter(lambda i: self.check(pieces, i, squares), possible_positions))
             if possible_positions.length() == filtered_possible_positions:
@@ -318,30 +320,31 @@ class King(Piece):
             return False
         return False
 
-    def castle(self, rook: Rook, squares: dict[str, Square], normal: bool, matterial: dict[str, Any]) -> bool:      # every val in matterial.values() must be an instance of Rook, Queen, Bishop, Pawn, King, or Knight
+    # every val in matterial.values() must be an instance of Rook, Queen, Bishop, Pawn, King, or Knight
+    def castle(self, rook: Rook, normal: bool, matterial: dict[str, Any]) -> bool:
         if self.color == WHITE:
             if normal:
-                if squares['F1'].empty() and squares['G1'].empty():
-                    if not (self.check(matterial, ('F', 1), squares) and self.check(matterial, ('G', 1), squares)):
-                        if not (self.has_moved and rook.has_moved):
+                if self.squares['F1'].empty() and self.squares['G1'].empty():
+                    if not (self.check(matterial, ('F', 1), self.squares) or self.check(matterial, ('G', 1), self.squares) or self.check(matterial, (self.file, self.rank), self.squares)):
+                        if not (self.has_moved or rook.has_moved):
                             self.file = 'G'
                             rook.file = 'F'
             else:
-                if squares['B1'].empty() and squares['C1'].empty() and squares['D1'].empty():
-                    if not (self.check(matterial, ('B', 1), squares) and self.check(matterial, ('C', 1), squares) and self.check(matterial, ('D', 1), squares)):
-                        if not (self.has_moved and rook.has_moved):
+                if self.squares['B1'].empty() and self.squares['C1'].empty() and self.squares['D1'].empty():
+                    if not (self.check(matterial, ('B', 1), self.squares) or self.check(matterial, ('C', 1), self.squares) or self.check(matterial, ('D', 1), self.squares) or self.check(matterial, (self.file, self.rank), self.squares)):
+                        if not (self.has_moved or rook.has_moved):
                             self.file = 'B'
                             rook.file = 'C'
         if self.color == BLACK:
             if normal:
-                if squares['F8'].empty() and squares['G8'].empty():
-                    if not (self.check(matterial, ('F', 8), squares) and self.check(matterial, ('G', 8), squares)):
-                        if not (self.has_moved and rook.has_moved):
+                if self.squares['F8'].empty() and self.squares['G8'].empty():
+                    if not (self.check(matterial, ('F', 8), self.squares) or self.check(matterial, ('G', 8), self.squares) or self.check(matterial, (self.file, self.rank), self.squares)):
+                        if not (self.has_moved or rook.has_moved):
                             self.file = 'G'
                             rook.file = 'F'
             else:
-                if squares['B8'].empty() and squares['C8'].empty() and squares['D8'].empty():
-                    if not (self.check(matterial, ('B', 8), squares) and self.check(matterial, ('C', 8), squares) and self.check(matterial, ('D', 8), squares)):
-                        if not (self.has_moved and rook.has_moved):
+                if self.squares['B8'].empty() and self.squares['C8'].empty() and squares['D8'].empty():
+                    if not (self.check(matterial, ('B', 8), self.squares) or self.check(matterial, ('C', 8), self.squares) or self.check(matterial, ('D', 8), self.squares) or self.check(matterial, (self.file, self.rank), self.squares)):
+                        if not (self.has_moved or rook.has_moved):
                             self.file = 'B'
                             rook.file = 'C'
