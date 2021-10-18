@@ -94,7 +94,7 @@ class Pawn(Piece):
                 self.file, self.rank = file, rank
             if keys[pygame.K_d]:
                 rank, file = self.get_game_pos()
-                self.move_forward_twice(rank, file, multiplier, squares)
+                self.move_forward_twice(rank, file, squares)
                 if self.color == WHITE and self.x/self.square_width+1 == 2:
                     self.y += multiplier * self.square_height * 2
                     file, rank = self.get_game_pos()
@@ -151,7 +151,7 @@ class Pawn(Piece):
         self.x, self.y = self.piece_x, self.piece_y
         return self.attacked_pieces, (self.piece_x, self.piece_y), pieces
 
-    def move_forward_twice(rank: int, file: str, squares: Squares) -> tuple[int, int]:
+    def move_forward_twice(self, rank: int, file: str, squares: Squares) -> tuple[int, int]:
         if Self.color == WHITE and rank == 2:
             rank += 2
             if squares[file+str(rank)].piece:
