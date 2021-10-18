@@ -7,6 +7,10 @@ from ..chess.CONSTANTS import WHITE, BLACK
 from ..utils.types import Position, Positions, Squares
 
 
+MIN_ROWS = 1
+MAX_ROWS = 8
+
+
 class King(Piece):
 
     def __init__(self, image: str, file: str, rank: int, color: pygame.Color, min_x: int, max_x: int, min_y: int, max_y: int, square_width: int, square_height: int, win_width: int, win_height: int, squares: Squares) -> None:
@@ -316,31 +320,23 @@ class King(Piece):
             return False
         return False
 
+    def convert_color_to_rank(self, rank: int) -> bool:
+        if self.color == WHITE:
+            return MIN_ROWS + rank
+        elif self.color == BLACK:
+            return MAX_ROWS - rank
+
     # every val in matterial.values() must be an instance of Rook, Queen, Bishop, Pawn, King, or Knight
     def castle(self, rook: Rook, normal: bool, matterial: dict[str, Any]) -> bool:
-        if self.color == WHITE:
-            if normal:
-                if self.squares['F1'].empty() and self.squares['G1'].empty():
-                    if not (self.check(matterial, ('F', 1), self.squares) or self.check(matterial, ('G', 1), self.squares) or self.check(matterial, (self.file, self.rank), self.squares)):
-                        if not (self.has_moved or rook.has_moved):
-                            self.file = 'G'
-                            rook.file = 'F'
-            else:
-                if self.squares['B1'].empty() and self.squares['C1'].empty() and self.squares['D1'].empty():
-                    if not (self.check(matterial, ('B', 1), self.squares) or self.check(matterial, ('C', 1), self.squares) or self.check(matterial, ('D', 1), self.squares) or self.check(matterial, (self.file, self.rank), self.squares)):
-                        if not (self.has_moved or rook.has_moved):
-                            self.file = 'B'
-                            rook.file = 'C'
-        if self.color == BLACK:
-            if normal:
-                if self.squares['F8'].empty() and self.squares['G8'].empty():
-                    if not (self.check(matterial, ('F', 8), self.squares) or self.check(matterial, ('G', 8), self.squares) or self.check(matterial, (self.file, self.rank), self.squares)):
-                        if not (self.has_moved or rook.has_moved):
-                            self.file = 'G'
-                            rook.file = 'F'
-            else:
-                if self.squares['B8'].empty() and self.squares['C8'].empty() and squares['D8'].empty():
-                    if not (self.check(matterial, ('B', 8), self.squares) or self.check(matterial, ('C', 8), self.squares) or self.check(matterial, ('D', 8), self.squares) or self.check(matterial, (self.file, self.rank), self.squares)):
-                        if not (self.has_moved or rook.has_moved):
-                            self.file = 'B'
-                            rook.file = 'C'
+        if normal:
+            if self.squares[f'F{str(self.convert_color_to_rank(0))}'].empty() and self.squares[f'G{str(self.convert_color_to_rank(0))}'].empty():
+                if not (self.check(matterial, ('F', self.convert_color_to_rank(0)), self.squares) or self.check(matterial, ('G', self.convert_color_to_rank(0)), self.squares) or self.check(matterial, (self.file, self.rank), self.squares)):
+                    if not (self.has_moved or rook.has_moved):
+                        self.file = 'G'
+                        rook.file = 'F'
+        else:
+            if self.squares[f'B{str(self.convert_color_to_rank(0))}'].empty() and self.squares[f'C{str(self.convert_color_to_rank(0))}'].empty() and self.squares[f'D{str(self.convert_color_to_rank(0))}'].empty():
+                if not (self.check(matterial, ('B', self.convert_color_to_rank(0)), self.squares) or self.check(matterial, ('C', self.convert_color_to_rank(0)), self.squares) or self.check(matterial, ('D', self.convert_color_to_rank(0)), self.squares) or self.check(matterial, (self.file, self.rank), self.squares)):
+                    if not (self.has_moved or rook.has_moved):
+                        self.file = 'B'
+                        rook.file = 'C'
