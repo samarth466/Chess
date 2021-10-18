@@ -209,7 +209,7 @@ class Queen(Piece):
                         while self.y >= 0:
                             self.y -= self.square_height
                             if not (self.x == other_piece.piece_x and self.y == other_piece.piece_y):
-                                self.attacked_pieces.append(((self.x, self.y)))
+                                self.attacked_pieces.append(((self.x, self.y),))
                             else:
                                 self.y += self.square_height
                                 if self.color != other_piece.color:
