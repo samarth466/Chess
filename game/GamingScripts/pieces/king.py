@@ -204,7 +204,7 @@ class King(Piece):
                 if self.color == WHITE:
                     self.castle(matterial[WHITE]['Rook'][0], False, matterial)
                 elif self.color == BLACK:
-                    self.castle(matterial[BLACK]['Rook'][0], False)
+                    self.castle(matterial[BLACK]['Rook'][0], False, matterial)
             while direction <= max_direction:
                 if direction == 0:
                     self.x -= self.square_width
