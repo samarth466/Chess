@@ -140,26 +140,24 @@ class Queen(Piece):
                             if not (self.y == other_piece.piece_y and self.x == other_piece.piece_x):
                                 self.attacked_pieces.append(
                                     ((self.x, self.y),))
-                                continue
-                        else:
-                            self.x += self.square_width
-                            self.y -= self.square_height
-                            if other.color != self.color:
-                                self.attacked_pieces.append(
-                                    ((self.x, self.y), other_piece))
-                                break
+                            else:
+                                self.x += self.square_width
+                                self.y -= self.square_height
+                                if other.color != self.color:
+                                    self.attacked_pieces.append(
+                                        ((self.x, self.y), other_piece))
+                                    break
                     elif direction == 1:
                         while self.y <= self.win_height-self.square_height:
                             self.y -= self.square_height
                             if not (self.x == other_piece.piece_x and self.y == other_piece.piece_y):
                                 self.attacked_pieces.append(
                                     ((self.x, self.y),))
-                                continue
-                        else:
-                            self.y += self.square_height
-                            if other.color != self.color:
-                                self.attacked_pieces.append(((self.x,self.y), other_piece))
-                                break
+                            else:
+                                self.y += self.square_height
+                                if other.color != self.color:
+                                    self.attacked_pieces.append(((self.x, self.y), other_piece))
+                                    break
                     elif direction == 2:
                         while self.x <= win_width-self.square_width and self.y <= self.win_height-self.square_height:
                             self.x += self.square_width
@@ -167,75 +165,69 @@ class Queen(Piece):
                             if not (self.x == other_piece.piece_x and self.y == other_piece.piece_y):
                                 self.attacked_pieces.append(
                                     ((self.x, self.y),))
-                                continue
                             else:
                                 self.x -= self.square_width
                                 self.y -= self.square_height
                                 if other.color != self.color:
                                     self.attacked_pieces.append(
                                         (other_piece, (self.x, self.y)))
-                                    self.y -= self.square_height
+                                    break
                     elif direction == 3:
                         while self.x >= 0:
                             self.x -= self.square_width
                             if not (self.x == other_piece.piece_x and self.y == other_piece.piece_y):
                                 self.attacked_pieces.append(
                                     ((self.x, self.y),))
-                                continue
-                        else:
-                            self.x += self.square_width
-                            if other.color != self.color:
-                                self.attacked_pieces.append(
-                                    ((self.x,self.y), other_piece))
-                                break
+                            else:
+                                self.x += self.square_width
+                                if other.color != self.color:
+                                    self.attacked_pieces.append(((self.x, self.y), other_piece))
+                                    break
                     elif direction == 4:
-                        self.x += self.square_width
-                        if not (self.x == other_piece.piece_x and self.y == other_piece.piece_y):
-                            self.attacked_pieces.append(((self.x, self.y),))
-                            continue
-                        else:
-                            self.x -= self.square_width
-                            if self.color != other_piece.color:
-                                self.attacked_pieces.append(
-                                    (other_piece, (self.x, self.y)))
-                                break
-                    elif direction == 5:
-                        self.x -= self.square_width
-                        self.y -= self.square_height
-                        if not (self.x == other_piece.piece_x and self.y == other_piece.piece_y):
-                            self.attacked_pieces.append(((self.x, self.y),))
-                            continue
-                        else:
+                        while self.x <= self.win_width-self.square_width:
                             self.x += self.square_width
-                            self.y += self.square_height
-                            if self.color != other_piece.color:
-                                self.attacked_pieces.append(
-                                    (other_piece, (self.x, self.y)))
-                                break
+                            if not (self.x == other_piece.piece_x and self.y == other_piece.piece_y):
+                                self.attacked_pieces.append(((self.x, self.y),))
+                            else:
+                                self.x -= self.square_width
+                                if self.color != other_piece.color:
+                                    self.attacked_pieces.append((other_piece, (self.x, self.y)))
+                                    break
+                    elif direction == 5:
+                        while self.x >= 0 and self.y >= 0:
+                            self.x -= self.square_width
+                            self.y -= self.square_height
+                            if not (self.x == other_piece.piece_x and self.y == other_piece.piece_y):
+                                self.attacked_pieces.append(((self.x, self.y),))
+                            else:
+                                self.x += self.square_width
+                                self.y += self.square_height
+                                if self.color != other_piece.color:
+                                    self.attacked_pieces.append((other_piece, (self.x, self.y)))
+                                    break
                     elif direction == 6:
                         while self.y >= 0:
                             self.y -= self.square_height
                             if not (self.x == other_piece.piece_x and self.y == other_piece.piece_y):
                                 self.attacked_pieces.append(((self.x, self.y)))
-                                continue
                             else:
                                 self.y += self.square_height
                                 if self.color != other_piece.color:
                                     self.attacked_pieces.append(
                                         (other_piece, (self.x, self.y)))
-                                    self.y += self.square_height
                                     break
                     elif direction == 7:
-                        self.x += self.square_width
-                        self.y -= self.square_height
-                        if not (self.x == other_piece.piece_x and self.y == other_piece.piece_y):
-                            self.attacked_pieces.append(((self.x, self.y),))
-                            continue
-                        else:
-                            if self.color != other_piece.color:
-                                self.attacked_pieces.append(
-                                    (other_pieces, (self.x, self.y)))
-                                break
+                        while self.x <= self.win_width-self.square_width and self.y >= 0:
+                            self.x += self.square_width
+                            self.y -= self.square_height
+                            if not (self.x == other_piece.piece_x and self.y == other_piece.piece_y):
+                                self.attacked_pieces.append(((self.x, self.y),))
+                            else:
+                                self.x -= self.square_width
+                                self.y += self.square_height
+                                if self.color != other_piece.color:
+                                    self.attacked_pieces.append((other_pieces, (self.x, self.y)))
+                                    break
                     direction += 1
         self.x, self.y = self.piece_x, self.piece_y
         return self.attacked_pieces, (self.piece_x, self.piece_y), pieces
