@@ -151,9 +151,9 @@ class Pawn(Piece):
             if squares[file+str(rank)].piece:
                 rank -= 2
         elif self.color == BLACK and rank == 7:
-            rank += 2
+            rank -= 2
             if squares[file+str(rank)].piece:
-                rank -= 2
+                rank += 2
         return self.get_window_pos(file, rank)
 
     def promotion(self, promoted_piece: str, images: dict[pygame.Color, dict[str, list]]):
