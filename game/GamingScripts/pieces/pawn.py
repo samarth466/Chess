@@ -69,29 +69,23 @@ class Pawn(Piece):
             if ((keys[pygame.K_LSHIFT] and keys[pygame.K_7]) or (keys[pygame.K_RSHIFT] and keys[pygame.K_7]) or (keys[pygame.K_LSHIFT] and keys[pygame.K_KP_7]) or (keys[pygame.K_RSHIFT] and keys[pygame.K_KP_7])) and not ((keys[pygame.K_LSHIFT] and keys[pygame.K_7]) and (keys[pygame.K_RSHIFT] and keys[pygame.K_7]) and (keys[pygame.K_LSHIFT] and keys[pygame.K_KP_7]) and (keys[pygame.K_RSHIFT] and keys[pygame.K_KP_7])):
                 self.x -= self.square_width
                 self.y += multiplier*self.square_height
-                file, rank = self.get_game_pos()
-                if squares[file+str(rank)].piece and squares[file+str(rank)].piece.color != self.color:
+                if other_piece and other_piece.color != self.color:
                     self.attacked_pieces.append(squares[file+str(rank)])
                 else:
                     self.x += self.square_width
                     self.y -= multiplier*self.square_height
-                self.file, self.rank = file, rank
             if ((keys[pygame.K_LSHIFT] and keys[pygame.K_8]) or (keys[pygame.K_RSHIFT] and keys[pygame.K_8]) or (keys[pygame.K_LSHIFT] and keys[pygame.K_KP_8]) or (keys[pygame.K_RSHIFT] and keys[pygame.K_KP_8])) and not ((keys[pygame.K_LSHIFT] and keys[pygame.K_8]) and (keys[pygame.K_RSHIFT] and keys[pygame.K_8]) and (keys[pygame.K_LSHIFT] and keys[pygame.K_KP_8]) and (keys[pygame.K_RSHIFT] and keys[pygame.K_KP_8])):
                 self.y += multiplier*self.square_height
-                file, rank = self.get_game_pos()
-                if squares[file+str(rank)].piece:
+                if other_piece:
                     self.y -= multiplier*self.square_height
-                self.file, self.rank = file, rank
             if ((keys[pygame.K_LSHIFT] and keys[pygame.K_9]) or (keys[pygame.K_RSHIFT] and keys[pygame.K_9]) or (keys[pygame.K_LSHIFT] and keys[pygame.K_KP_9]) or (keys[pygame.K_RSHIFT] and keys[pygame.K_KP_9])) and not ((keys[pygame.K_LSHIFT] and keys[pygame.K_9]) and (keys[pygame.K_RSHIFT] and keys[pygame.K_9]) and (keys[pygame.K_LSHIFT] and keys[pygame.K_KP_9]) and (keys[pygame.K_RSHIFT] and keys[pygame.K_KP_9])):
                 self.x += self.square_width
                 self.y += multiplier*self.square_height
-                file, rank = self.get_game_pos()
-                if squares[file+str(rank)].piece and squares[file+str(rank)].piece.color != self.color:
+                if other_piece and other_piece.color != self.color:
                     self.attacked_pieces.append(squares[file+str(rank)])
                 else:
                     self.x -= self.square_width
                     self.y -= multiplier*self.square_height
-                self.file, self.rank = file, rank
             if keys[pygame.K_d]:
                 rank, file = self.get_game_pos()
                 self.move_forward_twice(rank, file, squares)
