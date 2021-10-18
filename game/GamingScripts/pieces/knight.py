@@ -157,7 +157,7 @@ class Knight(Piece):
                         file = text[0]
                         rank = int(text[1])
                         move_set = self.get_possible_positions(
-                            text[0]+str(text[1]))
+                            text[0]+str(text[1]), squares)
                         piece = self.find_piece_from_move_set(
                             move_set, squares)
                         if piece:
