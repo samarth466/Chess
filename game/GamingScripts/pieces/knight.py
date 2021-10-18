@@ -161,17 +161,17 @@ class Knight(Piece):
                         piece = self.find_piece_from_move_set(
                             move_set, squares)
                         if piece:
-                            self.x, self.y = get_window_pos()
+                            self.x, self.y = get_window_pos(self.file, self.rank, self.possible_files))
                         else:
-                            text = font.render(
+                            text=font.render(
                                 "You can't move there. There is no knight nearby.")
                             win.blit(text, (self.x, self.y))
                 else:
                     text_input_line.disable()
                     text_input_line.unfocus()
             while direction < max_direction:
-                self.attacked_pieces = self._update_attacked_pieces(
+                self.attacked_pieces=self._update_attacked_pieces(
                     direction, self.x, self.y, self.square_width, self.square_height, squares)
                 direction += 1
-            direction = 0
+            direction=0
         return self.attacked_pieces
