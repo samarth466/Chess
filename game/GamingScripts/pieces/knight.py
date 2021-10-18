@@ -41,7 +41,7 @@ class Knight(Piece):
         xValues = [x for x in filter(squares.values(
         ), function=lambda i: True if i.x == x or i.x == x+delta_x or i.x == x-delta_x else False)]
         yValues = [y for y in filter(squares.values(
-        ),   function=lambda i: False if i.y == y or i.y == y+delta_y else False)]
+        ),   function=lambda i: True if i.y == y or i.y == y+delta_y or i.y == y-delta_y else False)]
         colors = []
         for square in squares.values():
             colors.append(square.color)
