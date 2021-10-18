@@ -329,14 +329,12 @@ class King(Piece):
     # every val in matterial.values() must be an instance of Rook, Queen, Bishop, Pawn, King, or Knight
     def castle(self, rook: Rook, normal: bool, matterial: dict[str, Any]) -> bool:
         if normal:
-            if self.squares[f'F{str(self.convert_color_to_rank(0))}'].empty() and self.squares[f'G{str(self.convert_color_to_rank(0))}'].empty():
-                if not (self.check(matterial, ('F', self.convert_color_to_rank(0)), self.squares) or self.check(matterial, ('G', self.convert_color_to_rank(0)), self.squares) or self.check(matterial, (self.file, self.rank), self.squares)):
-                    if not (self.has_moved or rook.has_moved):
-                        self.file = 'G'
-                        rook.file = 'F'
+            if (self.squares[f'F{str(self.convert_color_to_rank(0))}'].empty() and self.squares[f'G{str(self.convert_color_to_rank(0))}'].empty()) and (not (self.check(matterial, ('F', self.convert_color_to_rank(0)), self.squares) or self.check(matterial, ('G', self.convert_color_to_rank(0)), self.squares) or self.check(matterial, (self.file, self.rank), self.squares))):
+                if not (self.has_moved or rook.has_moved):
+                    self.file = 'G'
+                    rook.file = 'F'
         else:
-            if self.squares[f'B{str(self.convert_color_to_rank(0))}'].empty() and self.squares[f'C{str(self.convert_color_to_rank(0))}'].empty() and self.squares[f'D{str(self.convert_color_to_rank(0))}'].empty():
-                if not (self.check(matterial, ('B', self.convert_color_to_rank(0)), self.squares) or self.check(matterial, ('C', self.convert_color_to_rank(0)), self.squares) or self.check(matterial, ('D', self.convert_color_to_rank(0)), self.squares) or self.check(matterial, (self.file, self.rank), self.squares)):
-                    if not (self.has_moved or rook.has_moved):
-                        self.file = 'B'
-                        rook.file = 'C'
+            if (self.squares[f'B{str(self.convert_color_to_rank(0))}'].empty() and self.squares[f'C{str(self.convert_color_to_rank(0))}'].empty() and self.squares[f'D{str(self.convert_color_to_rank(0))}'].empty()) and (not (self.check(matterial, ('B', self.convert_color_to_rank(0)), self.squares) or self.check(matterial, ('C', self.convert_color_to_rank(0)), self.squares) or self.check(matterial, ('D', self.convert_color_to_rank(0)), self.squares) or self.check(matterial, (self.file, self.rank), self.squares))):
+                if not (self.has_moved or rook.has_moved):
+                    self.file = 'B'
+                    rook.file = 'C'
