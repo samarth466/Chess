@@ -1,3 +1,6 @@
+from importlib import import_module
+from pathlib import Path
+from os.path import join
 import pygame
 from .piece import Piece
 from .bishop import Bishop
@@ -159,6 +162,10 @@ class Pawn(Piece):
     def promotion(self, promoted_piece: str, images: dict[pygame.Color, dict[str, list]]):
         promoted_pieces = [Rook, Knight, Bishop, Queen]
         if promoted_piece in promoted_pieces:
+            promoted_piece_lower = promoted_piece.lower()
+            promoted_piece_module = import_module(promoted_piece_lower, Path(
+                join('chess', 'game', 'GamingScripts', 'pieces')))
+            promoted_piece = getattr(promoted_piece_module, promoted_piece)
             return promoted_piece(images[self.color][promoted_piece], self.file, self.rank, self.color, self.min_x, self.max_x, self.min_y, self.max_y, self.square_width, self.square_height, self.win_width, self.win_height)
 
     def en_passante(self, squares: dict[str, Square]) -> tuple[Piece]:
