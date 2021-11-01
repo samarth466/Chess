@@ -2,6 +2,7 @@ from pathlib import Path
 from os.path import join
 import string
 import pygame
+from pygame import color
 
 from .player_dict import PlayerDict
 from ..pieces import Bishop, King, Knight, Pawn, Queen, Rook
@@ -9,6 +10,17 @@ from ..board_utils.square import Square
 from .CONSTANTS import (WHITE, BLACK, GREY)
 from .player import Player
 from ..utils.Functions import get_string_from_sequence
+from ..utils.types import Squares
+from ..flatten import flatten
+
+
+def capture_piece(matterial):
+    for color, color_pieces in matterial:
+        for piece_name, piece_list in color_pieces:
+            if piece_list:
+                for i, piece in enumerate(piece_list):
+                    yield (color, piece_name, i)
+
 
 
 class Board:
@@ -240,18 +252,23 @@ class Board:
         self.window.blit(
             self.offset_box_2, (0, self.offset_box_1.get_height()+board.get_height()))
 
-    def capture_piece(self, x, y):
-        for color, color_pieces in self.matterial.values:
-            for piece, piece_list in color_pieces:
-                if piece_list:
-                    for i, piece in enumerate(piece_list):
-                        if piece.x == x and piece.y == y:
-                            captured_piece = self.matterial[color][piece].pop(
-                                i)
-                            self.captured_pieces.append(captured_piece)
-                            self.draw_captured_pieces(captured_piece)
+    def capture_piece(self):
+        while True:
+            captured_pieces = capture_piece(self.matterial)
+            try:
+                color, piece_name, i = next(captured_pieces)
+                x,y = self.matterial[color][piece_name][i].x, self.matterial[color][piece_name][i].y
+                if piece.x == x and piece.y == y:
+                    captured_pieces.close()
+                    captured_piece = self.matterial[color][piece_name].pop(i)
+                    self.captured_pieces.append(captured_piece)
+                    self.draw_captured_piece(captured_piece)
+                except StopIteration:
+                    break
+                except GeneratorExit:
+                    break
 
-    def draw_captured_pieces(self, captured_piece):
+    def draw_captured_piece(self, captured_piece):
         if self.player1.color != captured_piece.color:
             for x in range(0, self.win_width, 100):
                 for y in range(0, self.upper_offset, 100):
