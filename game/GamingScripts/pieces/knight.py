@@ -1,14 +1,18 @@
-from typing import Literal, Sequence
-from game.GamingScripts.board_utils import square
 import pygame
+import string
+from pygame.constants import LIL_ENDIAN
+
 from pygame_gui.elements.ui_text_entry_line import UITextEntryLine
+from typing import Sequence, Literal
+
+from ..board_utils.square import Square
 from ..chess.CONSTANTS import (SQUARE_WIDTH, WHITE, BLACK, RED, MANAGER)
 from .piece import Piece
 from .. import flatten
 from ..utils.types import (
     Position, Positions, Squares
 )
-from ..utils.Functions import get_window_pos, get_string_from_sequence
+from ..utils.Functions import get_game_pos, get_string_from_sequence, get_window_pos
 
 
 class Knight(Piece):
@@ -35,57 +39,34 @@ class Knight(Piece):
         self.has_moved = False
         super().__init__(self.image, self.file, self.rank, self.name,
                          self.color, self.square_width, self.square_height)
-
-    def _update_attacked_pieces(self, direction: int, x: int, y: int, square_width: int, square_height: int, squares: list):
+    
+    def get_attacked_positions(self, x: int, y: int):
+        positions = []
+        for i in range(1,3):
+            if x-self.square_width*i >= 0 and 0 <= y <= self.win_height-self.square_height:
+                positions.append((x-self.square_width*i,y))
+            if x+self.square_width*i <= self.win_width and 0 <= y <= self.win_height-self.square_height:
+                positions.append((x+self.square_width*i,y))
+            if 0 <= x <= self.win_width-self.square_width and y-self.square_height*i >= 0:
+                positions.append(x,y-self.square_height*i)
+            if 0 <= x <= self.win_width-self.square_width and y+self.square_height*i <= self.win_height-self.square_height:
+                positions.append((x,y+self.square_height*i))
+        return positions
+    
+    def _update_attacked_pieces(self, x: int, y: int, square_width: int, square_height: int, squares: Squares) -> list:
         attacked_pieces = []
-        xValues = [x for x in filter(squares.values(
-        ), function=lambda i: True if i.x == x or i.x == x+delta_x or i.x == x-delta_x else False)]
-        yValues = [y for y in filter(squares.values(
-        ),   function=lambda i: True if i.y == y or i.y == y+delta_y or i.y == y-delta_y else False)]
-        colors = []
-        for square in squares.values():
-            colors.append(square.color)
-        coordinates = zip(xValues, yValues, colors)
-        if direction == 0:
-            for _ in range(2):
-                y -= square_height
-            x -= square_width
+        possible_positions = self.get_possible_positions(
+            get_game_pos(x, y, self.possible_files), squares)
+        possible_squares = [square for square in squares.values(
+        ) if square.get_window_pos() in possible_positions]
+        x_values = [square.x for square in possible_squares]
+        y_values = [square.y for square in possible_squares]
+        colors = [square.color for square in possible_squares]
+        coordinates = zip(x_values, y_values, colors)
+        for position in possible_positions:
+            x, y = position.split('')
             attacked_pieces.append((x, y))
-        elif direction == 1:
-            for _ in range(2):
-                y -= square_height
-            x += square_width
-            attacked_pieces.append((x, y))
-        elif direction == 2:
-            for _ in range(2):
-                x += square_width
-            y -= square_height
-            attacked_pieces.append((x, y))
-        elif direction == 3:
-            for _ in range(2):
-                x += square_width
-            y += square_height
-            attacked_pieces.append((x, y))
-        elif derection == 4:
-            for _ in range(2):
-                y += square_height
-            x += square_width
-            attacked_pieces.append((x, y))
-        elif derection == 5:
-            for _ in range(2):
-                y += square_height
-            x -= square_width
-            attacked_pieces.append((x, y))
-        elif derection == 6:
-            for _ in range(2):
-                x -= square_width
-            y += square_height
-            attacked_pieces.append((x, y))
-        elif derection == 7:
-            for _ in range(2):
-                x -= square_width
-            y -= square_height
-            attacked_pieces.append((x, y))
+        attacked_pieces.extend(self.get_attacked_positions(x,y))
         return attacked_pieces
 
     def get_possible_positions(self, current_position: Position, squares: Squares) -> Positions:
@@ -147,7 +128,7 @@ class Knight(Piece):
                     self.x, self.y, self.square_width, self.square_height), manager=MANAGER)
                 text_input_line.disable()
                 text_input_line.set_allowed_characters(
-                    [1, 2, 3, 4, 5, 6, 7, 8, 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'])
+                    [d for d in string.digits[1:9]] + [l for l in string.ascii_lowercase[:8]])
                 text_input_line.set_text_length_limit(2)
                 if active:
                     text_input_line.enable()
@@ -161,17 +142,17 @@ class Knight(Piece):
                         piece = self.find_piece_from_move_set(
                             move_set, squares)
                         if piece:
-                            self.x, self.y = get_window_pos(self.file, self.rank, self.possible_files))
+                            self.x, self.y = get_window_pos(self.file, self.rank, self.possible_files)
+                            original_x, original_y = self.x,self.y
                         else:
-                            text=font.render(
+                            text = font.render(
                                 "You can't move there. There is no knight nearby.")
                             win.blit(text, (self.x, self.y))
                 else:
                     text_input_line.disable()
                     text_input_line.unfocus()
             while direction < max_direction:
-                self.attacked_pieces=self._update_attacked_pieces(
-                    direction, self.x, self.y, self.square_width, self.square_height, squares)
+                self.attacked_pieces = self._update_attacked_pieces(self.x, self.y, self.square_width, self.square_height, squares)
                 direction += 1
-            direction=0
-        return self.attacked_pieces
+            direction = 0
+        return self.attacked_pieces, (self.piece_x, self.piece_y), (original_x, original_y), self

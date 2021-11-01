@@ -60,6 +60,7 @@ class Pawn(Piece):
                     win.blit(txt, (self.max_x-(txt.get_width/2) /
                                    2, self.max_y-(txt.get_height()/2)/2))
                 self.x, self.y = self.get_window_pos()
+                original_x, original_y = self.x, self.y
                 for event in pygame.event.get():
                     if event.type == pygame.K_SPACE or event.type == pygame.K_KP5:
                         if (self.x, self.y, self.name) in pieces:
@@ -146,7 +147,7 @@ class Pawn(Piece):
                                 ((self.x, self.y), squares[file+str(rank)].piece))
                 direction += 1
         self.x, self.y = self.piece_x, self.piece_y
-        return self.attacked_pieces, (self.piece_x, self.piece_y), pieces
+        return self.attacked_pieces, (self.piece_x, self.piece_y), (original_x, original_y), self
 
     def move_forward_twice(self, rank: int, file: str, squares: Squares) -> tuple[int, int]:
         if Self.color == WHITE and rank == 2:

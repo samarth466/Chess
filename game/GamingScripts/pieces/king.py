@@ -1,4 +1,5 @@
 from typing import Any
+from game.GamingScripts.utils.Functions import get_window_pos
 import pygame
 from .piece import Piece
 from .rook import Rook
@@ -62,6 +63,8 @@ class King(Piece):
                     win.blit(txt, (self.max_x-(txt.get_width/2) /
                                    2, self.max_y-(txt.get_height()/2)/2))
                 self.file, self.rank = self.get_game_pos()
+                self.x, self.y = get_window_pos(self.file,self.rank,self.possible_files)
+                original_x, original_y = self.x, self.y
                 for event in pygame.event.get():
                     if event.type == pygame.K_SPACE or event.type == pygame.K_KP5:
                         if (self.x, self.y, self.name) in pieces:
@@ -286,7 +289,7 @@ class King(Piece):
                                 ((self.x, self.y), other_pieces))
                 direction += 1
         self.x, self.y = self.piece_x, self.piece_y
-        return (self.attacked_pieces, (self.piece_x, self.piece_y), pieces)
+        return self.attacked_pieces, (self.piece_x, self.piece_y), (original_x, original_y), self
 
     def check(self, pieces: list[Piece], position: tuple[str, int] = tuple(), squares: dict[str, Square] = dict()) -> bool:
         if position and squares:
@@ -330,13 +333,13 @@ class King(Piece):
     def castle(self, rook: Rook, normal: bool, matterial: dict[str, Any]) -> bool:
         if normal:
             if self.squares[f'F{str(self.convert_color_to_rank(0))}'].empty() and self.squares[f'G{str(self.convert_color_to_rank(0))}'].empty():
-                if not (self.check(matterial, ('F', self.convert_color_to_rank(0)), self.squares) or self.check(matterial, ('G', self.convert_color_to_rank(0)), self.squares) or self.check(matterial, (self.file, self.rank), self.squares))):
+                if not (self.check(matterial, ('F', self.convert_color_to_rank(0)), self.squares) or self.check(matterial, ('G', self.convert_color_to_rank(0)), self.squares) or self.check(matterial, (self.file, self.rank), self.squares)):
                     if not (self.has_moved or rook.has_moved):
-                        self.file='G'
-                        rook.file='F'
+                        self.file = 'G'
+                        rook.file = 'F'
         else:
-            if self.squares[f'B{str(self.convert_color_to_rank(0))}'].empty() and self.squares[f'C{str(self.convert_color_to_rank(0))}'].empty() and self.squares[f'D{str(self.convert_color_to_rank(0))}'].empty()
-            if not (self.check(matterial, ('B', self.convert_color_to_rank(0)), self.squares) or self.check(matterial, ('C', self.convert_color_to_rank(0)), self.squares) or self.check(matterial, ('D', self.convert_color_to_rank(0)), self.squares) or self.check(matterial, (self.file, self.rank), self.squares)):
+            if self.squares[f'B{str(self.convert_color_to_rank(0))}'].empty() and self.squares[f'C{str(self.convert_color_to_rank(0))}'].empty() and self.squares[f'D{str(self.convert_color_to_rank(0))}'].empty():
+                if not (self.check(matterial, ('B', self.convert_color_to_rank(0)), self.squares) or self.check(matterial, ('C', self.convert_color_to_rank(0)), self.squares) or self.check(matterial, ('D', self.convert_color_to_rank(0)), self.squares) or self.check(matterial, (self.file, self.rank), self.squares)):
                     if not (self.has_moved or rook.has_moved):
-                        self.file='B'
-                        rook.file='C'
+                        self.file = 'B'
+                        rook.file = 'C'

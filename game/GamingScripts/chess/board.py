@@ -1,16 +1,19 @@
 from pathlib import Path
 from os.path import join
+import string
 import pygame
 
+from .player_dict import PlayerDict
 from ..pieces import Bishop, King, Knight, Pawn, Queen, Rook
 from ..board_utils.square import Square
 from .CONSTANTS import (WHITE, BLACK, GREY)
 from .player import Player
+from ..utils.Functions import get_string_from_sequence
 
 
 class Board:
 
-    def __init__(self, size: Tuple[int, int], square_width: int, square_height: int, player1: Player, player2: Player, window: pygame.Surface, upper_offset: int = 0, lower_offset: int = 0):
+    def __init__(self, size: Tuple[int, int], square_width: int, square_height: int, player1: Player, player2: Player, window: pygame.Surface, upper_offset: int = 0, lower_offset: int = 0) -> None:
         """
         Initialize the Board class.
         """
@@ -19,13 +22,12 @@ class Board:
         self.win_width, self.win_height = size
         self.square_width = square_width
         self.square_height = square_height
-        self.player1 = player1
-        self.player2 = player2
+        self.players = PlayerDict({1: player1, 2: player2})
         self.window = window
         self.upper_offset = upper_offset
         self.lower_offset = lower_offset
         self.captured_pieces = []
-        self.possible_files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', ⠄⠰⠓⠄⠨⠜
+        self.possible_files = string.ascii_uppercase[:8]
         self.path = Path(join("C:", "Users", "samar", "OneDrive", "Desktop",
                               "Python_Programming", "Chess", "game", "GamingScripts", "Chessmen"))
         self.images = {
@@ -223,6 +225,7 @@ class Board:
                 if piece_list:
                     for piece in piece_list:
                         move_info = piece.move(self.window, self.squares)
+                        self.update_screen(move_info)
 
     def draw_board(self):
         board = pygame.Surface((self.win_width, self.win_height))
@@ -263,6 +266,30 @@ class Board:
                         self.offset_box_2.blit(captured_piece, (x, y))
         pygame.display.update()
 
-    def update_screen(self):
+    def update_screen(self, move_info: tuple):
         self.draw_board()
-        pygame.display.update()
+        attacked_pieces, new_pos, old_pos, piece = move_info
+        for attacked_piece in attacked_pieces:
+            x, y = attacked_piece[0]
+            position = self.get_game_pos(x, y)
+            position = get_string_from_sequence(position)
+            self.squares[position].attacked = True
+        x, y = old_pos
+        old_pos = self.get_game_pos(x, y)
+        old_pos = get_string_from_sequence(old_pos)
+        piece = self.squares[old_pos].piece
+        self.squares[old_pos].piece = None
+        x, y = new_pos
+        new_pos = self.get_game_pos(x, y)
+        new_pos = get_string_from_sequence(new_pos)
+        old_piece = self.squares[old_pos].piece
+        if not old_piece:
+            self.squares[old_pos].piece = piece
+        else:
+            if old_piece.color != piece.color:
+                self.capture_piece(old_piece.x,old_piece.y)
+                self.squares[old_pos].piece = piece
+        self.update()
+    
+    def update(self):
+        pygame.display.update
