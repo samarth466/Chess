@@ -45,7 +45,22 @@ class PlayerDict(dict):
 
     def __init__(self, mapping=(), **kwargs):
         super().__init__(self._process_args(mapping, **kwargs))
-
+        self.current_key = self.keys()[0]
+    
+    def keys(self) -> _dict_keys[_KT, _VT]:
+        keys_list = super().keys()
+        keys = super().keys()
+        for index, key in enumerate(keys_list):
+            keys[index] = ensure_numerical_key(key)
+        return keys
+    
+    def values(self) -> _dict_values[_VT, _KT]:
+        values_list = super().values()
+        values = super().values()
+        for index, value in enumerate(values_list):
+            values[index] = ensure_value_type(value)
+        return values
+    
     def __getitem__(self, k: _KT) -> _VT:
         return ensure_value_type(super().__getitem__(ensure_numerical_key(k)))
 
@@ -82,8 +97,10 @@ class PlayerDict(dict):
     def __repr__(self) -> str:
         return f"{type(self).__name__}({super().__repr__()})"
 
-    def change_turn(self, current_player_id: int):
-        if current_player_id == len(self):
-            return self[1], 1
+    def update_current_key(self) -> tuple[Player,int]:
+        if self.current_key == len(self):
+            self.current_key = self.keys()[0]
+            return self.values()[0], self.keys()[0]
         else:
-            return self[current_player_id+1], current_player_id+1
+            self.current_key += 1
+            return self[self.current_key], self.current_key

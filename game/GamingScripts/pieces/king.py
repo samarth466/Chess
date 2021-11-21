@@ -312,12 +312,12 @@ class King(Piece):
             file)+1] if self.possible_files[-1] else None
         return list(filter((lambda i: (squares[i[0]+str(i[1])].piece.color != self.color and all(i))), [(prev_file, prev_rank), (file, prev_rank), (prev_file, rank), (file, rank), (next_file, rank), (prev_file, next_rank), (file, next_rank), (next_file, next_rank)]))
 
-    def checkmate(self):
+    def checkmate(self, pieces: list[Piece]) -> bool:
         if self.check(pieces):
             possible_positions = self.get_possible_positions_from_current_position(
                 (self.file, self.rank), self.squares)
             filtered_possible_positions = list(
-                filter(lambda i: self.check(pieces, i, squares), possible_positions))
+                filter(lambda i: self.check(pieces, i, self.squares), possible_positions))
             if possible_positions.length() == filtered_possible_positions:
                 return True
             return False

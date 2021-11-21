@@ -1,8 +1,9 @@
+from _typeshed import Self
 from pathlib import Path
 from os.path import join
 import string
 import pygame
-from pygame import color
+from pygame import Color
 
 from .player_dict import PlayerDict
 from ..pieces import Bishop, King, Knight, Pawn, Queen, Rook
@@ -20,7 +21,6 @@ def capture_piece(matterial):
             if piece_list:
                 for i, piece in enumerate(piece_list):
                     yield (color, piece_name, i)
-
 
 
 class Board:
@@ -232,12 +232,13 @@ class Board:
         return file, rank
 
     def move(self):
-        for color in self.matterial.values():
+        for color in filter(lambda i: i == self.players[self.players.current_key].color, self.matterial.values()):
             for piece_list in color.values():
                 if piece_list:
                     for piece in piece_list:
                         move_info = piece.move(self.window, self.squares)
                         self.update_screen(move_info)
+                        self.players.update_current_key()
 
     def draw_board(self):
         board = pygame.Surface((self.win_width, self.win_height))
@@ -257,7 +258,7 @@ class Board:
             captured_pieces = capture_piece(self.matterial)
             try:
                 color, piece_name, i = next(captured_pieces)
-                x,y = self.matterial[color][piece_name][i].x, self.matterial[color][piece_name][i].y
+                x, y = self.matterial[color][piece_name][i].x, self.matterial[color][piece_name][i].y
                 if piece.x == x and piece.y == y:
                     captured_pieces.close()
                     captured_piece = self.matterial[color][piece_name].pop(i)
@@ -284,7 +285,6 @@ class Board:
         pygame.display.update()
 
     def update_screen(self, move_info: tuple):
-        self.draw_board()
         attacked_pieces, new_pos, old_pos, piece = move_info
         for attacked_piece in attacked_pieces:
             x, y = attacked_piece[0]
@@ -304,9 +304,22 @@ class Board:
             self.squares[old_pos].piece = piece
         else:
             if old_piece.color != piece.color:
-                self.capture_piece(old_piece.x,old_piece.y)
+                self.capture_piece(old_piece.x, old_piece.y)
                 self.squares[old_pos].piece = piece
         self.update()
-    
+
     def update(self):
-        pygame.display.update
+        self.draw_board()
+        pygame.display.update()
+
+    def end(self):
+        if self.matterial[BLACK]['King'].checkmate(list(self.matterial[WHITE].values())):
+            return True, WHITE
+        elif self.matterial[WHITE]['King'].checkmate(list(self.matterial[BLACK].values())):
+            return True, BLACK
+        elif len(self.matterial[BLACK].values()) == 1:
+            return True, WHITE
+        elif len(self.matterial[WHITE].values()) == 1:
+            return True, BLACK
+        else:
+            return False, None
