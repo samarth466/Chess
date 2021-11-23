@@ -1,4 +1,4 @@
-#from .chess.player import Player
+from .chess.player import Player
 import pygame
 
 from .chess.CONSTANTS import BLACK, SQUARE_HEIGHT, SQUARE_WIDTH, WHITE, WINDOW_HEIGHT, WINDOW_WIDTH
@@ -18,12 +18,17 @@ def main():
     run = True
     clock = pygame.time.Clock()
     FPS = 60
+    sound_level = 2
     while run:
         clock.tick(FPS)
         SCREEN.fill((0, 72, 0))
         for event in pygame.event.get():
             if event.type == pygame.K_ESCAPE:
                 run = False
+        keys = pygame.key.get_pressed()
+        for i in range(3):
+            if keys[ord(str(i))]:
+                sound_level = i
         board.move()
         game_has_ended, winning_color = board.end()
         if winning_color:
