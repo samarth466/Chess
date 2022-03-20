@@ -26,6 +26,7 @@ def main(positions: PositionDict = {}):
     sound_level = 2
     volume = 0
     accessibility = True
+    print("Hello")
     while run:
         clock.tick(FPS)
         SCREEN.fill((0, 72, 0))

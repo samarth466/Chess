@@ -2,6 +2,9 @@ from itertools import chain
 from typing import KeysView, ValuesView
 from .player import Player
 
+str_base = str, bytes, bytearray
+items = 'items'
+
 _RaiseKeyError = object()
 
 
