@@ -1,23 +1,25 @@
-from utils.types import Position, PositionDict
-from chess.player import Player
 import pygame
 
+from utils.types import Position, PositionDict
+from chess.player import Player
 from chess.CONSTANTS import BLACK, SQUARE_HEIGHT, SQUARE_WIDTH, WHITE, WINDOW_HEIGHT, WINDOW_WIDTH
 from chess.board import Board
 
 # PyGame Initializations
+
 pygame.init()
 pygame.display.init()
 pygame.font.init()
 
 # Constants
+
 WINNING_FONT = pygame.font.SysFont('comicsans', 60, True)
 
 
 def main(positions: PositionDict = {}):
     SCREEN = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
     board = Board((WINDOW_WIDTH, WINDOW_HEIGHT), SQUARE_WIDTH, SQUARE_HEIGHT, Player(
-        WHITE, 'Joe'), Player(BLACK, 'Jane'), SCREEN,SQUARE_HEIGHT*2,SQUARE_HEIGHT*2)
+        WHITE, 'Joe'), Player(BLACK, 'Jane'), SCREEN, SQUARE_HEIGHT*2, SQUARE_HEIGHT*2)
     run = True
     clock = pygame.time.Clock()
     FPS = 60
@@ -50,6 +52,7 @@ def main(positions: PositionDict = {}):
             SCREEN.blit(txt_render, (SCREEN.get_width(
             )/2-(txt_render.get_width()/2), SCREEN.get_height()/2-(txt.get_height()/2)))
         pygame.display.update()
+        print("hello")
     pygame.quit()
 
 
