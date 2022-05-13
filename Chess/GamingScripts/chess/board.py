@@ -4,7 +4,7 @@ import string
 import pygame
 from pygame import Color
 
-from .player_dict import PlayerDict
+import player_dict.PlayerDict
 from pieces import Bishop, King, Knight, Pawn, Queen, Rook
 from board_utils.square import Square
 from .CONSTANTS import (WHITE, BLACK, GREY)
@@ -329,8 +329,9 @@ class Board:
             return False, None
 
     def promote(self, pawn: Pawn) -> None:
-        table = Table(self.window,2,2,[['Bishop','Knight'],['Queen','Rook']])
-        table.draw(bold=True,underline=True,size=80)
+        table = Table(self.window, 2, 2, [
+                      ['Bishop', 'Knight'], ['Queen', 'Rook']])
+        table.draw(bold=True, underline=True, size=80)
         cursor_x, cursor_y = (self.window.get_width()-262, 0)
         keys = pygame.key.get_pressed()
         if keys[pygame.K_DOWN]:

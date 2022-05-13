@@ -1,9 +1,11 @@
+__package__ = "chess"
 from itertools import chain
 from typing import KeysView, ValuesView
 from .player import Player
 
 str_base = str, bytes, bytearray
 items = 'items'
+print(__package__)
 
 _RaiseKeyError = object()
 
