@@ -1,11 +1,11 @@
 import pygame
-import string
+#import string
 
-from pygame_gui.elements.ui_text_entry_line import UITextEntryLine
+#from pygame_gui.elements.ui_text_entry_line import UITextEntryLine
 from typing import Sequence, Literal
 
 from board_utils import Square
-from chess.CONSTANTS import (SQUARE_WIDTH, WHITE, BLACK, RED, MANAGER)
+from chess.CONSTANTS import (SQUARE_WIDTH, WHITE, BLACK, RED, BLUE_GREEN)
 from .piece import Piece
 from flatten import flatten
 from utils.types import (
@@ -109,7 +109,7 @@ class Knight(Piece):
             if len(self.pieces) > max_length:
                 font = pygame.font.SysFont("comicsans", 40)
                 text = font.render(
-                    "You can't select that piece because you have already selected a piece. You must either move the already selected piece or unselect it.")
+                    "You can't select that piece because you have already selected a piece. You must either move the already selected piece or unselect it.", 1, DARK_GREEN)
                 win.blit(txt, ((self.max_x-txt.get_width()) /
                                2, (self.max_y-txt.get_height())/2))
             for event in pygame.event.get():
@@ -122,35 +122,80 @@ class Knight(Piece):
                         self.pieces.append((self.x, self.y, self.name))
             keys = pygame.key.get_pressed()
             if ((keys[pygame.K_RALT] and keys[pygame.K_k]) or (keys[pygame.K_LALT] and keys[pygame.K_k])) and not ((keys[pygame.K_RALT] and keys[pygame.K_k]) and (keys[pygame.K_LALT] and keys[pygame.K_k])):
-                active = False
-                text_input_line = UITextEntryLine(pygame.pygame.Rect(
-                    self.x, self.y, self.square_width, self.square_height), manager=MANAGER)
-                text_input_line.disable()
-                text_input_line.set_allowed_characters(
-                    [d for d in string.digits[1:9]] + [l for l in string.ascii_lowercase[:8]])
-                text_input_line.set_text_length_limit(2)
-                if active:
-                    text_input_line.enable()
-                    text_input_line.focus()
-                    if keys[pygame.K_RETURN]:
-                        text = text_input_line.get_text()
-                        file = text[0]
-                        rank = int(text[1])
-                        move_set = self.get_possible_positions(
-                            text[0]+str(text[1]), squares)
-                        piece = self.find_piece_from_move_set(
-                            move_set, squares)
-                        if piece:
-                            self.x, self.y = get_window_pos(
-                                self.file, self.rank, self.possible_files)
-                            original_x, original_y = self.x, self.y
-                        else:
-                            text = font.render(
-                                "You can't move there. There is no knight nearby.")
-                            win.blit(text, (self.x, self.y))
-                else:
-                    text_input_line.disable()
-                    text_input_line.unfocus()
+                while True:
+                    text = "Choose direction of movement: (d, or u)"
+                    font = font.render(text, 1, BLUE_GREEN)
+                    win.fill(WHITE)
+                    win.blit(txt, ((self.max_x-txt.get_width()) /
+                                   2, (self.max_y-txt.get_height())/2))
+                    if keys[pygame.K_d]:
+                        text = "Choose number of steps: (1 or 2))"
+                        font = font.render(text, 1, BLUE_GREEN)
+                        win.fill(WHITE)
+                        win.blit(txt, ((self.max_x-txt.get_width()) /
+                                 2, (self.max_y-txt.get_height())/2))
+                        if keys[pygame.K_1]:
+                            text = "Choose direction of movement: (l, or r)"
+                            font = font.render(text, 1, BLUE_GREEN)
+                            win.fill(WHITE)
+                            win.blit(txt, ((self.max_x-txt.get_width()) /
+                                     2, (self.max_y-txt.get_height())/2))
+                            if keys[pygame.K_l]:
+                                self.rank -= 1
+                                self.file = self.possible_files[self.possible_files.index(
+                                    self.file)-2]
+                            if keys[pygame.K_r]:
+                                self.rank -= 1
+                                self.file = self.possible_files[self.possible_files.index(
+                                    self.file)+2]
+                        if keys[pygame.K_2]:
+                            text = "Choose direction of movement: (l, or r)"
+                            font = font.render(text, 1, BLUE_GREEN)
+                            win.fill(WHITE)
+                            win.blit(txt, ((self.max_x-txt.get_width()) /
+                                     2, (self.max_y-txt.get_height())/2))
+                            if keys[pygame.K_l]:
+                                self.rank -= 2
+                                self.file = self.possible_files[self.possible_files.index(
+                                    self.file)-1]
+                            if keys[pygame.K_r]:
+                                self.rank -= 2
+                                self.file = self.possible_files[self.possible_files.index(
+                                    self.file)+1]
+                    if keys[pygame.K_u]:
+                        text = "Choose number of steps: (1 or 2)"
+                        font = font.render(text, 1, BLUE_GREEN)
+                        win.fill(WHITE)
+                        win.blit(txt, ((self.max_x-txt.get_width()) /
+                                 2, (self.max_y-txt.get_height())/2))
+                        if keys[pygame.K_1]:
+                            text = "Choose direction of movement: (l, or r)"
+                            font = font.render(text, 1, BLUE_GREEN)
+                            win.fill(WHITE)
+                            win.blit(txt, ((self.max_x-txt.get_width()) /
+                                     2, (self.max_y-txt.get_height())/2))
+                            if keys[pygame.K_l]:
+                                self.rank += 1
+                                self.file = self.possible_files[self.possible_files.index(
+                                    self.file)-2]
+                            if keys[pygame.K_r]:
+                                self.rank += 1
+                                self.file = self.possible_files[self.possible_files.index(
+                                    self.file)+2]
+                        if keys[pygame.K_2]:
+                            text = "Choose direction of movement: (l, or r)"
+                            font = font.render(text, 1, BLUE_GREEN)
+                            win.fill(WHITE)
+                            win.blit(txt, ((self.max_x-txt.get_width()) /
+                                     2, (self.max_y-txt.get_height())/2))
+                            if keys[pygame.K_l]:
+                                self.rank += 2
+                                self.file = self.possible_files[self.possible_files.index(
+                                    self.file)-1]
+                            if keys[pygame.K_r]:
+                                self.rank += 2
+                                self.file = self.possible_files[self.possible_files.index(
+                                    self.file)+1]
             while direction < max_direction:
                 self.attacked_pieces = self._update_attacked_pieces(
                     self.x, self.y, self.square_width, self.square_height, squares)

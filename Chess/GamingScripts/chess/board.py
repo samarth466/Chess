@@ -4,7 +4,7 @@ import string
 import pygame
 from pygame import Color
 
-import player_dict.PlayerDict
+from .player_dict import PlayerDict
 from pieces import Bishop, King, Knight, Pawn, Queen, Rook
 from board_utils.square import Square
 from .CONSTANTS import (WHITE, BLACK, GREY)
@@ -40,8 +40,7 @@ class Board:
         self.lower_offset = lower_offset
         self.captured_pieces = []
         self.possible_files = string.ascii_uppercase[:8]
-        self.path = Path(join("C:", "Users", "samar", "OneDrive", "Desktop",
-                              "Python_Programming", "Chess", "game", "GamingScripts", "Chessmen"))
+        self.path = Path(join("C:\", "Users", "samar", "OneDrive", "Desktop", "Samarth", "Python_Programming", "accessigames", "chess", "GamingScripts", "Chessmen"))
         self.images = {
             BLACK: {
                 'Bishop': join(self.path, 'B_Bishop.png'),
@@ -63,93 +62,93 @@ class Board:
         self.matterial = {
             BLACK: {
                 'Bishop': [
-                    Bishop(self.image['BLACK']['Bishop'], 'C', 8, BLACK, 0, self.win_width, 0, self.win_height,
+                    Bishop(self.images[BLACK]['Bishop'], 'C', 8, BLACK, 0, self.win_width, 0, self.win_height,
                            self.square_width, self.square_height, self.win_width, self.win_height),
-                    Bishop(self.image[BLACK]['Bishop'], 'F', 8, BLACK, 0, self.win_width, 0, self.win_height,
+                    Bishop(self.images[BLACK]['Bishop'], 'F', 8, BLACK, 0, self.win_width, 0, self.win_height,
                            self.square_width, self.square_height, self.win_width, self.win_height)
                 ],
                 'King': [
-                    King(self.images['BLACK']['King'], 'E', 8, BLACK, 0, self.win_width, 0, self.win_height,
+                    King(self.images[BLACK]['King'], 'E', 8, BLACK, 0, self.win_width, 0, self.win_height,
                          self.square_width, self.square_height, self.win_width, self.win_height)
                 ],
                 'Knight': [
-                    Knight(self.images['BLACK']['Knight'], 'B', 8, BLACK, 0, self.win_width, 0,
+                    Knight(self.images[BLACK]['Knight'], 'B', 8, BLACK, 0, self.win_width, 0,
                            self.win_height, self.square_width, self.square_height, self.win_width, self.win_height),
-                    Knight(self.images['BLACK']['Knight'], 'G', 8, BLACK, 0, self.win_width, 0,
+                    Knight(self.images[BLACK]['Knight'], 'G', 8, BLACK, 0, self.win_width, 0,
                            self.win_height, self.square_width, self.square_height, self.win_width, self.win_height)
                 ],
                 'Pawn': [
-                    Pawn(self.images['BLACK']['Pawn'], 'A', 7, BLACK, 0, self.win_width, 0, self.win_height,
+                    Pawn(self.images[BLACK]['Pawn'], 'A', 7, BLACK, 0, self.win_width, 0, self.win_height,
                          self.square_width, self.square_height, self.win_width, self.win_height),
-                    Pawn(self.images['BLACK']['Pawn'], 'B', 7, BLACK, 0, self.win_width, 0, self.win_height,
+                    Pawn(self.images[BLACK]['Pawn'], 'B', 7, BLACK, 0, self.win_width, 0, self.win_height,
                          self.square_width, self.square_height, self.win_width, self.win_height),
-                    Pawn(self.images['BLACK']['Pawn'], 'C', 7, BLACK, 0, self.win_width, 0, self.win_height, self.square_width, self.square_height, self.win_width, self.win_height),                    Pawn(
+                    Pawn(self.images[BLACK]['Pawn'], 'C', 7, BLACK, 0, self.win_width, 0, self.win_height, self.square_width, self.square_height, self.win_width, self.win_height),                    Pawn(
                         self.images['BLACK']['Pawn'], 'A', 7, BLACK, 0, self.win_width, 0, self.win_height, self.square_width, self.square_height, self.win_width, self.win_height),
-                    Pawn(self.images['BLACK']['Pawn'], 'D', 7, BLACK, 0, self.win_width, 0, self.win_height,
+                    Pawn(self.images[BLACK]['Pawn'], 'D', 7, BLACK, 0, self.win_width, 0, self.win_height,
                          self.square_width, self.square_height, self.win_width, self.win_height),
-                    Pawn(self.images['BLACK']['Pawn'], 'E', 7, BLACK, 0, self.win_width, 0, self.win_height,
+                    Pawn(self.images[BLACK]['Pawn'], 'E', 7, BLACK, 0, self.win_width, 0, self.win_height,
                          self.square_width, self.square_height, self.win_width, self.win_height),
-                    Pawn(self.images['BLACK']['Pawn'], 'F', 7, BLACK, 0, self.win_width, 0, self.win_height,
+                    Pawn(self.images[BLACK]['Pawn'], 'F', 7, BLACK, 0, self.win_width, 0, self.win_height,
                          self.square_width, self.square_height, self.win_width, self.win_height),
-                    Pawn(self.images['BLACK']['Pawn'], 'G', 7, BLACK, 0, self.win_width, 0, self.win_height,
+                    Pawn(self.images[BLACK]['Pawn'], 'G', 7, BLACK, 0, self.win_width, 0, self.win_height,
                          self.square_width, self.square_height, self.win_width, self.win_height),
-                    Pawn(self.images['BLACK']['Pawn'], 'H', 7, BLACK, 0, self.win_width, 0, self.win_height,
+                    Pawn(self.images[BLACK]['Pawn'], 'H', 7, BLACK, 0, self.win_width, 0, self.win_height,
                          self.square_width, self.square_height, self.win_width, self.win_height)
                 ],
                 'Queen': [
-                    Queen(self.images['BLACK']['Queen'], 'D', 8, BLACK, 0, self.win_width, 0,
+                    Queen(self.images[BLACK]['Queen'], 'D', 8, BLACK, 0, self.win_width, 0,
                           self.win_height, self.square_width, self.square_height, self.win_width, self.win_height)
                 ],
                 'Rook': [
-                    Rook(self.images['BLACK']['Rook'], 'A', 8, BLACK, 0, self.win_width, 0, self.win_height,
+                    Rook(self.images[BLACK]['Rook'], 'A', 8, BLACK, 0, self.win_width, 0, self.win_height,
                          self.square_width, self.square_height, self.win_width, self.win_height),
-                    Rook(self.images['BLACK']['Rook'], 'H', 8, BLACK, 0, self.win_width, 0, self.win_height,
+                    Rook(self.images[BLACK]['Rook'], 'H', 8, BLACK, 0, self.win_width, 0, self.win_height,
                          self.square_width, self.square_height, self.win_width, self.win_height)
                 ]
             },
             WHITE: {
                 'Bishop': [
-                    Bishop(self.image['WHITE']['Bishop'], 'C', 2, BLACK, 0, self.win_width, 0, self.win_height,
+                    Bishop(self.images[WHITE]['Bishop'], 'C', 2, BLACK, 0, self.win_width, 0, self.win_height,
                            self.square_width, self.square_height, self.win_width, self.win_height),
-                    Bishop(self.image['WHITE']['Bishop'], 'F', 2, WHITE, 0, self.win_width, 0,
+                    Bishop(self.image[WHITE]['Bishop'], 'F', 2, WHITE, 0, self.win_width, 0,
                            self.win_height, self.square_width, self.square_height, self.win_width, self.win_height)
                 ],
                 'King': [
-                    King(self.images['WHITE']['King'], 'E', 1, WHITE, 0, self.win_width, 0, self.win_height,
+                    King(self.images[WHITE]['King'], 'E', 1, WHITE, 0, self.win_width, 0, self.win_height,
                          self.square_width, self.square_height, self.win_width, self.win_height)
                 ],
                 'Knight': [
-                    Knight(self.images['WHITE']['Knight'], 'B', 2, WHITE, 0, self.win_width, 0,
+                    Knight(self.images[WHITE]['Knight'], 'B', 2, WHITE, 0, self.win_width, 0,
                            self.win_height, self.square_width, self.square_height, self.win_width, self.win_height),
-                    Knight(self.images['WHITE']['Knight'], 'G', 2, WHITE, 0, self.win_width, 0,
+                    Knight(self.images[WHITE]['Knight'], 'G', 2, WHITE, 0, self.win_width, 0,
                            self.win_height, self.square_width, self.square_height, self.win_width, self.win_height)
                 ],
                 'Pawn': [
-                    Pawn(self.images['WHITE']['Pawn'], 'A', 2, WHITE, 0, self.win_width, 0, self.win_height,
+                    Pawn(self.images[WHITE]['Pawn'], 'A', 2, WHITE, 0, self.win_width, 0, self.win_height,
                          self.square_width, self.square_height, self.win_width, self.win_height),
-                    Pawn(self.images['WHITE']['Pawn'], 'B', 2, WHITE, 0, self.win_width, 0, self.win_height,
+                    Pawn(self.images[WHITE]['Pawn'], 'B', 2, WHITE, 0, self.win_width, 0, self.win_height,
                          self.square_width, self.square_height, self.win_width, self.win_height),
-                    Pawn(self.images['WHITE']['Pawn'], 'C', 2, WHITE, 0, self.win_width, 0, self.win_height,
+                    Pawn(self.images[WHITE]['Pawn'], 'C', 2, WHITE, 0, self.win_width, 0, self.win_height,
                          self.square_width, self.square_height, self.win_width, self.win_height),
-                    Pawn(self.images['WHITE']['Pawn'], 'D', 2, WHITE, 0, self.win_width, 0, self.win_height,
+                    Pawn(self.images[WHITE]['Pawn'], 'D', 2, WHITE, 0, self.win_width, 0, self.win_height,
                          self.square_width, self.square_height, self.win_width, self.win_height),
-                    Pawn(self.images['WHITE']['Pawn'], 'E', 2, WHITE, 0, self.win_width, 0, self.win_height,
+                    Pawn(self.images[WHITE]['Pawn'], 'E', 2, WHITE, 0, self.win_width, 0, self.win_height,
                          self.square_width, self.square_height, self.win_width, self.win_height),
-                    Pawn(self.images['WHITE']['Pawn'], 'F', 2, WHITE, 0, self.win_width, 0, self.win_height,
+                    Pawn(self.images[WHITE]['Pawn'], 'F', 2, WHITE, 0, self.win_width, 0, self.win_height,
                          self.square_width, self.square_height, self.win_width, self.win_height),
-                    Pawn(self.images['WHITE']['Pawn'], 'G', 2, WHITE, 0, self.win_width, 0, self.win_height,
+                    Pawn(self.images[WHITE]['Pawn'], 'G', 2, WHITE, 0, self.win_width, 0, self.win_height,
                          self.square_width, self.square_height, self.win_width, self.win_height),
-                    Pawn(self.images['WHITE']['Pawn'], 'H', 2, WHITE, 0, self.win_width, 0, self.win_height,
+                    Pawn(self.images[WHITE]['Pawn'], 'H', 2, WHITE, 0, self.win_width, 0, self.win_height,
                          self.square_width, self.square_height, self.win_width, self.win_height)
                 ],
                 'Queen': [
-                    Queen(self.images['WHITE']['Queen'], 'D', 1, WHITE, 0, self.win_width, 0,
+                    Queen(self.images[WHITE]['Queen'], 'D', 1, WHITE, 0, self.win_width, 0,
                           self.win_height, self.square_width, self.square_height, self.win_width, self.win_height)
                 ],
                 'Rook': [
-                    Rook(self.images['WHITE']['Rook'], 'A', 1, WHITE, 0, self.win_width, 0, self.win_height,
+                    Rook(self.images[WHITE]['Rook'], 'A', 1, WHITE, 0, self.win_width, 0, self.win_height,
                          self.square_width, self.square_height, self.win_width, self.win_height),
-                    Rook(self.images['WHITE']['Rook'], 'H', 1, WHITE, 0, self.win_width, 0, self.win_height,
+                    Rook(self.images[WHITE]['Rook'], 'H', 1, WHITE, 0, self.win_width, 0, self.win_height,
                          self.square_width, self.square_height, self.win_width, self.win_height)
                 ]
             }

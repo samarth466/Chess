@@ -1,4 +1,3 @@
-__package__ = "chess"
 from itertools import chain
 from typing import KeysView, ValuesView
 from .player import Player
@@ -54,33 +53,24 @@ class PlayerDict(dict):
 
     def __init__(self, mapping=(), **kwargs):
         super().__init__(self._process_args(mapping, **kwargs))
-        self.current_key = self.keys()[0]
 
     def keys(self) -> KeysView:
-        keys_list = super().keys()
-        keys = super().keys()
-        for index, key in enumerate(keys_list):
-            keys[index] = ensure_numerical_key(key)
-        return keys
+        return super().keys()
 
     def values(self) -> ValuesView:
-        values_list = super().values()
-        values = super().values()
-        for index, value in enumerate(values_list):
-            values[index] = ensure_value_type(value)
-        return values
+        return super().values()
 
     def __getitem__(self, k):
-        return ensure_value_type(super().__getitem__(ensure_numerical_key(k)))
+        return super().__getitem__(k)
 
     def __setitem__(self, k, v) -> None:
         return super().__setitem__(ensure_numerical_key(k), ensure_value_type(v))
 
     def __delitem__(self, k) -> None:
-        return super().__delitem__(ensure_numerical_key(k))
+        return super().__delitem__(k)
 
     def get(self, k, default=None):
-        return ensure_value_type(super().get(ensure_numerical_key(k), default))
+        return super().get(k, default)
 
     def setdefault(self, k, default=None):
         return ensure_value_type(super().setdefault(ensure_numerical_key(k), default))
@@ -107,9 +97,9 @@ class PlayerDict(dict):
         return f"{type(self).__name__}({super().__repr__()})"
 
     def update_current_key(self) -> tuple[Player, int]:
-        if self.current_key == len(self):
-            self.current_key = self.keys()[0]
-            return self.values()[0], self.keys()[0]
-        else:
-            self.current_key += 1
-            return self[self.current_key], self.current_key
+        current_key = list(self.keys())[0]
+        while True:
+            if current_key == len(self.keys()):
+                current_key = self.keys[0]
+            yield self[current_key]
+            current_key += 1
