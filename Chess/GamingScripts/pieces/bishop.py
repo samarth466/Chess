@@ -1,4 +1,5 @@
 import pygame
+from utils.functions import get_game_pos, get_window_pos
 from .piece import Piece
 
 
@@ -20,7 +21,8 @@ class Bishop(Piece):
         self.square_height = square_height
         self.win_width = win_width
         self.win_height = win_height
-        self.x, self.y = self.piece_x, self.piece_y
+        self.x, self.y = self.piece_x, self.piece_y = get_window_pos(
+            self.file, self.rank, super().possible_files)
         self.attacked_pieces = []
         super().__init__(self.image, self.file, self.rank, self.name, self.color)
 
@@ -47,7 +49,7 @@ class Bishop(Piece):
                     win.blit(txt, (self.max_x-(txt.get_width/2) /
                                    2, self.max_y-(txt.get_height()/2)/2))
                 self.x, self.y = self.get_window_pos()
-                original_x, original_y = self.x,self.y
+                original_x, original_y = self.x, self.y
                 for event in pygame.event.get():
                     if event.type == pygame.K_SPACE or event.type == pygame.K_KP5:
                         if (self.x, self.y, self.name) in pieces:

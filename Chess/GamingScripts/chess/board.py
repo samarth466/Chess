@@ -40,7 +40,8 @@ class Board:
         self.lower_offset = lower_offset
         self.captured_pieces = []
         self.possible_files = string.ascii_uppercase[:8]
-        self.path = Path(join("C:\", "Users", "samar", "OneDrive", "Desktop", "Samarth", "Python_Programming", "accessigames", "chess", "GamingScripts", "Chessmen"))
+        self.path = Path(join("C:\\", "Users", "samar", "OneDrive", "Desktop", "Samarth",
+                         "Python_Programming", "accessigames", "chess", "GamingScripts", "Chessmen"))
         self.images = {
             BLACK: {
                 'Bishop': join(self.path, 'B_Bishop.png'),

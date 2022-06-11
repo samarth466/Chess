@@ -10,6 +10,7 @@ from .rook import Rook
 from chess.CONSTANTS import WHITE, BLACK
 from board_utils import Square
 from utils.types import Squares
+from utils.functions import get_game_pos, get_window_pos
 
 
 class Pawn(Piece):
@@ -30,7 +31,8 @@ class Pawn(Piece):
         self.square_height = square_height
         self.win_width = win_width
         self.win_height = win_height
-        self.x, self.y = self.piece_x, self.piece_y
+        self.x, self.y = self.piece_x, self.piece_y = get_game_pos(
+            self.file, self.rank, self.possible_files)
         self.attacked_pieces = []
         self.double_moved_on_first_turn = False
         super().__init__(self.image, self.file, self.rank, self.name, self.color)
