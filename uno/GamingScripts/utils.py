@@ -138,7 +138,7 @@ def gen_deck() -> dict[str, Card]:
         'WDCb': (Card(None, 100, 400, 'Wild Color Draw', None, None), COLORS[GREEN]+'Fb'),
         'WDCc': (Card(None, 100, 400, 'Wild Color Draw', None, None), COLORS[RED]+'3b'),
         'WDCd': (Card(None, 100, 400, 'Wild Color Draw', None, None), COLORS[RED]+'6b')
-    }
+    }f
 
 def shuffle_deck(original_deck: dict[str, Card]): > deque:
     shuffled_deck = DictLifoQueue(224)

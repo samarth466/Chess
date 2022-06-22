@@ -61,7 +61,7 @@ class Knight(Piece):
         attacked_pieces.extend(self.get_attacked_positions(x, y))
         return attacked_pieces
 
-    def get_possible_positions(self, current_position: GamePosition, squares: Squares) -> Positions:
+    def _get_possible_positions(self, current_position: GamePosition, squares: Squares) -> Positions:
         file, rank = current_position
         backLeft1 = get_string_from_sequence((self.possible_files[self.possible_files.index(
             file)-1], rank-2) if file != self.possible_files[0] and rank > 2 else (None, 0))
@@ -81,22 +81,23 @@ class Knight(Piece):
             file)-2], rank-1) if file != self.possible_files[:2] and rank > 1 else (None, 0))
         return list(filter((lambda i: (squares[i].piece.color != self.color and all(i))), [backLeft1, backLeft2, backRight1, backRight2, forwardRight1, forwardRight2, forwardLeft1, forwardLeft2]))
 
-    def find_piece_from_move_set(self, move_set: Positions, squares: Squares):
+    def _find_piece_from_move_set(self, move_set: Positions, squares: Squares):
         for square in move_set:
             piece_at_current_position = squares[square].piece
             if piece_at_current_position is self:
                 return piece_at_current_position
 
-    def move(self, squares: Squares, win: pygame.Surface, board):
-        if not isinstance(squares, list):
+    def move(self, win: pygame.Surface squares: Squares):
+        if not isinstance(squares, dict):
             raise TypeError(
-                "The squares arguement must be a list(), not "+str(type(squares))[8:-1]+"().")
+                "The squares arguement must be a dict(), not "+str(type(squares))[8:-1]+"().")
         limiting_pos = [[self.min_x, max_x], [self.min_y, self.max_y]]
         max_length = 1
         selected = False
         direction = 0
         max_direction = 8
         direction_offset = 0
+        original_x, original_y = self.x, self.y
         pygame.font.init()
         while (self.x in limiting_pos[0] and self.y in limiting_pos[1]):
             if len(self.pieces) > max_length:

@@ -229,7 +229,7 @@ class Board:
 
     def get_game_pos(self, x: int, y: int) -> tuple[str, int]:
         file = self.possible_files[x//self.square_width]
-        rank = y/self.square_height+1
+        rank = y//self.square_height+1
         return file, rank
 
     def move(self):
@@ -241,7 +241,8 @@ class Board:
                     if isinstance(piece, King):
                         move_info = piece.move(
                             self.window, self.matterial, self.squares)
-                    move_info = piece.move(self.window, self.squares)
+                    else:
+                        move_info = piece.move(self.window, self.squares)
                     self.update_screen(move_info)
 
     def draw_board(self, positions: PositionDict = {}):
@@ -296,19 +297,22 @@ class Board:
         attacked_pieces, new_pos, old_pos, piece = move_info
         for attacked_piece in attacked_pieces:
             x, y = attacked_piece[0]
-            position = get_string_from_sequence(self.get_game_pos(x, y))
+            position = get_string_from_sequence(
+                tuple(str(i) for i in self.get_game_pos(x, y)))
             self.squares[position].attacked = True
-        old_pos = get_string_from_sequence(tuple(str(i) for i in self.get_game_pos(*old_pos))
-        piece=self.squares[old_pos].piece
-        self.squares[old_pos].piece=None
-        new_pos=get_string_from_sequence(tuple(str(i) for i in self.get_game_pos(*new_pos))
-        old_piece=self.squares[new_pos].piece
+        old_pos = get_string_from_sequence(
+            tuple(str(i) for i in self.get_game_pos(*old_pos)))
+        piece = self.squares[old_pos].piece
+        self.squares[old_pos].piece = None
+        new_pos = get_string_from_sequence(
+            tuple(str(i) for i in self.get_game_pos(*new_pos)))
+        old_piece = self.squares[new_pos].piece
         if not old_piece:
-            self.squares[new_pos].piece=piece
+            self.squares[new_pos].piece = piece
         else:
             if old_piece.color != piece.color:
                 self.capture_piece(old_piece.x, old_piece.y)
-                self.squares[old_pos].piece=piece
+                self.squares[old_pos].piece = piece
         self.update()
 
     def update(self):
@@ -328,24 +332,24 @@ class Board:
             return False, None
 
     def promote(self, pawn: Pawn) -> None:
-        table=Table(self.window, 2, 2, [
-                      ['Bishop', 'Knight'], ['Queen', 'Rook']])
+        table = Table(self.window, 2, 2, [
+            ['Bishop', 'Knight'], ['Queen', 'Rook']])
         table.draw(bold=True, underline=True, size=80)
-        cursor_x, cursor_y=(self.window.get_width()-262, 0)
-        keys=pygame.key.get_pressed()
+        cursor_x, cursor_y = (self.window.get_width()-262, 0)
+        keys = pygame.key.get_pressed()
         if keys[pygame.K_DOWN]:
             if cursor_y == 600:
-                cursor_x=self.window.get_width()
-                cursor_y=0
+                cursor_x = self.window.get_width()
+                cursor_y = 0
             else:
                 cursor_y += 200
         if keys[pygame.K_RETURN]:
             if cursor_x < self.window.get_width()/2:
-                selected_piece=self.matterial[pawn.color].keys()[
+                selected_piece = self.matterial[pawn.color].keys()[
                     cursor_y/100]
             else:
-                selected_piece=self.matterial[pawn.color].keys()[
+                selected_piece = self.matterial[pawn.color].keys()[
                     cursor_y/100+texts_length//2]
-            piece=pawn.promotion(selected_piece, self.images)
-            piece_name=piece.name
+            piece = pawn.promotion(selected_piece, self.images)
+            piece_name = piece.name
             self.matterial[pawn.color][piece_name].append(piece)

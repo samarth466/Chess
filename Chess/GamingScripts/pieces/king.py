@@ -41,6 +41,7 @@ class King(Piece):
         selected = False
         direction = 0
         max_direction = 8
+        original_x, original_y = self.x, self.y
         pygame.font.init()
         for other in squares.values():
             other_piece = other.piece
@@ -51,10 +52,6 @@ class King(Piece):
                         "You can't select that piece because you have already selected a piece. You must either move the already selected piece or unselect it.")
                     win.blit(txt, (self.max_x-(txt.get_width/2) /
                                    2, self.max_y-(txt.get_height()/2)/2))
-                self.file, self.rank = self.get_game_pos()
-                self.x, self.y = get_window_pos(
-                    self.file, self.rank, self.possible_files)
-                original_x, original_y = self.x, self.y
                 for event in pygame.event.get():
                     if event.type == pygame.K_SPACE or event.type == pygame.K_KP5:
                         if (self.x, self.y, self.name) in pieces:
