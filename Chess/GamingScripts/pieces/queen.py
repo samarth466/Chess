@@ -6,15 +6,10 @@ from utils.types import Squares
 
 class Queen(Piece):
 
-    def __init__(self, image, file, rank, color, min_x, max_x, min_y, max_y, square_width, square_height, win_width, win_height):
+    def __init__(self, image: str, file: str, rank: int, color: pygame.Color, min_x: int, max_x: int, min_y: int, max_y: int, square_width: int, square_height: int, win_width: int, win_height: int) -> None:
         pygame.init()       # initialize pygame
-        self.image = image      # location of the image representation of piece
+        super().__init__(image,file,rank,'Queen',color)
         # loads the image for piece into pygame
-        self.image_surface = pygame.image.load(image)
-        self.rank = rank       # rank of piece as represented in a chess game
-        self.file = file      # file of piece as represented in a chess game
-        self.color = color      # color of the piece (black or white)
-        self.name = 'Queen'      # name of this piece
         self.min_x = min_x
         self.max_x = max_x
         self.min_y = min_y
@@ -23,11 +18,9 @@ class Queen(Piece):
         self.square_height = square_height        # height of single square position
         self.win_width = win_width       # width of the window
         self.win_height = win_height      # height of the window
-        self.x, self.y = self.get_window_pos()
-        self.piece_x, self.piece_y = self.x, self.y
+        self.piece_x, self.piece_y = self.x, self.y = get_window_pos(self.file,self.rank,self.possible_files)
         self.attacked_pieces = []      # list of pieces being attacked by self
         self.attackers = []      # list of pieces attacking self
-        super().__init__(self.image, self.file, self.rank, self.name, self.color)
 
     def move(self, squares: Squares, win: pygame.Surface) -> tuple:
         # we need to loop through squares, so we must make sure that square is a list as we need to associate the position with a Square instance

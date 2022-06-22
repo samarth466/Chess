@@ -1,3 +1,4 @@
+from turtle import st
 import pygame
 from utils.functions import get_game_pos, get_window_pos
 from .piece import Piece
@@ -5,14 +6,9 @@ from .piece import Piece
 
 class Bishop(Piece):
 
-    def __init__(self, image, file, rank, color, min_x, max_x, min_y, max_y, square_width, square_height, win_width, win_height):
+    def __init__(self, image: str, file: str, rank: int, color: pygame.Color, min_x: int, max_x: int, min_y: int, max_y: int, square_width: int, square_height: int, win_width: int, win_height: int) -> None:
         pygame.init()
-        self.image = image
-        self.image_surface = pygame.image.load(image)
-        self.file = file
-        self.rank = rank
-        self.color = color
-        self.name = 'Bishop'
+        super().__init__(image, file, rank, 'Bishop', color)
         self.min_x = min_x
         self.max_x = max_x
         self.min_y = min_y
@@ -22,11 +18,10 @@ class Bishop(Piece):
         self.win_width = win_width
         self.win_height = win_height
         self.x, self.y = self.piece_x, self.piece_y = get_window_pos(
-            self.file, self.rank, super().possible_files)
+            self.file, self.rank, self.possible_files)
         self.attacked_pieces = []
-        super().__init__(self.image, self.file, self.rank, self.name, self.color)
 
-    def move(self, squares: dict, win: pygame.Surface):
+    def move(self, win: pygame.Surface, squares: dict):
         if not isinstance(squares, dict):
             raise TypeError('The squares attribute must be a dict.')
         if self.square_height != self.square_width:
@@ -38,6 +33,7 @@ class Bishop(Piece):
         selected = False
         direction = 0
         max_direction = 4
+        original_x, original_y = self.x, self.y
         pygame.font.init()
         for other in squares.values():
             other_piece = other.piece
@@ -49,7 +45,6 @@ class Bishop(Piece):
                     win.blit(txt, (self.max_x-(txt.get_width/2) /
                                    2, self.max_y-(txt.get_height()/2)/2))
                 self.x, self.y = self.get_window_pos()
-                original_x, original_y = self.x, self.y
                 for event in pygame.event.get():
                     if event.type == pygame.K_SPACE or event.type == pygame.K_KP5:
                         if (self.x, self.y, self.name) in pieces:

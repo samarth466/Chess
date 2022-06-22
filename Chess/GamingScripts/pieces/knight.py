@@ -9,21 +9,16 @@ from chess.CONSTANTS import (SQUARE_WIDTH, WHITE, BLACK, RED, BLUE_GREEN)
 from .piece import Piece
 from flatten import flatten
 from utils.types import (
-    Position, Positions, Squares
+    GamePosition, Positions, Squares
 )
 from utils.functions import get_game_pos, get_string_from_sequence, get_window_pos
 
 
 class Knight(Piece):
 
-    def __init__(self, image, file, rank, color, min_x, max_x, min_y, max_y, square_width, square_height, win_width, win_height):
+    def __init__(self, image: str, file: str, rank: int, color: pygame.Color, min_x: int, max_x: int, min_y: int, max_y: int, square_width: int, square_height: int, win_width: int, win_height: int) -> None:
         pygame.init()
-        self.image = image
-        self.image_surface = pygame.image.load(self.image)
-        self.rank = rank
-        self.file = file
-        self.color = color
-        self.name = 'Knight'
+        super().__init__(image, file, rank, 'Knight', color)
         self.min_x = min_x
         self.max_x = max_x
         self.min_y = min_y
@@ -32,12 +27,10 @@ class Knight(Piece):
         self.square_height = square_height
         self.win_width = win_width
         self.win_height = win_height
-        self.piece_x, self.piece_y = pygame.mouse.get_pos()
-        self.x, self.y = self.piece_x, self.piece_y
+        self.x, self.y = self.piece_x, self.piece_y = get_window_pos(
+            self.file, self.rank, self.possible_files)
         self.attacked_pieces = []
         self.has_moved = False
-        super().__init__(self.image, self.file, self.rank, self.name,
-                         self.color, self.square_width, self.square_height)
 
     def get_attacked_positions(self, x: int, y: int):
         positions = []
@@ -68,7 +61,7 @@ class Knight(Piece):
         attacked_pieces.extend(self.get_attacked_positions(x, y))
         return attacked_pieces
 
-    def get_possible_positions(self, current_position: Position, squares: Squares) -> Positions:
+    def get_possible_positions(self, current_position: GamePosition, squares: Squares) -> Positions:
         file, rank = current_position
         backLeft1 = get_string_from_sequence((self.possible_files[self.possible_files.index(
             file)-1], rank-2) if file != self.possible_files[0] and rank > 2 else (None, 0))

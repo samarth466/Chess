@@ -5,7 +5,6 @@ import pygame
 class Square:
 
     def __init__(self, rank: int, file: str, color: tuple[int, int, int], piece: Any, square_length: int, is_empty: bool = False):
-        pygame.init()
         self.rank = rank
         self.file = file
         self.color = color
@@ -21,8 +20,9 @@ class Square:
         return x, y
 
     def draw(self, win: pygame.Surface):
+        pygame.init()
         x, y = self.get_window_pos()
         self.rect = pygame.Rect(x, y, self.square_length, self.square_length)
-        pygame.gfxdraw.rectangle(win, self.rect, self.color)
+        pygame.draw.rect(win,self.color,self.rect)
         if self.piece:
-            win.blit(self.piece.image_surface, (x, y))
+            win.blit(self.piece.image, (x, y))

@@ -1,6 +1,6 @@
 import pygame
 
-from utils.types import Position, PositionDict
+from utils.types import GamePosition, PositionDict
 from chess.player import Player
 from chess.CONSTANTS import BLACK, SQUARE_HEIGHT, SQUARE_WIDTH, WHITE, WINDOW_HEIGHT, WINDOW_WIDTH
 from chess.board import Board
@@ -42,7 +42,7 @@ def main(positions: PositionDict = {}):
             volume -= 1
         if keys[pygame.K_LCTRL] and keys[pygame.K_UP]:
             volume += 1
-        if keys(pygame.K_a):
+        if keys[pygame.K_a]:
             accessibility = not accessibility
         board.move()
         game_has_ended, winning_color = board.end()

@@ -10,11 +10,11 @@ def get_string_from_sequence(seq: Sequence) -> str:
     return ''.join(flattened_list)
 
 
-def get_window_pos(file: str, rank: int, possible_positions: list[str]) -> tuple[int, int]:
-    assert len(possible_positions) == 8 and possible_positions == [
-        letter for letter in string.ascii_lowercase[:8]], f"The 'possible_files' argument must be equivalent to {str([letter for letter in string.ascii_lowercase[:8]])}, not {possible_positions}"
+def get_window_pos(file: str, rank: int, possible_files: list[str]) -> tuple[int, int]:
+    assert len(possible_files) == 8 and possible_files == [
+        letter for letter in string.ascii_uppercase[:8]], f"The 'possible_files' argument must be equivalent to {str([letter for letter in string.ascii_lowercase[:8]])}, not {possible_files}"
     x = (rank-1)*100
-    y = possible_positions.index(file)*100
+    y = possible_files.index(file)*100
     return x, y
 
 

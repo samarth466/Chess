@@ -5,14 +5,9 @@ from .piece import Piece
 
 class Rook(Piece):
 
-    def __init__(self, image, file, rank, color, min_x, max_x, min_y, max_y, square_width, square_height, win_width, win_height):
+    def __init__(self, image: str, file: str, rank: int, color: pygame.Color, min_x: int, max_x: int, min_y: int, max_y: int, square_width: int, square_height: int, win_width: int, win_height: int) -> None:
         pygame.init()
-        self.image = image
-        self.image_surface = pygame.image.load(image)
-        self.rank = rank
-        self.file = file
-        self.color = color
-        self.name = 'Rook'
+        super().__init__(image, file, rank, 'Rook', color)
         self.min_x = min_x
         self.max_x = max_x
         self.min_y = min_y
@@ -21,10 +16,10 @@ class Rook(Piece):
         self.square_height = square_height
         self.win_width = win_width
         self.win_height = win_height
-        self.x, self.y = self.piece_x, self.piece_y
+        self.x, self.y = self.piece_x, self.piece_y = get_window_pos(
+            self.file, self.rank, self.possible_files)
         self.attacked_pieces = []
         self.has_moved = False
-        super().__init__(self.image, self.file, self.rank, self.name, self.color)
 
     def move(self, squares, win):
         if not isinstance(squares, list):

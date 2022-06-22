@@ -5,24 +5,15 @@ from .piece import Piece
 from .rook import Rook
 from board_utils.square import Square
 from chess.CONSTANTS import WHITE, BLACK
-from utils.types import Position, Positions, Squares
-
-
-MIN_ROWS = 1
-MAX_ROWS = 8
+from utils.types import GamePosition, Positions, Squares
 
 
 class King(Piece):
 
-    def __init__(self, image: str, file: str, rank: int, color: pygame.Color, min_x: int, max_x: int, min_y: int, max_y: int, square_width: int, square_height: int, win_width: int, win_height: int, squares: Squares) -> None:
+    def __init__(self, image: str, file: str, rank: int, color: pygame.Color, min_x: int, max_x: int, min_y: int, max_y: int, square_width: int, square_height: int, win_width: int, win_height: int) -> None:
         pygame.init()       # initialize pygame
-        self.image = image      # location of the image representation of piece
+        super().__init__(image, file, rank, 'King', color)
         # loads the image for piece into pygame
-        self.image_surface = pygame.image.load(image)
-        self.rank = rank       # rank of piece as represented in a chess game
-        self.file = file      # file of piece as represented in a chess game
-        self.color = color      # color of the piece (black or white)
-        self.name = 'King'      # name of this piece
         self.min_x = min_x
         self.max_x = max_x
         self.min_y = min_y
@@ -31,17 +22,15 @@ class King(Piece):
         self.square_height = square_height        # height of single square position
         self.win_width = win_width       # width of the window
         self.win_height = win_height      # height of the window
-        self.x, self.y = self.get_window_pos()
-        self.piece_x, self.piece_y = self.x, self.y
+        self.x, self.y = self.piece_x, self.piece_y = get_window_pos(
+            self.file, self.rank, self.possible_files)
         self.attacked_pieces = []      # list of pieces being attacked by self
         self.attackers = []      # list of pieces attacking self
         self.has_moved = False
-        self.squares = squares
-        super().__init__(self.image, self.file, self.rank, self.name, self.color)
 
-    def move(self, win: pygame.Surface, matterial: dict) -> tuple:
+    def move(self, win: pygame.Surface, matterial: dict, squares: Squares) -> tuple:
         # we need to loop through squares and keep track of the position of the piece, so we must make sure that squares is a dict as we need to associate the position with a Square instance
-        if not isinstance(self.squares, dict):
+        if not isinstance(squares, dict):
             raise TypeError('The squares attribute must be a dict.')
         if self.square_height != self.square_width:
             raise TypeError(
@@ -53,7 +42,7 @@ class King(Piece):
         direction = 0
         max_direction = 8
         pygame.font.init()
-        for other in self.squares.values():
+        for other in squares.values():
             other_piece = other.piece
             while (self.x in limiting_pos[0] and self.y in limiting_pos[1]):
                 if len(pieces) > max_length:
@@ -303,7 +292,7 @@ class King(Piece):
                     return True
             return False
 
-    def get_possible_positions_from_current_position(self, position: Position, squares: Squares) -> Positions:
+    def get_possible_positions_from_current_position(self, position: GamePosition, squares: Squares) -> Positions:
         file, rank = position
         prev_rank = rank-1 if rank > 1 else None
         next_rank = rank+1 if rank < 8 else None

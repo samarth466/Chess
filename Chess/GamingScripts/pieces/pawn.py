@@ -15,14 +15,9 @@ from utils.functions import get_game_pos, get_window_pos
 
 class Pawn(Piece):
 
-    def __init__(self, image, file, rank, color, min_x, max_x, min_y, max_y, square_width, square_height, win_width, win_height):
+    def __init__(self, image: str, file: str, rank: int, color: pygame.Color, min_x: int, max_x: int, min_y: int, max_y: int, square_width: int, square_height: int, win_width: int, win_height: int) -> None:
         pygame.init()
-        self.image = image
-        self.image_surface = pygame.image.load(image)
-        self.file = file
-        self.rank = rank
-        self.color = color
-        self.name = 'Pawn'
+        super().__init__(image,file,rank,'Pawn',color)
         self.min_x = min_x
         self.max_x = max_x
         self.min_y = min_y
@@ -31,11 +26,10 @@ class Pawn(Piece):
         self.square_height = square_height
         self.win_width = win_width
         self.win_height = win_height
-        self.x, self.y = self.piece_x, self.piece_y = get_game_pos(
+        self.x, self.y = self.piece_x, self.piece_y = get_window_pos(
             self.file, self.rank, self.possible_files)
         self.attacked_pieces = []
         self.double_moved_on_first_turn = False
-        super().__init__(self.image, self.file, self.rank, self.name, self.color)
 
     def move(self, squares: dict, win: pygame.Surface, multiplier: int):
         if not isinstance(squares, dict):
