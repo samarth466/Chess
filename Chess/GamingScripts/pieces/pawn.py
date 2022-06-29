@@ -9,7 +9,7 @@ from .queen import Queen
 from .rook import Rook
 from chess.CONSTANTS import WHITE, BLACK
 from board_utils import Square
-from utils.types import Squares
+from utils.types import Squares, WindowPosition
 from utils.functions import get_game_pos, get_window_pos
 
 
@@ -17,7 +17,7 @@ class Pawn(Piece):
 
     def __init__(self, image: str, file: str, rank: int, color: pygame.Color, min_x: int, max_x: int, min_y: int, max_y: int, square_width: int, square_height: int, win_width: int, win_height: int) -> None:
         pygame.init()
-        super().__init__(image,file,rank,'Pawn',color)
+        super().__init__(image, file, rank, 'Pawn', color)
         self.min_x = min_x
         self.max_x = max_x
         self.min_y = min_y
@@ -31,13 +31,13 @@ class Pawn(Piece):
         self.attacked_pieces = []
         self.double_moved_on_first_turn = False
 
-    def move(self, squares: dict, win: pygame.Surface, multiplier: int):
+    def move(self, win: pygame.Surface, squares: Squares, multiplier: int) -> tuple[list[Piece], WindowPosition, WindowPosition, Piece]:
         if not isinstance(squares, dict):
             raise TypeError('The squares attribute must be a dict.')
         if self.square_height != self.square_width:
             raise TypeError(
                 'The height and width of the square must be the same.')
-        if multiplier != 1 or multiplier != -1:
+        if not (multiplier == 1 or multiplier == -1):
             raise TypeError("The 'multiplier' parameter must be 1 or -1")
         limiting_pos = [[self.min_x, self.max_x], [self.min_y, self.max_y]]
         pieces = []
@@ -45,8 +45,11 @@ class Pawn(Piece):
         selected = False
         direction = 0
         max_direction = 3
+        original_x, original_y = self.x, self.y
         pygame.font.init()
         for other in squares.values():
+            if (other.file, other.rank) = (self.file, self.rank):
+                continue
             other_piece = other.piece
             while (self.x in limiting_pos[0] and self.y in limiting_pos[1]):
                 if len(pieces) > max_length:
@@ -55,8 +58,6 @@ class Pawn(Piece):
                         "You can't select that piece because you have already selected a piece. You must either move the already selected piece or unselect it.")
                     win.blit(txt, (self.max_x-(txt.get_width/2) /
                                    2, self.max_y-(txt.get_height()/2)/2))
-                self.x, self.y = self.get_window_pos()
-                original_x, original_y = self.x, self.y
                 for event in pygame.event.get():
                     if event.type == pygame.K_SPACE or event.type == pygame.K_KP5:
                         if (self.x, self.y, self.name) in pieces:
@@ -105,44 +106,16 @@ class Pawn(Piece):
                 self.en_passante(squares)
             while direction < max_direction:
                 if direction == 0:
-                    self.x -= self.square_width
-                    self.y += multiplier * self.square_height
-                    file, rank = self.get_game_pos()
-                    if not squares[file+str(rank)].piece:
-                        self.attacked_pieces.append(((self.x, self.y),))
-                    else:
-                        self.x += self.square_width
-                        self.y -= multiplier*self.square_height
-                        file, rank = self.get_game_pos()
-                        if squares[file+str(rank)].piece.color != self.color:
-                            self.attacked_pieces(
-                                ((self.x, self.y), squares[file+str(rank)].piece))
-                elif direction == 1:
-                    self.y += multiplier * self.square_height
-                    file, rank = self.get_game_pos()
-                    if not squares[file+str(rank)].piece:
-                        self.attacked_pieces.append(((self.x, self.y),))
-                    else:
-                        self.y -= multiplier*self.square_height
-                        file, rank = self.get_game_pos()
-                        if squares[file+str(rank)].piece.color != self.color:
-                            self.attacked_pieces(
-                                ((self.x, self.y), squares[file+str(rank)].piece))
+                    self.attacked_pieces.append(
+                        (self.x-self.square_width, self.y+self.square_height*multiplier))
                 elif direction == 2:
-                    self.x += self.square_width
-                    self.y += multiplier * self.square_height
-                    file, rank = self.get_game_pos()
-                    if not squares[file+str(rank)].piece:
-                        self.attacked_pieces.append(((self.x, self.y),))
-                    else:
-                        self.x -= self.square_width
-                        self.y -= multiplier*self.square_height
-                        file, rank = self.get_game_pos()
-                        if squares[file+str(rank)].piece.color != self.color:
-                            self.attacked_pieces(
-                                ((self.x, self.y), squares[file+str(rank)].piece))
+                    self.attacked_pieces.append(
+                        (self.x+self.square_width, self.y+self.square_height*multiplier))
                 direction += 1
+            direction = 0
         self.x, self.y = self.piece_x, self.piece_y
+        self.file, self.rank = get_game_pos(
+            self.x, self.y, self.possible_files)
         return self.attacked_pieces, (self.piece_x, self.piece_y), (original_x, original_y), self
 
     def move_forward_twice(self, rank: int, file: str, squares: Squares) -> tuple[int, int]:

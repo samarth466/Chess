@@ -9,9 +9,9 @@ from chess.CONSTANTS import (SQUARE_WIDTH, WHITE, BLACK, RED, BLUE_GREEN)
 from .piece import Piece
 from flatten import flatten
 from utils.types import (
-    GamePosition, Positions, Squares
+    WindowPosition, GamePosition, Positions, Squares
 )
-from utils.functions import get_game_pos, get_string_from_sequence, get_window_pos
+from utils.functions import get_game_pos, get_window_pos
 
 
 class Knight(Piece):
@@ -32,7 +32,7 @@ class Knight(Piece):
         self.attacked_pieces = []
         self.has_moved = False
 
-    def get_attacked_positions(self, x: int, y: int):
+    def _get_attacked_positions(self, x: int, y: int):
         positions = []
         for i in range(1, 3):
             if x-self.square_width*i >= 0 and 0 <= y <= self.win_height-self.square_height:
@@ -87,11 +87,11 @@ class Knight(Piece):
             if piece_at_current_position is self:
                 return piece_at_current_position
 
-    def move(self, win: pygame.Surface squares: Squares):
+    def move(self, win: pygame.Surface, squares: Squares) -> tuple[list[Piece], WindowPosition, WindowPosition, Piece]:
         if not isinstance(squares, dict):
             raise TypeError(
                 "The squares arguement must be a dict(), not "+str(type(squares))[8:-1]+"().")
-        limiting_pos = [[self.min_x, max_x], [self.min_y, self.max_y]]
+        limiting_pos = [[self.min_x, self.max_x], [self.min_y, self.max_y]]
         max_length = 1
         selected = False
         direction = 0
@@ -190,9 +190,8 @@ class Knight(Piece):
                                 self.rank += 2
                                 self.file = self.possible_files[self.possible_files.index(
                                     self.file)+1]
-            while direction < max_direction:
-                self.attacked_pieces = self._update_attacked_pieces(
-                    self.x, self.y, self.square_width, self.square_height, squares)
-                direction += 1
-            direction = 0
+            self.attacked_pieces.extend(
+                self._get_possible_positions((self.file, self.rank), squares))
+        self.x, self.y = get_window_pos(
+            self.file, self.rank, self.possible_files)
         return self.attacked_pieces, (self.piece_x, self.piece_y), (original_x, original_y), self

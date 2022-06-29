@@ -5,7 +5,7 @@ import string
 import pygame
 # from pygame import Color
 
-from pieces import Bishop, King, Knight, Pawn, Queen, Rook
+from pieces import Bishop, Empty, King, Knight, Pawn, Queen, Rook
 from pieces.piece import Piece
 from board_utils.square import Square
 from .CONSTANTS import (WHITE, BLACK, GREY)
@@ -155,6 +155,9 @@ class Board:
                 ]
             }
         }
+        args = tuple(None for _ in range(12))
+        self.matterial[WHITE]['Empty'] = self.matterial[BLACK]['Empty'] = [
+            Empty(*args) for _ in range(16)]
         self.squares = {
             'A1': Square(1, 'A', BLACK, self.matterial[WHITE]['Rook'][0], self.square_width),
             'A2': Square(2, 'A', WHITE, self.matterial[WHITE]['Pawn'][0], self.square_width),
@@ -222,6 +225,18 @@ class Board:
             'H8': Square(8, 'H', BLACK, self.matterial[BLACK]['Rook'][1], self.square_width)
         }
 
+    def convert_current_position(self, window_to_game: bool = True, window_position: WindowPosition = None, game_position: GamePosition = None):
+        if window_to_game and not window_position:
+            raise TypeError(
+                "'window_to_game' was passed as True, but 'window_pos' was missing a value")
+        if not window_to_game and not game_position:
+            raise TypeError(
+                "'window_to_game' was passed as False, but 'game_pos' was missing a value")
+        if window_to_game:
+            return get_string_from_sequence(tuple(str(i) for i in self.get_game_pos(*window_position)))
+        elif not window_to_game:
+            return get_string_from_sequence(tuple(str(i) for i in self.get_window_pos(*game_position)))
+
     def get_window_pos(self, rank: int, file: str) -> tuple[int, int]:
         x = self.possible_files.index(file)*self.square_width
         y = (rank-1)*self.square_height
@@ -232,18 +247,25 @@ class Board:
         rank = y//self.square_height+1
         return file, rank
 
-    def move(self):
-        color = next(self.players).color
+    def move(self, result: bool = True):
+        turn = next(self.players)
+        color = turn.color
+        multiplier = turn.multiplier
+        result = True
         for piece_list in self.matterial[color].values():
             if piece_list:
-                for piece in piece_list:
-                    move_info = ()
-                    if isinstance(piece, King):
-                        move_info = piece.move(
-                            self.window, self.matterial, self.squares)
-                    else:
-                        move_info = piece.move(self.window, self.squares)
-                    self.update_screen(move_info)
+                try:
+                    for piece in piece_list:
+                        move_info = ()
+                        if isinstance(piece, King):
+                            move_info = piece.move(self.window, self.matterial, self.squares)
+                        elif isinstance(piece, Pawn):
+                            move_info = piece.move(self.window, self.squares, multiplier)
+                        else:
+                            move_info = piece.move(self.window, self.squares)
+                        self.update_screen(move_info)
+                except NotImplementedError:
+                    continue
 
     def draw_board(self, positions: PositionDict = {}):
         board = pygame.Surface((self.win_width, self.win_height))
@@ -296,7 +318,7 @@ class Board:
     def update_screen(self, move_info: tuple[list[Piece], WindowPosition, WindowPosition, Piece]):
         attacked_pieces, new_pos, old_pos, piece = move_info
         for attacked_piece in attacked_pieces:
-            x, y = attacked_piece[0]
+            x, y = attacked_piece
             position = get_string_from_sequence(
                 tuple(str(i) for i in self.get_game_pos(x, y)))
             self.squares[position].attacked = True

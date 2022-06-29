@@ -5,7 +5,7 @@ class Piece:
 
     def __init__(self, image, file, rank, name, color):
         pygame.init()
-        self.image = pygame.image.load(image)
+        self.image = pygame.image.load(image) if image else None
         self.rank = rank
         self.file = file
         self.color = color

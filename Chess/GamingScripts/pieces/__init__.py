@@ -1,4 +1,5 @@
 from .bishop import Bishop
+from .empty import Empty
 from .king import King
 from .knight import Knight
 from .pawn import Pawn
