@@ -71,7 +71,7 @@ class Queen(Piece):
                     if self.y == other_piece.piece_y and self.x == other_piece.piece_x:
                         if self.color == other_piece.color:
                             self.y -= self.square_height
-                            self.attacked_pieces.append((other_piece.x, other_piece.y)
+                            self.attacked_pieces.append((other_piece.x, other_piece.y))
                     self.piece_y=self.y
                 if ((keys[pygame.K_RCTRL] and keys[pygame.K_3]) or (keys[pygame.K_RCTRL] and keys[pygame.K_KP3])) and not ((keys[pygame.K_RCTRL] and keys[pygame.K_3]) and (keys[pygame.K_RCTRL] and keys[pygame.K_KP3])):
                     self.x += self.square_width
@@ -80,7 +80,7 @@ class Queen(Piece):
                         if self.color == other_piece.color:
                             self.x -= self.square_width
                             self.y -= self.square_height
-                            self.attacked_pieces.append((other_piece.x, other_piece.y)
+                            self.attacked_pieces.append((other_piece.x, other_piece.y))
                     self.piece_x, self.piece_y=self.x, self.y
                 if ((keys[pygame.K_RCTRL] and keys[pygame.K_KP4]) or (keys[pygame.K_RCTRL] and keys[pygame.K_4])) and not ((keys[pygame.K_RCTRL] and keys[pygame.K_4]) and (keys[pygame.K_RCTRL] and keys[pygame.K_KP4])):
                     self.x -= self.square_width

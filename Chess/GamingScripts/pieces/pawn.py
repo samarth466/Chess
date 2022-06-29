@@ -48,7 +48,7 @@ class Pawn(Piece):
         original_x, original_y = self.x, self.y
         pygame.font.init()
         for other in squares.values():
-            if (other.file, other.rank) = (self.file, self.rank):
+            if (other.file, other.rank) == (self.file, self.rank):
                 continue
             other_piece = other.piece
             while (self.x in limiting_pos[0] and self.y in limiting_pos[1]):

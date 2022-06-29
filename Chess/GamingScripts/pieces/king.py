@@ -98,7 +98,7 @@ class King(Piece):
                     if self.color == other_piece.color:
                         self.x -= self.square_width
                         self.y -= self.square_height
-                        self.attacked_pieces.append((other_piece.x,other_piece.y)
+                        self.attacked_pieces.append((other_piece.x,other_piece.y))
                     if self.check(matterial):
                         if self.attacked_pieces[(other_piece.x,other_piece.y)]:
                             self.attacked_pieces.pop(
@@ -171,7 +171,7 @@ class King(Piece):
                         self.y += self.square_height
                         self.attacked_pieces.append((other_piece.x,other_piece.y))
                     if self.check(matterial):
-                        if self.attacked_pieces[(other_piece.x,other_piece.y]:
+                        if self.attacked_pieces[(other_piece.x,other_piece.y)]:
                             self.attacked_pieces.pop(
                                 self.attacked_pieces.index((other_piece.x,other_piece.y)))
                         self.x -= self.square_width

@@ -12,7 +12,7 @@ from .CONSTANTS import (WHITE, BLACK, GREY)
 from .player import Player
 from utils.functions import get_string_from_sequence
 from .tables import Table
-from utils.types import Squares, PositionDict, WindowPosition
+from utils.types import Squares, PositionDict, WindowPosition, GamePosition
 from flatten import flatten
 
 
@@ -258,9 +258,11 @@ class Board:
                     for piece in piece_list:
                         move_info = ()
                         if isinstance(piece, King):
-                            move_info = piece.move(self.window, self.matterial, self.squares)
+                            move_info = piece.move(
+                                self.window, self.matterial, self.squares)
                         elif isinstance(piece, Pawn):
-                            move_info = piece.move(self.window, self.squares, multiplier)
+                            move_info = piece.move(
+                                self.window, self.squares, multiplier)
                         else:
                             move_info = piece.move(self.window, self.squares)
                         self.update_screen(move_info)

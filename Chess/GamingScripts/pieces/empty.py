@@ -1,6 +1,7 @@
 import pygame
 from .piece import Piece
 from utils.types import Squares
+from utils.functions import get_window_pos
 
 
 class Empty(Piece):
