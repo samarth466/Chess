@@ -19,10 +19,12 @@ class Square:
         x = possible_files.index(self.file.lower())*100
         return x, y
 
-    def draw(self, win: pygame.Surface):
+    def draw(self, win: pygame.Surface, piece=None):
         pygame.init()
         x, y = self.get_window_pos()
         self.rect = pygame.Rect(x, y, self.square_length, self.square_length)
-        pygame.draw.rect(win,self.color,self.rect)
+        pygame.draw.rect(win, self.color, self.rect)
         if self.piece:
-            win.blit(self.piece.image, (x, y))
+            piece_x, piece_y = x+self.square_length//2-self.piece.image.get_width()//2, y + \
+                self.square_length//2-self.piece.image.get_height()//2
+            win.blit(self.piece.image, (piece_x, piece_y))

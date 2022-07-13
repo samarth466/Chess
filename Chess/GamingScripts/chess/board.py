@@ -159,70 +159,70 @@ class Board:
         self.matterial[WHITE]['Empty'] = self.matterial[BLACK]['Empty'] = [
             Empty(*args) for _ in range(16)]
         self.squares = {
-            'A1': Square(1, 'A', BLACK, self.matterial[WHITE]['Rook'][0], self.square_width),
-            'A2': Square(2, 'A', WHITE, self.matterial[WHITE]['Pawn'][0], self.square_width),
-            'A3': Square(3, 'A', BLACK, None, self.square_width),
-            'A4': Square(4, 'A', WHITE, None, self.square_width),
-            'A5': Square(5, 'A', BLACK, None, self.square_width),
-            'A6': Square(6, 'A', WHITE, None, self.square_width),
-            'A7': Square(7, 'A', BLACK, self.matterial[BLACK]['Pawn'][0], self.square_width),
-            'A8': Square(8, 'A', WHITE, self.matterial[BLACK]['Rook'][0], self.square_width),
-            'B1': Square(1, 'B', WHITE, self.matterial[WHITE]['Knight'][0], self.square_width),
-            'B2': Square(2, 'B', BLACK, self.matterial[WHITE]['Pawn'][1], self.square_width),
-            'B3': Square(3, 'B', WHITE, None, self.square_width),
-            'B4': Square(4, 'B', BLACK, None, self.square_width),
-            'B5': Square(5, 'B', WHITE, None, self.square_width),
-            'B6': Square(2, 'B', BLACK, None, self.square_width),
-            'B7': Square(7, 'B', WHITE, self.matterial[BLACK]['Pawn'][1], self.square_width),
-            'B8': Square(8, 'B', BLACK, self.matterial[BLACK]['Knight'][0], self.square_width),
-            'C1': Square(1, 'C', BLACK, self.matterial[WHITE]['Bishop'][0], self.square_width),
-            'C2': Square(2, 'C', WHITE, self.matterial[WHITE]['Pawn'][2], self.square_width),
-            'C3': Square(3, 'C', BLACK, None, self.square_width),
-            'C4': Square(2, 'C', WHITE, None, self.square_width),            'C2': Square(2, 'C', WHITE, None, self.square_width),
-            'C5': Square(5, 'C', BLACK, None, self.square_width),
-            'C6': Square(6, 'C', WHITE, None, self.square_width),
-            'C7': Square(7, 'C', BLACK, self.matterial[BLACK]['Pawn'][2], self.square_width),
-            'C8': Square(8, 'C', WHITE, self.matterial[BLACK]['Bishop'][0], self.square_width),
-            'D1': Square(1, 'D', WHITE, self.matterial[WHITE]['Queen'][0], self.square_width),
-            'D2': Square(2, 'D', BLACK, self.matterial[WHITE]['Pawn'][3], self.square_width),
-            'D3': Square(3, 'D', WHITE, None, self.square_width),
-            'D4': Square(2, 'D', BLACK, None, self.square_width),
-            'D5': Square(5, 'D', WHITE, None, self.square_width),
-            'D6': Square(6, 'D', BLACK, None, self.square_width),
-            'D7': Square(7, 'D', WHITE, self.matterial[BLACK]['Pawn'][3], self.square_width),
-            'D8': Square(8, 'D', BLACK, self.matterial[BLACK]['Queen'][0], self.square_width),
-            'E1': Square(1, 'E', BLACK, self.matterial[WHITE]['King'][0], self.square_width),
-            'E2': Square(2, 'E', WHITE, self.matterial[WHITE]['Pawn'][4], self.square_width),
-            'E3': Square(3, 'E', BLACK, None, self.square_width),
-            'E4': Square(4, 'E', WHITE, None, self.square_width),
-            'E5': Square(5, 'E', BLACK, None, self.square_width),
-            'E6': Square(6, 'E', WHITE, None, self.square_width),
-            'E7': Square(2, 'E', BLACK, self.matterial[BLACK]['Pawn'][4], self.square_width),
-            'E8': Square(8, 'E', WHITE, self.matterial[BLACK]['King'][0], self.square_width),
-            'F1': Square(1, 'F', WHITE, self.matterial[WHITE]['Bishop'][1], self.square_width),
-            'F2': Square(2, 'F', BLACK, self.matterial[WHITE]['Pawn'][5], self.square_width),
-            'F3': Square(3, 'F', WHITE, None, self.square_width),
-            'F4': Square(4, 'F', BLACK, None, self.square_width),
-            'F5': Square(5, 'F', WHITE, None, self.square_width),
-            'F6': Square(6, 'F', BLACK, None, self.square_width),
-            'F7': Square(7, 'F', WHITE, self.matterial[BLACK]['Pawn'][5], self.square_width),
-            'F8': Square(1, 'F', BLACK, self.matterial[BLACK]['Bishop'][1], self.square_width),
-            'G1': Square(1, 'G', BLACK, self.matterial[WHITE]['Knight'][1], self.square_width),
-            'G2': Square(2, 'G', WHITE, self.matterial[WHITE]['Pawn'][6], self.square_width),
-            'G3': Square(2, 'G', BLACK, None, self.square_width),
-            'G4': Square(4, 'G', WHITE, None, self.square_width),
-            'G5': Square(5, 'G', BLACK, None, self.square_width),
-            'G6': Square(6, 'G', WHITE, None, self.square_width),
-            'G7': Square(7, 'G', BLACK, self.matterial[BLACK]['Pawn'][6], self.square_width),
-            'G8': Square(8, 'G', WHITE, self.matterial[BLACK]['Knight'][1], self.square_width),
-            'H1': Square(1, 'H', WHITE, self.matterial[WHITE]['Rook'][1], self.square_width),
-            'H2': Square(2, 'H', BLACK, self.matterial[WHITE]['Pawn'][7], self.square_width),
-            'H3': Square(3, 'H', WHITE, None, self.square_width),
-            'H4': Square(4, 'H', BLACK, None, self.square_width),
-            'H5': Square(5, 'H', WHITE, None, self.square_width),
-            'H6': Square(6, 'H', BLACK, None, self.square_width),
-            'H7': Square(7, 'H', WHITE, self.matterial[BLACK]['Pawn'][7], self.square_width),
-            'H8': Square(8, 'H', BLACK, self.matterial[BLACK]['Rook'][1], self.square_width)
+            'A1': Square(1, 'A', WHITE, self.matterial[WHITE]['Rook'][0], self.square_width),
+            'A2': Square(2, 'A', BLACK, self.matterial[WHITE]['Pawn'][0], self.square_width),
+            'A3': Square(3, 'A', WHITE, None, self.square_width),
+            'A4': Square(4, 'A', BLACK, None, self.square_width),
+            'A5': Square(5, 'A', WHITE, None, self.square_width),
+            'A6': Square(6, 'A', BLACK, None, self.square_width),
+            'A7': Square(7, 'A', WHITE, self.matterial[BLACK]['Pawn'][0], self.square_width),
+            'A8': Square(8, 'A', BLACK, self.matterial[BLACK]['Rook'][0], self.square_width),
+            'B1': Square(1, 'B', BLACK, self.matterial[WHITE]['Knight'][0], self.square_width),
+            'B2': Square(2, 'B', WHITE, self.matterial[WHITE]['Pawn'][1], self.square_width),
+            'B3': Square(3, 'B', BLACK, None, self.square_width),
+            'B4': Square(4, 'B', WHITE, None, self.square_width),
+            'B5': Square(5, 'B', BLACK, None, self.square_width),
+            'B6': Square(6, 'B', WHITE, None, self.square_width),
+            'B7': Square(7, 'B', BLACK, self.matterial[BLACK]['Pawn'][1], self.square_width),
+            'B8': Square(8, 'B', WHITE, self.matterial[BLACK]['Knight'][0], self.square_width),
+            'C1': Square(1, 'C', WHITE, self.matterial[WHITE]['Bishop'][0], self.square_width),
+            'C2': Square(2, 'C', BLACK, self.matterial[WHITE]['Pawn'][2], self.square_width),
+            'C3': Square(3, 'C', WHITE, None, self.square_width),
+            'C4': Square(4, 'C', BLACK, None, self.square_width),
+            'C5': Square(5, 'C', WHITE, None, self.square_width),
+            'C6': Square(6, 'C', BLACK, None, self.square_width),
+            'C7': Square(7, 'C', WHITE, self.matterial[BLACK]['Pawn'][2], self.square_width),
+            'C8': Square(8, 'C', BLACK, self.matterial[BLACK]['Bishop'][0], self.square_width),
+            'D1': Square(1, 'D', BLACK, self.matterial[WHITE]['Queen'][0], self.square_width),
+            'D2': Square(2, 'D', WHITE, self.matterial[WHITE]['Pawn'][3], self.square_width),
+            'D3': Square(3, 'D', BLACK, None, self.square_width),
+            'D4': Square(4, 'D', WHITE, None, self.square_width),
+            'D5': Square(5, 'D', BLACK, None, self.square_width),
+            'D6': Square(6, 'D', WHITE, None, self.square_width),
+            'D7': Square(7, 'D', BLACK, self.matterial[BLACK]['Pawn'][3], self.square_width),
+            'D8': Square(8, 'D', WHITE, self.matterial[BLACK]['Queen'][0], self.square_width),
+            'E1': Square(1, 'E', WHITE, self.matterial[WHITE]['King'][0], self.square_width),
+            'E2': Square(2, 'E', BLACK, self.matterial[WHITE]['Pawn'][4], self.square_width),
+            'E3': Square(3, 'E', WHITE, None, self.square_width),
+            'E4': Square(4, 'E', BLACK, None, self.square_width),
+            'E5': Square(5, 'E', WHITE, None, self.square_width),
+            'E6': Square(6, 'E', BLACK, None, self.square_width),
+            'E7': Square(7, 'E', WHITE, self.matterial[BLACK]['Pawn'][4], self.square_width),
+            'E8': Square(8, 'E', BLACK, self.matterial[BLACK]['King'][0], self.square_width),
+            'F1': Square(1, 'F', BLACK, self.matterial[WHITE]['Bishop'][1], self.square_width),
+            'F2': Square(2, 'F', WHITE, self.matterial[WHITE]['Pawn'][5], self.square_width),
+            'F3': Square(3, 'F', BLACK, None, self.square_width),
+            'F4': Square(4, 'F', WHITE, None, self.square_width),
+            'F5': Square(5, 'F', BLACK, None, self.square_width),
+            'F6': Square(6, 'F', WHITE, None, self.square_width),
+            'F7': Square(7, 'F', BLACK, self.matterial[BLACK]['Pawn'][5], self.square_width),
+            'F8': Square(8, 'F', WHITE, self.matterial[BLACK]['Bishop'][1], self.square_width),
+            'G1': Square(1, 'G', WHITE, self.matterial[WHITE]['Knight'][1], self.square_width),
+            'G2': Square(2, 'G', BLACK, self.matterial[WHITE]['Pawn'][6], self.square_width),
+            'G3': Square(3, 'G', WHITE, None, self.square_width),
+            'G4': Square(4, 'G', BLACK, None, self.square_width),
+            'G5': Square(5, 'G', WHITE, None, self.square_width),
+            'G6': Square(6, 'G', BLACK, None, self.square_width),
+            'G7': Square(7, 'G', WHITE, self.matterial[BLACK]['Pawn'][6], self.square_width),
+            'G8': Square(8, 'G', BLACK, self.matterial[BLACK]['Knight'][1], self.square_width),
+            'H1': Square(1, 'H', BLACK, self.matterial[WHITE]['Rook'][1], self.square_width),
+            'H2': Square(2, 'H', WHITE, self.matterial[WHITE]['Pawn'][7], self.square_width),
+            'H3': Square(3, 'H', BLACK, None, self.square_width),
+            'H4': Square(4, 'H', WHITE, None, self.square_width),
+            'H5': Square(5, 'H', BLACK, None, self.square_width),
+            'H6': Square(6, 'H', WHITE, None, self.square_width),
+            'H7': Square(7, 'H', BLACK, self.matterial[BLACK]['Pawn'][7], self.square_width),
+            'H8': Square(8, 'H', WHITE, self.matterial[BLACK]['Rook'][1], self.square_width)
         }
 
     def convert_current_position(self, window_to_game: bool = True, window_position: WindowPosition = None, game_position: GamePosition = None):
@@ -244,7 +244,8 @@ class Board:
 
     def get_game_pos(self, x: int, y: int) -> tuple[str, int]:
         file = self.possible_files[x//self.square_width]
-        rank = y//self.square_height+1
+        rank = y//self.square_height
+        print((y, self.square_height))
         return file, rank
 
     def move(self, result: bool = True):
@@ -252,20 +253,25 @@ class Board:
         color = turn.color
         multiplier = turn.multiplier
         result = True
-        for piece_list in self.matterial[color].values():
+        player_info = None
+        for piece_type, piece_list in self.matterial[color].items():
             if piece_list:
                 try:
-                    for piece in piece_list:
-                        move_info = ()
-                        if isinstance(piece, King):
-                            move_info = piece.move(
-                                self.window, self.matterial, self.squares)
-                        elif isinstance(piece, Pawn):
-                            move_info = piece.move(
-                                self.window, self.squares, multiplier)
-                        else:
-                            move_info = piece.move(self.window, self.squares)
-                        self.update_screen(move_info)
+                    for current_piece in piece_list:
+                        piece = self.squares[get_string_from_sequence(
+                            tuple(str(i) for i in self.get_window_pos(*pygame.mouse.get_pos)))].piece
+                        if piece_type == piece.name:
+                            move_info = ()
+                            if isinstance(piece, King):
+                                move_info = piece.move(
+                                    self.window, self.matterial, self.squares)
+                            elif isinstance(piece, Pawn):
+                                move_info = piece.move(
+                                    self.window, self.squares, multiplier)
+                            else:
+                                move_info = piece.move(
+                                    self.window, self.squares)
+                            self.update_screen(move_info)
                 except NotImplementedError:
                     continue
 
@@ -282,7 +288,7 @@ class Board:
             for square in self.squares.values():
                 square.draw(board)
         self.window.blit(self.offset_box_1, (0, 0))
-        self.window.blit(board, (0, self.offset_box_1.get_height()))
+        self.window.blit(board, (0, 0))
         self.window.blit(
             self.offset_box_2, (0, self.offset_box_1.get_height()+board.get_height()))
 
@@ -321,9 +327,11 @@ class Board:
         attacked_pieces, new_pos, old_pos, piece = move_info
         for attacked_piece in attacked_pieces:
             x, y = attacked_piece
-            position = get_string_from_sequence(
-                tuple(str(i) for i in self.get_game_pos(x, y)))
-            self.squares[position].attacked = True
+            file, rank = self.get_game_pos(x, y)
+            if rank == 0:
+                rank = 1
+            print(rank, file)
+            self.squares[file+str(rank)].attacked = True
         old_pos = get_string_from_sequence(
             tuple(str(i) for i in self.get_game_pos(*old_pos)))
         piece = self.squares[old_pos].piece
@@ -344,16 +352,16 @@ class Board:
         pygame.display.update()
 
     def end(self):
-        if self.matterial[BLACK]['King'].checkmate(list(self.matterial[WHITE].values())):
-            return True, WHITE
-        elif self.matterial[WHITE]['King'].checkmate(list(self.matterial[BLACK].values())):
-            return True, BLACK
+        if self.matterial[BLACK]['King'][0].checkmate(list(self.matterial[WHITE].values())):
+            return WHITE
+        elif self.matterial[WHITE]['King'][0].checkmate(list(self.matterial[BLACK].values())):
+            return BLACK
         elif len(self.matterial[BLACK].values()) == 1:
-            return True, WHITE
+            return WHITE
         elif len(self.matterial[WHITE].values()) == 1:
-            return True, BLACK
+            return BLACK
         else:
-            return False, None
+            return None
 
     def promote(self, pawn: Pawn) -> None:
         table = Table(self.window, 2, 2, [
@@ -377,3 +385,8 @@ class Board:
             piece = pawn.promotion(selected_piece, self.images)
             piece_name = piece.name
             self.matterial[pawn.color][piece_name].append(piece)
+
+    def find_player_by_color(self, color: pygame.Color) -> Player:
+        for player in self.players:
+            if player.color == color:
+                return player
