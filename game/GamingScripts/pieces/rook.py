@@ -1,4 +1,3 @@
-from game.GamingScripts.utils.Functions import get_window_pos
 import pygame
 from .piece import Piece
 
@@ -48,8 +47,6 @@ class Rook(Piece):
                     win.blit(txt, (self.max_x-(txt.get_width/2) /
                                    2, self.max_y-(txt.get_height()/2)/2))
                 self.file, self.rank = self.get_game_pos()
-                self.x,self.y = get_window_pos(self.file,self.rank,self.possible_files)
-                original_x, original_y = self.x, self.y
                 for event in pygame.event.get():
                     if event.type == pygame.K_SPACE or event.type == pygame.K_KP5:
                         if (self.x, self.y, self.name) in pieces:
@@ -139,4 +136,4 @@ class Rook(Piece):
                             else:
                                 self.attacked_pieces.append((self.x, self.y))
         self.x, self.y = self.piece_x, self.piece_y
-        return self.attacked_pieces, (self.piece_x, self.piece_y), (original_x, original_y), self
+        return (self.attacked_pieces, (self.piece_x, self.piece_y), pieces)
