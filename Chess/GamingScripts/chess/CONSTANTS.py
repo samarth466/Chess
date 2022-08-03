@@ -1,10 +1,10 @@
 #from pygame_gui import UIManager
 from pygame import Color
 
-WINDOW_WIDTH = 800
-WINDOW_HEIGHT = 800
-SQUARE_WIDTH = 100
-SQUARE_HEIGHT = 100
+WINDOW_WIDTH = 720
+WINDOW_HEIGHT = 720
+SQUARE_WIDTH = 90
+SQUARE_HEIGHT = 90
 #MANAGER = UIManager((WINDOW_WIDTH, WINDOW_HEIGHT))
 # This snippet of code goes in ..pieces.knight.Knight.move() upon the completion of potential bugfix in pygame_gui.ui_manager.UI_Manager()
 """

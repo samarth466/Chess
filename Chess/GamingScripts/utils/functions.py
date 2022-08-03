@@ -15,16 +15,16 @@ def get_window_pos(file: str, rank: int, possible_files: list[str]) -> tuple[int
         letter for letter in string.ascii_uppercase[:8]], f"The 'possible_files' argument must be equivalent to {str([letter for letter in string.ascii_lowercase[:8]])}, not {possible_files}"
     if file == None or rank == None:
         return None, None
-    x = (rank-1)*100
-    y = possible_files.index(file)*100
+    x = (rank-1)*90
+    y = possible_files.index(file)*90
     return x, y
 
 
 def get_game_pos(x: int, y: int, possible_files: list[str]):
     assert len(possible_files) == 8 and possible_files == [letter for letter in string.ascii_uppercase[
         :8]], f"The 'possible_files' argument must be equivalent to {[letter for letter in string.ascii_uppercase[:8]]}"
-    rank = x//100+1
-    file = possible_files[y//100]
+    rank = x//90+1
+    file = possible_files[y//90]
     return file, rank
 
 

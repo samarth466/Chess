@@ -17,7 +17,8 @@ WINNING_FONT = pygame.font.SysFont('comicsans', 60, True)
 
 
 def main(positions: PositionDict = {}):
-    SCREEN = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+    SCREEN = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT),pygame.RESIZABLE)
+    print(SCREEN.get_size)
     board = Board((WINDOW_WIDTH, WINDOW_HEIGHT), SQUARE_WIDTH, SQUARE_HEIGHT, Player(
         'Joe', WHITE, 1), Player('Jane', BLACK, -1), SCREEN, SQUARE_HEIGHT*2, SQUARE_HEIGHT*2)
     run = True
