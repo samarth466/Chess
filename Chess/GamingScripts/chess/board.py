@@ -3,7 +3,6 @@ from pathlib import Path
 from os.path import join
 import string
 import pygame
-# from pygame import Color
 
 from pieces import Bishop, Empty, King, Knight, Pawn, Queen, Rook
 from pieces.piece import Piece
@@ -243,7 +242,8 @@ class Board:
 
     def get_game_pos(self, x: int, y: int) -> tuple[str, int]:
         file = self.possible_files[x//self.square_width]
-        rank = y//self.square_height+1
+        rank = y//self.square_height
+        print((y, self.square_height))
         return file, rank
 
     def move(self, result: bool = True):
@@ -251,20 +251,25 @@ class Board:
         color = turn.color
         multiplier = turn.multiplier
         result = True
-        for piece_list in self.matterial[color].values():
+        player_info = None
+        for piece_type, piece_list in self.matterial[color].items():
             if piece_list:
                 try:
-                    for piece in piece_list:
-                        move_info = ()
-                        if isinstance(piece, King):
-                            move_info = piece.move(
-                                self.window, self.matterial, self.squares)
-                        elif isinstance(piece, Pawn):
-                            move_info = piece.move(
-                                self.window, self.squares, multiplier)
-                        else:
-                            move_info = piece.move(self.window, self.squares)
-                        self.update_screen(move_info)
+                    for current_piece in piece_list:
+                        piece = self.squares[get_string_from_sequence(
+                            tuple(str(i) for i in self.get_window_pos(*pygame.mouse.get_pos)))].piece
+                        if piece_type == piece.name:
+                            move_info = ()
+                            if isinstance(piece, King):
+                                move_info = piece.move(
+                                    self.window, self.matterial, self.squares)
+                            elif isinstance(piece, Pawn):
+                                move_info = piece.move(
+                                    self.window, self.squares, multiplier)
+                            else:
+                                move_info = piece.move(
+                                    self.window, self.squares)
+                            self.update_screen(move_info)
                 except NotImplementedError:
                     continue
 
@@ -280,10 +285,17 @@ class Board:
         else:
             for square in self.squares.values():
                 square.draw(board)
+<<<<<<< HEAD
         #self.window.blit(self.offset_box_1, (0, 0))
         self.window.blit(board, (0,0))
         #self.window.blit(
             #self.offset_box_2, (0, self.offset_box_1.get_height()+board.get_height()))
+=======
+        self.window.blit(self.offset_box_1, (0, 0))
+        self.window.blit(board, (0, 0))
+        self.window.blit(
+            self.offset_box_2, (0, self.offset_box_1.get_height()+board.get_height()))
+>>>>>>> 001836db8bd3f946b888bcfe77f1bf62a6b1f52f
 
     def capture_piece(self):
         while True:
@@ -320,9 +332,11 @@ class Board:
         attacked_pieces, new_pos, old_pos, piece = move_info
         for attacked_piece in attacked_pieces:
             x, y = attacked_piece
-            position = get_string_from_sequence(
-                tuple(str(i) for i in self.get_game_pos(x, y)))
-            self.squares[position].attacked = True
+            file, rank = self.get_game_pos(x, y)
+            if rank == 0:
+                rank = 1
+            print(rank, file)
+            self.squares[file+str(rank)].attacked = True
         old_pos = get_string_from_sequence(
             tuple(str(i) for i in self.get_game_pos(*old_pos)))
         piece = self.squares[old_pos].piece
@@ -343,16 +357,16 @@ class Board:
         pygame.display.update()
 
     def end(self):
-        if self.matterial[BLACK]['King'].checkmate(list(self.matterial[WHITE].values())):
-            return True, WHITE
-        elif self.matterial[WHITE]['King'].checkmate(list(self.matterial[BLACK].values())):
-            return True, BLACK
+        if self.matterial[BLACK]['King'][0].checkmate(list(self.matterial[WHITE].values())):
+            return WHITE
+        elif self.matterial[WHITE]['King'][0].checkmate(list(self.matterial[BLACK].values())):
+            return BLACK
         elif len(self.matterial[BLACK].values()) == 1:
-            return True, WHITE
+            return WHITE
         elif len(self.matterial[WHITE].values()) == 1:
-            return True, BLACK
+            return BLACK
         else:
-            return False, None
+            return None
 
     def promote(self, pawn: Pawn) -> None:
         table = Table(self.window, 2, 2, [
@@ -376,3 +390,8 @@ class Board:
             piece = pawn.promotion(selected_piece, self.images)
             piece_name = piece.name
             self.matterial[pawn.color][piece_name].append(piece)
+
+    def find_player_by_color(self, color: pygame.Color) -> Player:
+        for player in self.players:
+            if player.color == color:
+                return player

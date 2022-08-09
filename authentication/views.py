@@ -1,5 +1,4 @@
 import datetime
-from os import truncate
 from django.http.response import HttpResponseForbidden
 from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, HttpResponseNotAllowed
@@ -7,7 +6,7 @@ from authentication.models import User
 from authentication.forms import RegistrationForm, LogInForm, NewUserAccountForm, ProfileForm
 from django.views.decorators.http import require_http_methods
 from django.urls import reverse
-from Chess.utils import database
+from accessigames.utils import database
 from django.utils import timezone as tz
 from datetime import date
 

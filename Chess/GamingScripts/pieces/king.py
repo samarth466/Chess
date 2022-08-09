@@ -223,9 +223,10 @@ class King(Piece):
                 return True
             return False
         else:
-            for piece in pieces:
-                if self.attackers or (self.x, self.y) in piece.attacked_pieces():
-                    return True
+            for piece_list in pieces:
+                for piece in piece_list:
+                    if self.attackers or (self.x, self.y) in piece.attacked_pieces:
+                        return True
             return False
 
     def get_possible_positions_from_current_position(self, position: GamePosition, squares: Squares) -> Positions:
