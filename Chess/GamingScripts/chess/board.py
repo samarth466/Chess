@@ -285,17 +285,10 @@ class Board:
         else:
             for square in self.squares.values():
                 square.draw(board)
-<<<<<<< HEAD
         #self.window.blit(self.offset_box_1, (0, 0))
         self.window.blit(board, (0,0))
         #self.window.blit(
             #self.offset_box_2, (0, self.offset_box_1.get_height()+board.get_height()))
-=======
-        self.window.blit(self.offset_box_1, (0, 0))
-        self.window.blit(board, (0, 0))
-        self.window.blit(
-            self.offset_box_2, (0, self.offset_box_1.get_height()+board.get_height()))
->>>>>>> 001836db8bd3f946b888bcfe77f1bf62a6b1f52f
 
     def capture_piece(self):
         while True:
@@ -327,16 +320,17 @@ class Board:
                     if (pixel_color.r, pixel_color.g, pixel_color.b) == GREY:
                         self.offset_box_2.blit(captured_piece, (x, y))
         pygame.display.update()
+    
+    def _update_square_attackers(self,attackers):
+        for square in self.squares.values():
+            if self.get_window_pos(square.rank,square.file) in attackers:
+                square.attacked = True
+            else:
+                square.attacked = False
 
     def update_screen(self, move_info: tuple[list[Piece], WindowPosition, WindowPosition, Piece]):
         attacked_pieces, new_pos, old_pos, piece = move_info
-        for attacked_piece in attacked_pieces:
-            x, y = attacked_piece
-            file, rank = self.get_game_pos(x, y)
-            if rank == 0:
-                rank = 1
-            print(rank, file)
-            self.squares[file+str(rank)].attacked = True
+        self._update_square_attackers(attacked_pieces)
         old_pos = get_string_from_sequence(
             tuple(str(i) for i in self.get_game_pos(*old_pos)))
         piece = self.squares[old_pos].piece
