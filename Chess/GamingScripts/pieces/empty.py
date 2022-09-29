@@ -1,6 +1,6 @@
 import pygame
 from .piece import Piece
-from utils.types import Squares
+from utils.types import GamePosition, Squares
 from utils.functions import get_window_pos
 
 
@@ -21,5 +21,5 @@ class Empty(Piece):
             self.file, self.rank, self.possible_files)
         self.attacked_pieces = []
 
-    def move(self, win: pygame.Surface, squares: Squares):
+    def validate(self, position: GamePosition) -> None:
         raise NotImplementedError()

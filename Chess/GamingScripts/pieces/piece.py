@@ -1,4 +1,5 @@
 import pygame
+from utils.types import GamePosition, Squares
 
 
 class Piece:
@@ -15,3 +16,6 @@ class Piece:
     def draw(self, win):
         x, y = self.get_window_pos()
         win.blit(self.image, (x, y))
+
+    def update_attacked_pieces(self,squares: Squares) -> list[GamePosition]:
+        return self.attacked_pieces.extend(self._get_possible_positions((self.x, self.y),squares))
