@@ -14,9 +14,9 @@ class Square:
         self.is_emptiable = True
 
     def get_window_pos(self):
-        y = (self.rank-1)*100
+        y = (self.rank-1)*self.square_length
         possible_files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
-        x = possible_files.index(self.file.lower())*100
+        x = possible_files.index(self.file.lower())*self.square_length
         return x, y
 
     def draw(self, win: pygame.Surface, piece=None):
@@ -27,3 +27,6 @@ class Square:
             piece_x, piece_y = x+self.square_length//2-self.piece.image.get_width()//2, y + \
                 self.square_length//2-self.piece.image.get_height()//2
             win.blit(self.piece.image, (piece_x, piece_y))
+
+    def __str__(self) -> str:
+        return f"{self.piece.name} @ {self.file}{self.rank}"

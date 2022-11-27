@@ -4,7 +4,7 @@ from thorpy import Inserter
 from utils.types import GamePosition, PositionDict
 from utils.functions import get_string_from_sequence, get_game_pos, get_window_pos
 from chess.player import Player
-from chess.CONSTANTS import BLACK, SQUARE_HEIGHT, SQUARE_WIDTH, WHITE, WINDOW_HEIGHT, WINDOW_WIDTH, RED
+from chess.CONSTANTS import BLACK, SQUARE_HEIGHT, SQUARE_WIDTH, WHITE, WINDOW_HEIGHT, WINDOW_WIDTH, GREY, BLUE_GREEN
 from chess.board import Board
 
 # PyGame Initializations
@@ -18,11 +18,10 @@ WINNING_FONT = pygame.font.SysFont('comicsans', 60, True)
 
 
 def main() -> None:
-    pygame.mouse.set_pos((0, SQUARE_HEIGHT*2))
     SCREEN = pygame.display.set_mode((WINDOW_WIDTH,WINDOW_HEIGHT+SQUARE_HEIGHT*4),pygame.SCALED)
     SCREEN.scroll(0, SQUARE_WIDTH*2)
     pygame.display.set_caption("Chess")
-    board = Board((WINDOW_WIDTH, WINDOW_HEIGHT), SQUARE_WIDTH, SQUARE_HEIGHT, Player('Joe', WHITE, 1), Player('Jane', BLACK, -1), SCREEN, SQUARE_HEIGHT*2, SQUARE_HEIGHT*2)
+    board = Board((WINDOW_WIDTH, WINDOW_HEIGHT), SQUARE_WIDTH, SQUARE_HEIGHT, Player('Joe', WHITE), Player('Jane', BLACK), SCREEN, SQUARE_HEIGHT*2, SQUARE_HEIGHT*2)
     run = True
     clock = pygame.time.Clock()
     FPS = 60
@@ -36,6 +35,7 @@ def main() -> None:
     move_textbox.blit()
     while run:
         clock.tick(FPS)
+        SCREEN.fill(GREY)
         #SCREEN.fill((0, 72, 0))
         board.draw_board()
         keys = pygame.key.get_pressed()

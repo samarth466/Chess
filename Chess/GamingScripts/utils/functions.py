@@ -10,21 +10,21 @@ def get_string_from_sequence(seq: Sequence) -> str:
     return ''.join(flattened_list)
 
 
-def get_window_pos(file: str, rank: int, possible_files: list[str]) -> tuple[int, int]:
+def get_window_pos(file: str, rank: int, possible_files: list[str], width: int, height: int) -> tuple[int, int]:
     assert len(possible_files) == 8 and possible_files == [
         letter for letter in string.ascii_uppercase[:8]], f"The 'possible_files' argument must be equivalent to {str([letter for letter in string.ascii_lowercase[:8]])}, not {possible_files}"
     if file == None or rank == None:
         return None, None
-    x = (rank-1)*90
-    y = possible_files.index(file)*90
+    x = (rank-1)*width
+    y = possible_files.index(file)*height
     return x, y
 
 
-def get_game_pos(x: int, y: int, possible_files: list[str]):
+def get_game_pos(x: int, y: int, possible_files: list[str], width: int, height: int) -> tuple[str, int]:
     assert len(possible_files) == 8 and possible_files == [letter for letter in string.ascii_uppercase[
         :8]], f"The 'possible_files' argument must be equivalent to {[letter for letter in string.ascii_uppercase[:8]]}"
-    rank = x//90+1
-    file = possible_files[y//90]
+    rank = x//width+1
+    file = possible_files[y//height]
     return file, rank
 
 

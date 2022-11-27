@@ -6,9 +6,9 @@ from utils.functions import get_window_pos
 
 class Empty(Piece):
 
-    def __init__(self, image: str, file: str, rank: int, color: pygame.Color, min_x: int, max_x: int, min_y: int, max_y: int, square_width: int, square_height: int, win_width: int, win_height: int) -> None:
+    def __init__(self, file: str, rank: int, color: pygame.Color, min_x: int, max_x: int, min_y: int, max_y: int, square_width: int, square_height: int, win_width: int, win_height: int) -> None:
         pygame.init()
-        super().__init__(image, file, rank, 'none', color)
+        super().__init__(file, rank, 'none', color)
         self.min_x = min_x
         self.max_x = max_x
         self.min_y = min_y

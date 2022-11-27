@@ -5,7 +5,7 @@ import pygame
 from typing import Sequence, Literal
 
 from board_utils import Square
-from chess.CONSTANTS import (SQUARE_WIDTH, WHITE, BLACK, RED, BLUE_GREEN)
+from chess.CONSTANTS import (SQUARE_WIDTH, WHITE, BLACK, BLUE_GREEN)
 from .piece import Piece
 from .king import King
 from flatten import flatten
@@ -19,9 +19,9 @@ class Knight(Piece):
 
     instances = []
 
-    def __init__(self, image: str, file: str, rank: int, color: pygame.Color, min_x: int, max_x: int, min_y: int, max_y: int, square_width: int, square_height: int, win_width: int, win_height: int) -> None:
+    def __init__(self, file: str, rank: int, color: pygame.Color, min_x: int, max_x: int, min_y: int, max_y: int, square_width: int, square_height: int, win_width: int, win_height: int) -> None:
         pygame.init()
-        super().__init__(image, file, rank, 'Knight', color)
+        super().__init__(file, rank, 'Knight', color)
         self.min_x = min_x
         self.max_x = max_x
         self.min_y = min_y
@@ -31,7 +31,7 @@ class Knight(Piece):
         self.win_width = win_width
         self.win_height = win_height
         self.x, self.y = self.piece_x, self.piece_y = get_window_pos(
-            self.file, self.rank, self.possible_files)
+            self.file, self.rank, self.possible_files,self.square_width,self.square_height)
         self.attacked_pieces = []
         self.instances.append(self)
 
@@ -76,16 +76,17 @@ class Knight(Piece):
             piece_at_current_position = squares[square].piece
             if piece_at_current_position in self.instances:
                 return piece_at_current_position
-    
-    def validate(self,position: GamePosition, squares: Squares, king: King) -> bool:
-        file,rank = position
-        possible_positions = self._get_possible_positions((file,rank))
-        if not self._find_piece_from_move_set(possible_positions,squares) or (self.color == squares[file+str(rank)].piece.color and squares[file+str(rank)].piece.color):
+
+    def validate(self, position: GamePosition, squares: Squares, king: King) -> bool:
+        file, rank = position
+        possible_positions = self._get_possible_positions((file, rank))
+        if not self._find_piece_from_move_set(possible_positions, squares) or (self.color == squares[file+str(rank)].piece.color and squares[file+str(rank)].piece.color):
             return False
         else:
             temp = squares[file+str(rank)]
-            if isinstance(temp.piece,Empty):
-                squares[file+str(rank)].piece = squares[self.file+str(self.rank)].piece
+            if isinstance(temp.piece, Empty):
+                squares[file+str(rank)].piece = squares[self.file +
+                                                        str(self.rank)].piece
             else:
                 temp = squares[self.file+str(self.rank)].piece
                 squares[self.file+str(self.rank)].piece = temp
