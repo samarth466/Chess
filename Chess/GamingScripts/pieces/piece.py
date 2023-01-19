@@ -12,7 +12,7 @@ class Piece:
         PATH = join(Path(__file__).parent.parent, 'chessmen',
                     f"{COLOR_LETTERING}_{name}.png")
         pygame.init()
-        if PATH.endswith(f'_{None}.png') != True:
+        if PATH.endswith('_none.png') != True:
             self.image = pygame.image.load(PATH).convert_alpha()
             self.SURFACE = pygame.Surface(
                 (self.image.get_width(), self.image.get_height()), pygame.SRCALPHA)

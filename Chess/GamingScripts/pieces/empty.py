@@ -18,7 +18,7 @@ class Empty(Piece):
         self.win_width = win_width
         self.win_height = win_height
         self.x, self.y = self.piece_x, self.piece_y = get_window_pos(
-            self.file, self.rank, self.possible_files)
+            self.file, self.rank, self.possible_files, self.win_width, self.win_height)
         self.attacked_pieces = []
 
     def validate(self, position: GamePosition) -> None:

@@ -18,8 +18,7 @@ WINNING_FONT = pygame.font.SysFont('comicsans', 60, True)
 
 
 def main() -> None:
-    SCREEN = pygame.display.set_mode((WINDOW_WIDTH,WINDOW_HEIGHT+SQUARE_HEIGHT*4),pygame.SCALED)
-    SCREEN.scroll(0, SQUARE_WIDTH*2)
+    SCREEN = pygame.display.set_mode((WINDOW_WIDTH,WINDOW_HEIGHT),pygame.SCALED)
     pygame.display.set_caption("Chess")
     board = Board((WINDOW_WIDTH, WINDOW_HEIGHT), SQUARE_WIDTH, SQUARE_HEIGHT, Player('Joe', WHITE), Player('Jane', BLACK), SCREEN, SQUARE_HEIGHT*2, SQUARE_HEIGHT*2)
     run = True
