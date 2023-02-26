@@ -24,11 +24,11 @@ def database_check(response):
     if form.is_valid():
         email = form.cleaned_data["email"]
         has_email = database(
-            'db.sqlite3', "SELECT email FROM User WHERE email = ?;", (email,))
+            'AccessiGames.sqlite3', "SELECT email FROM User WHERE email = ?;", (email,))
         logged_in = None
         if has_email:
             logged_in = database(
-                'db.sqlite3', "SELECT logged_in FROM User WHERE email = ?;", (email,))
+                'AccessiGames.sqlite3', "SELECT logged_in FROM User WHERE email = ?;", (email,))
         if not logged_in:
             return redirect('authentication:login')
         else:
@@ -36,6 +36,7 @@ def database_check(response):
             return redirect('authentication:register')
 
 
+@require_http_methods(['GET'])
 def forum(request):
     form = RegistrationForm
     context_vars = {'form': form, 'heading': 'Please fill out the form below',
@@ -43,6 +44,7 @@ def forum(request):
     return render(request, 'authentication/Sign_In.html', context_vars)
 
 
+@require_http_methods(['POST', 'GET'])
 def create_user_account(response):
     if response.method == "POST":
         form = NewUserAccountForm(response.POST)
@@ -64,7 +66,7 @@ def create_user_account(response):
                 context_vars = {'form': form,
                                 'heading': heading, 'val': 'CREATE ACCOUNT'}
                 return render(response, "authenticationh/new_user_account.html", context_vars)
-    elif response.method == "GET":
+    else:
         email = response.session.get('email', None)
         form = NewUserAccountForm(initial={'email': email})
         min_date = tz.localtime(tz.now()).date()
@@ -72,8 +74,6 @@ def create_user_account(response):
         context_vars = {'method': 'post', 'action': '/register/register/', 'form': form,
                         'heading': 'Welcome to my Chess Website! Please create your account here.', 'val': 'CREATE ACCOUNT', 'max': tz.localtime(tz.now()).date(), 'min': datetime.date(min_year, min_date.month, min_date.day), 'date_val': date(tz.localtime(tz.now()).date().year, 1, 1), 'date': True}
         return render(response, 'authentication/new_user_account.html', context_vars)
-    else:
-        return HttpResponseNotAllowed(['GET', 'POST'])
 
 
 @require_http_methods(["POST", "GET"])
@@ -86,13 +86,13 @@ def login(response):
             data_email = None
             data_password = None
             data = database(
-                'db.sqlite3', "SELECT email, password FROM User WHERE email = ? and password = ?;", (email, password))
+                'AccessiGames.sqlite3', "SELECT email, password FROM User WHERE email = ? and password = ?;", (email, password))
             if data != None:
                 data_email = data[0]
                 data_password = data[1]
             if data_email == email and data_password == password:
                 database(
-                    'db.sqlite3', "UPDATE User SET logged_in = True WHERE email = ? and password = ?;", (email, password))
+                    'AccessiGames.sqlite3', "UPDATE User SET logged_in = True WHERE email = ? and password = ?;", (email, password))
                 return redirect('authentication:profile')
             else:
                 if data == None:
@@ -117,7 +117,7 @@ def profile(response):
                 email = response.user.email
                 pin = form.cleaned_data['pin']
                 database(
-                    'db.sqlite3', "UPDATE User SET security_pin = ? WHERE email = ?;", (str(pin), email))
+                    'AccessiGames.sqlite3', "UPDATE User SET security_pin = ? WHERE email = ?;", (str(pin), email))
                 return redirect('settings:')
             else:
                 return HttpResponseForbidden()

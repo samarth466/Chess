@@ -49,10 +49,11 @@ def main() -> None:
             volume += 1
         if keys[pygame.K_a]:
             accessibility = not accessibility
-        if (keys[pygame.K_LCTRL] and keys[pygame.K_e]) or (keys[pygame.K_RCTRL] and keys[pygame.K_e]):
-            move_textbox.enter()
-        move = move_textbox.get_value()
-        print(move)
+        #if (keys[pygame.K_LCTRL] and keys[pygame.K_e]) or (keys[pygame.K_RCTRL] and keys[pygame.K_e]):
+            #move_textbox.enter()
+        #move = move_textbox.get_value()
+        move = input("Enter a move: ")
+        board.move(move)
 
 if __name__ == "__main__":
     main()

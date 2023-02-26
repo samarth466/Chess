@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script>
+            fetch('/get-auth-url').then(function(response) {return response.json}).then(function(data) {window.location.replace(data.url)})
+        </script>
+    </head>
+</html>

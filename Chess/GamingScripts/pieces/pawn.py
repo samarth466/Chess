@@ -37,13 +37,15 @@ class Pawn(Piece):
         if file != self.file:
             if rank == self.rank:
                 return False
-            elif not isinstance(squares[file+str(rank)], Empty) and squares[file+str(rank)].piece.color != self.color:
+            elif isinstance(squares[file+str(rank)].piece, Empty):
                 squares[file+str(rank)], squares[self.file+str(self.rank)
                                                  ] = squares[self.file+str(self.rank)], squares[file+str(rank)]
-                if king.check(squares=squares, position=position):
-                    return False
-                else:
-                    return True
+                return not king.check(squares=squares, position=position)
+            return False
+        else:
+            if 0 < abs(rank-self.rank) <= 2:
+                squares[file+str(rank)],squares[self.file+str(self.rank)] = squares[self.file+str(self.rank)],squares[file+str(rank)]
+                return not king.check(squares=squares,position=position)
             return False
 
     def move_forward_twice(self, rank: int, file: str, squares: Squares) -> tuple[int, int]:

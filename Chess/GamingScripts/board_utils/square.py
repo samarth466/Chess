@@ -11,7 +11,7 @@ class Square:
         self.is_empty = is_empty
         self.piece = piece
         self.square_length = square_length
-        self.is_emptiable = True
+        self.attacked = False
 
     def get_window_pos(self):
         y = (self.rank-1)*self.square_length

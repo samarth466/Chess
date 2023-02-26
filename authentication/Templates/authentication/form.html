@@ -1,13 +1,6 @@
-<!DOCTYPE html>
-<html>
-    <head>
+{% extends 'accessigames/base.html' %}
         {% load static %}
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-        <script type="text/javascript" src="{% static 'authentication/user.js' %}"></script>
-        <link rel="stylesheet" type="text/css" href="{% static 'UserAuth/style.css' %}">
-        <link rel="stylesheet" type="text/css" href="{% static 'UserAuth/change_color.css' %}">
-    </head>
-    <body>
+        {% block content %}
         <h1>{{ heading }}</h1>
         {% block form %}
         <form action="{{ action }}" method="{{ method }}" id="form">
@@ -20,5 +13,4 @@
             <input id="Next" type="submit" name="Next" value="{{ val }}">
         </form>
         {% endblock %}
-    </body>
-</html>
+{% endblock %}

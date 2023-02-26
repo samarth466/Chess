@@ -230,10 +230,26 @@ class Board:
     def move(self, move: str):
         turn = next(self.players)
         color = turn.color
-        first_letter = move[1].lower()
-        position = move[1:].lower()
-        if first_letter in self.possible_files:
-            pass
+        first_letter = ''
+        if len(move) >= 3:
+            first_letter = move[0].lower()
+            position = move[1:]
+        else:
+            position = move
+            formatted_move = (move[0], move[1])
+        if color == WHITE:
+            king = self.squares['E1'].piece
+        else:
+            king = self.squares['E8'].piece
+        if position == move and move[0] in self.possible_files:
+            for square in self.squares:
+                if square[0] == position[0]:
+                    piece = self.squares[square].piece
+                    if isinstance(piece, Pawn):
+                        if piece.color == color:
+                            if piece.validate(formatted_move, self.squares, king):
+                                piece.file, piece.rank = formatted_move
+                            break
         elif first_letter == 'k':
             self.matterial[color]['King'][0].validate(position, self.squares)
         elif first_letter == 'n':

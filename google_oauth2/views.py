@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 import json
 from rest_framework.views import APIView
+from rest_framework.renderers import JSONRenderer
 from rest_framework import status
 from rest_framework.response import Response
 from requests import Request, post
@@ -13,6 +14,8 @@ from django.conf import settings
 
 class AuthURL(APIView):
 
+    renderer_classes = [JSONRenderer]
+
     def get(self, request, format=None):
         scopes = '...auth/userinfo.email,...auth/userinfo.profile,openid'.encode(
             encoding='utf-8')
@@ -23,10 +26,14 @@ class AuthURL(APIView):
             headers = {'scope': scopes, 'response_type': 'code',
                        'redirect_uri': data['REDIRECT_URI'], 'client_id': data['CLIENT_ID']}
             url = Request(
-                'get', 'https://accounts.google.com/o/oauth2/auth/oauthchooseaccount', headers).prepare().url()
+                'get', 'https://accounts.google.com/o/oauth2/auth/oauthchooseaccount', headers=headers).prepare().url
             return Response({'url': url}, status.HTTP_200_OK)
         else:
             return Response({}, status.HTTP_400_BAD_REQUEST)
+
+
+def make_request(request):
+    return render(Request, 'google_oauth2/request.html')
 
 
 def google_callback(request, format=None):
@@ -45,4 +52,4 @@ def google_callback(request, format=None):
         request.session['email'] = ''
     update_or_create_user_tokens(request.session.get(
         'email'), access_token, token_type, expiry, refresh_token)
-    return redirect('game:')
+    return redirect('settings:')

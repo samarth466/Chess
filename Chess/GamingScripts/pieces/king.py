@@ -21,7 +21,7 @@ class King(Piece):
         self.win_width = win_width       # width of the window
         self.win_height = win_height      # height of the window
         self.x, self.y = self.piece_x, self.piece_y = get_window_pos(
-            self.file, self.rank, self.possible_files,self.square_width,self.square_height)
+            self.file, self.rank, self.possible_files, self.square_width, self.square_height)
         self.attacked_pieces = []      # list of pieces being attacked by self
         self.attackers = []      # list of pieces attacking self
         self.has_moved = False
@@ -51,7 +51,8 @@ class King(Piece):
                         return True
             return False
 
-    def get_possible_positions_from_current_position(self, position: GamePosition, squares: Squares) -> Positions:
+    @classmethod
+    def get_possible_positions_from_current_position(cls, position: GamePosition, squares: Squares) -> Positions:
         file, rank = position
         prev_rank = rank-1 if rank > 1 else None
         next_rank = rank+1 if rank < 8 else None

@@ -20,7 +20,7 @@ class User(AbstractUser):
     AbstractUser.email.max_length, AbstractUser.email.blank, AbstractUser.email.unique = (
         256, False, True)
     password = PasswordField()
-    birth_date = models.DateField()
+    birth_date = models.DateField(default=date(2000, 1, 1))
     logged_in = models.BooleanField(default=False)
     security_pin = models.CharField(max_length=20, blank=False, null=True, default=None, validators=[
                                     validate_isnumeric], unique=True)
@@ -41,11 +41,12 @@ class User(AbstractUser):
 
     class Meta:
         db_table = "User"
-    
-    def send_message(self,subject,body,from_email=None,to=None,cc=None,bcc=None,headers=None,path=''):
+
+    def send_message(self, subject, body, from_email=None, to=None, cc=None, bcc=None, headers=None, path=''):
         if to == None:
             to = self.email
-        email = EmailMessage(subject=subject,body=body,from_email=from_email,to=to,cc=cc,bcc=bcc,headers=headers)
+        email = EmailMessage(subject=subject, body=body,
+                             from_email=from_email, to=to, cc=cc, bcc=bcc, headers=headers)
         if path:
             email.attach_file(path)
         email.message()

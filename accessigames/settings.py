@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'accessigames',
     'uno.apps.UnoConfig',
     'google_oauth2.apps.GoogleOAuth2Config',
     'tournaments.apps.TournamentsConfig',
