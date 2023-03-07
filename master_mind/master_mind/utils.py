@@ -1,3 +1,6 @@
+from random import choice
+
+
 class Player:
 
     TRIES = 10
@@ -17,7 +20,7 @@ class Player:
     def _generate_code(self) -> list[str]:
         code = []
         for _ in range(self.CODE_LENGTH):
-            code.append(choice(self.COLORS.keys()))
+            code.append(choice(list(self.COLORS.keys())))
         return code
 
     def _check_code(self, guess: list[str], code: list[str]) -> tuple[int, int]:

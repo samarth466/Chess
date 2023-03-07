@@ -43,9 +43,12 @@ class Pawn(Piece):
                 return not king.check(squares=squares, position=position)
             return False
         else:
-            if 0 < abs(rank-self.rank) <= 2:
-                squares[file+str(rank)],squares[self.file+str(self.rank)] = squares[self.file+str(self.rank)],squares[file+str(rank)]
-                return not king.check(squares=squares,position=position)
+            if 0 < abs(int(rank)-self.rank) <= 2:
+                squares[file+str(rank)], squares[self.file+str(self.rank)
+                                                 ] = squares[self.file+str(self.rank)], squares[file+str(rank)]
+                print(squares[file+str(rank)])
+                print(squares[self.file+str(self.rank)])
+                return not king.check(squares=squares, position=position)
             return False
 
     def move_forward_twice(self, rank: int, file: str, squares: Squares) -> tuple[int, int]:

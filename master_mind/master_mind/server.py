@@ -1,6 +1,6 @@
 import socket
 import threading
-from .utils import Player
+from utils import Player
 from random import choice
 
 
@@ -20,13 +20,12 @@ class Computer(Player):
                 guess = message.split(' ')
                 correct_pos, incorrect_pos = self._check_code(guess, code)
                 if correct_pos == self.CODE_LENGTH:
-                    return "You won."
+                    return code, "You won."
                 message = f"Correct Positions: {correct_pos} | Incorrect Positions: {incorrect_pos}"
                 return code, message
-            return code, ''
+            return code, message
         elif self.status == 'code breaker':
             pass
-
 
 
 # Socket Server
@@ -35,12 +34,13 @@ HEADER = 64
 MESSAGE_SIZE = 4096
 FORMAT = 'UTF-8'
 SERVER = socket.gethostbyname(socket.gethostname())
-ADDR = (SERVER,PORT)
-server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+ADDR = (SERVER, PORT)
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind(ADDR)
 clients_in_games = 0
 
-def handle_client(connection: socket.socket, address: tuple[str,str]):
+
+def handle_client(connection: socket.socket, address: tuple[str, str]):
     print(f"{address} connected")
     message = connection.recv(MESSAGE_SIZE).decode(FORMAT)
     if message == 'Disconnect':
@@ -48,19 +48,24 @@ def handle_client(connection: socket.socket, address: tuple[str,str]):
         connection.close()
     if message.upper() == 'PVC':
         computer = Computer('code maker')
-        code,msg = computer.play()
-        for attempt in range(computer.TRIES):
+        code, msg = computer.play()
+        for attempt in range(1, computer.TRIES+1):
+            print(attempt)
             message = connection.recv(MESSAGE_SIZE).decode(FORMAT)
             if message == 'Disconnect':
                 connection.send("Message Received.".encode(FORMAT))
                 break
             guess = message.upper()
-            code,msg = computer.play(code,guess)
+            code, msg = computer.play(code, guess)
             if msg == 'You won.':
                 msg += f' You guessed the code in {attempt} tries.'
                 connection.send(msg.encode(FORMAT))
                 break
-            connection.send(msg.encode(format))
+            connection.send(msg.encode(FORMAT))
+        else:
+            message = f'You lost. The code was {code}'
+            print(message)
+            connection.send(message.encode(FORMAT))
     elif message.upper == 'PVP':
         pass
     connection.close()
@@ -69,11 +74,10 @@ def handle_client(connection: socket.socket, address: tuple[str,str]):
 def start():
     server.listen()
     while True:
-        conn,addr = server.accept()
-        thread = threading.Thread(target=handle_client,args=(conn,addr))
+        conn, addr = server.accept()
+        thread = threading.Thread(target=handle_client, args=(conn, addr))
         thread.start()
         print(f"Number of threads: {threading.active_count()-1}")
-
 
 
 print("Starting Server...")

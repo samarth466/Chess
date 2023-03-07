@@ -36,8 +36,6 @@ class Board:
         self.WINDOW = window
         self.upper_offset = upper_offset
         self.lower_offset = lower_offset
-        self.SURFACE = pygame.Surface(
-            (self.win_width, self.win_height+self.square_height*4), pygame.SCALED)
         self.captured_pieces = []
         self.possible_files = string.ascii_uppercase[:8]
         self.matterial = {
@@ -224,7 +222,6 @@ class Board:
     def get_game_pos(self, x: int, y: int) -> tuple[str, int]:
         file = self.possible_files[x//self.square_width]
         rank = y//self.square_height
-        print((y, self.square_height))
         return file, rank
 
     def move(self, move: str):
@@ -248,7 +245,8 @@ class Board:
                     if isinstance(piece, Pawn):
                         if piece.color == color:
                             if piece.validate(formatted_move, self.squares, king):
-                                piece.file, piece.rank = formatted_move
+                                self.squares[piece.file+str(
+                                    piece.rank)].piece, self.squares[move].piece = self.squares[move].piece, self.squares[piece.file+str(piece.rank)].piece
                             break
         elif first_letter == 'k':
             self.matterial[color]['King'][0].validate(position, self.squares)
@@ -280,13 +278,11 @@ class Board:
             for position, piece in positions:
                 self.squares[position[0]+str(position[1])].draw(board, piece)
         else:
+            print(self.squares['D2'].piece)
+            print(self.squares['D4'].piece)
             for square in self.squares.values():
                 square.draw(board)
-        self.SURFACE.blit(self.offset_box_1, (0, 0))
-        self.SURFACE.blit(board, (0, 0))
-        self.SURFACE.blit(
-            self.offset_box_2, (0, self.offset_box_1.get_height()+board.get_height()))
-        self.WINDOW.blit(self.SURFACE, (0, 0))
+        self.WINDOW.blit(board, (0, 0))
         pygame.display.update()
 
     def capture_piece(self):
@@ -299,26 +295,10 @@ class Board:
                     captured_pieces.close()
                     captured_piece = self.matterial[color][piece_name].pop(i)
                     self.captured_pieces.append(captured_piece)
-                    self.draw_captured_piece(captured_piece)
             except StopIteration:
                 break
             except GeneratorExit:
                 break
-
-    def draw_captured_piece(self, captured_piece):
-        if self.player1.color != captured_piece.color:
-            for x in range(0, self.win_width, 100):
-                for y in range(0, self.upper_offset, 100):
-                    pixel_color = self.offset_box_1.get_at((x, y))
-                    if (pixel_color.r, pixel_color.g, pixel_color.b) == GREY:
-                        self.offset_box_1.blit(captured_piece, (x, y))
-        if self.player2.color != captured_piece.color:
-            for x in range(0, self.win_width, 100):
-                for y in range(0, self.lower_offset, 100):
-                    pixel_color = self.offset_box_2.get_at((x, y))
-                    if (pixel_color.r, pixel_color.g, pixel_color.b) == GREY:
-                        self.offset_box_2.blit(captured_piece, (x, y))
-        pygame.display.update()
 
     def _update_square_attackers(self, attackers):
         for square in self.squares.values():
