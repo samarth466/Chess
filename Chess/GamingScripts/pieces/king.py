@@ -71,19 +71,19 @@ class King(Piece):
                 return True
             return False
         return False
-    
+
     def castle(self, rook, long_castle: bool, squares):
         if long_castle:
             if squares['D'+str(self.rank)].empty and squares['C'+str(self.rank)].empty and squares['B'+str(self.rank)].empty:
                 if not self.has_moved and not rook.has_moved:
-                    if not (self.check(position=self.file+str(self.rank),squares) or self.check(position='D'+str(self.rank),squares=squares) or self.check(position='C'+str(self.rank),squares=squares) or self.check(position='B'+str(self.rank),squares=squares)):
+                    if not (self.check(position=(self.file, self.rank), squares=squares) or self.check(position=('D', self.rank), squares=squares) or self.check(position=('C', self.rank), squares=squares) or self.check(position=('B', self.rank), squares=squares)):
                         self.file = 'C'
                         rook.file = 'D'
                         return True
         else:
             if squares['F'+str(self.file)].empty or squares['G'+str(self.file)].empty:
                 if not self.has_moved and not rook.has_moved:
-                    if not (self.check(position=(self.file,self.rank), squares=squares) or self.check(position=('F',self.rank), squares=squares) or self.check(position=('G',self.rank), squares=squares)):
+                    if not (self.check(position=(self.file, self.rank), squares=squares) or self.check(position=('F', self.rank), squares=squares) or self.check(position=('G', self.rank), squares=squares)):
                         self.file = 'G'
                         rook.file = 'F'
                         return True

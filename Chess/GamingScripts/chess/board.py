@@ -225,18 +225,30 @@ class Board:
         rank = y//self.square_height
         return file, rank
 
-    def move(self, move: str, keep_current_turn: bool = False):
+    def move(self, move: str, keep_current_turn: bool = False) -> None:
         if keep_current_turn:
             next(self.players)
         turn = next(self.players)
         color = turn.color
         first_letter = ''
-        if len(move) >= 3:
+        specifier
+        promotion_piece = ''
+        if '=' in move:
+            move, promotion_piece = move.split('=')
+            if len(move) == 3 and move[0] in self.possible_files:
+                first_letter = move[0].lower()
+                position = move[1:]
+        elif move == '00' or move == 'oo' or move == '000' or move == 'ooo':
+            pass
+        elif len(move) == 4:
+            first_letter = move[0].lower()
+            specifier, *position = move[1:]
+        elif len(move) == 3:
             first_letter = move[0].lower()
             position = move[1:]
         else:
             position = move
-            formatted_move = (move[0], move[1])
+        formatted_move = (position[0], position[1])
         if color == WHITE:
             king = self.squares['E1'].piece
         else:
@@ -270,6 +282,37 @@ class Board:
                         tuple(None for _ in range(11)))
                 self.squares[Piece.file+str(
                     piece.rank)].piece, self.squares[move].piece = self.squares[move].piece, self.squares[piece.file+str(piece.rank)].piece
+        if promotion_piece:
+            if position[1] != 8 and color == WHITE:
+                print("Invalid move!")
+                move = input("Enter a move: ")
+                self.move(move, True)
+            if position[1] != 1 and color == BLACK:
+                print("Invalid move!")
+                move = input("Enter a move")
+                self.move(move, True)
+            piece = None
+            if not filter:
+                piece = Squares[position[0]+str(int(position[1]-1))].piece
+            else:
+                piece = self.squares[first_letter +
+                                     str(int(position[1]-1))].piece
+            if not isinstance(piece, Pawn):
+                print("Invalid move!")
+                move = input("Enter a move: ")
+                self.move(move, True)
+            for piece_name in self.matterial[color]:
+                if piece_name.startswith(promotion_piece):
+                    promotion_piece = piece.promotion(
+                        piece_name, self.images, formatted_move)
+                    self.matterial[color][piece_name].append(promotion_piece)
+                    self.squares[promotion_piece.file +
+                                 str(promotion_piece.rank)].piece = promotion_piece
+                    break
+            else:
+                print("Invalid move!")
+                move = input("Enter a move: ")
+                self.move(move, True)
         if first_letter == 'k':
             piece = self.matterial[color]['King'][0]
             if not piece.validate(formatted_move, self.squares.copy()):
@@ -286,16 +329,16 @@ class Board:
                 piece.rank)].piece, self.squares[move].piece = self.squares[move].piece, self.squares[piece.file+str(piece.rank)].piece
         if move == '00' or move == 'oo':
             rook = self.squares['A'+king.rank].piece
-            if not king.castle(rook,False,self.squares):
+            if not king.castle(rook, False, self.squares):
                 print("Invalid move!")
                 move = input("Enter a move: ")
-                self.move(move,True)
+                self.move(move, True)
         if move == '000' or move == 'ooo':
             rook = self.squares['H'+king.rank].piece
-            if not king.castle(rook,True,self.squares):
+            if not king.castle(rook, True, self.squares):
                 print("Invalid move: ")
                 move = input("Enter a move: ")
-                self.move(move,True)
+                self.move(move, True)
         if first_letter == 'n':
             possible_positions = Knight.get_possible_positions(formatted_move)
             for file, rank in possible_positions:

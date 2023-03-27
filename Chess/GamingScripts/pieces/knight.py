@@ -61,7 +61,8 @@ class Knight(Piece):
             return not king.check(position=position, squares=squares)
         else:
             if squares[file+str(rank)].piece.color != self.color:
-                squares[file+str(rank)].piece = Empty(tuple(None for _ in range(11))):
+                squares[file+str(rank)
+                        ].piece = Empty(tuple(None for _ in range(11)))
             squares[file+str(rank)].piece, squares[self.file+str(self.rank)
                                                    ].piece = squares[self.file+str(self.rank)].piece, squares[file+str(rank)].piece
             return not king.check(position=position, squares=squares)
