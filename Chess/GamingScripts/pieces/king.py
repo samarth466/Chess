@@ -31,7 +31,7 @@ class King(Piece):
         possible_distances = [0, 1]
         if abs(rank-self.rank) in possible_distances and abs(ord(file)-ord(self.file)) in possible_distances:
             piece_color = squares[(file+str(rank))].piece.color
-            if piece_color == self.color or not piece_color:
+            if piece_color == self.color:
                 return False
             else:
                 squares[file+str(rank)].piece, squares[self.file+str(self.rank)
@@ -51,8 +51,7 @@ class King(Piece):
                         return True
             return False
 
-    @classmethod
-    def get_possible_positions_from_current_position(cls, position: GamePosition, squares: Squares) -> Positions:
+    def get_possible_positions_from_current_position(self, position: GamePosition, squares: Squares) -> Positions:
         file, rank = position
         prev_rank = rank-1 if rank > 1 else None
         next_rank = rank+1 if rank < 8 else None
@@ -71,4 +70,21 @@ class King(Piece):
             if len(possible_positions) == len(filtered_possible_positions):
                 return True
             return False
+        return False
+    
+    def castle(self, rook, long_castle: bool, squares):
+        if long_castle:
+            if squares['D'+str(self.rank)].empty and squares['C'+str(self.rank)].empty and squares['B'+str(self.rank)].empty:
+                if not self.has_moved and not rook.has_moved:
+                    if not (self.check(position=self.file+str(self.rank),squares) or self.check(position='D'+str(self.rank),squares=squares) or self.check(position='C'+str(self.rank),squares=squares) or self.check(position='B'+str(self.rank),squares=squares)):
+                        self.file = 'C'
+                        rook.file = 'D'
+                        return True
+        else:
+            if squares['F'+str(self.file)].empty or squares['G'+str(self.file)].empty:
+                if not self.has_moved and not rook.has_moved:
+                    if not (self.check(position=(self.file,self.rank), squares=squares) or self.check(position=('F',self.rank), squares=squares) or self.check(position=('G',self.rank), squares=squares)):
+                        self.file = 'G'
+                        rook.file = 'F'
+                        return True
         return False

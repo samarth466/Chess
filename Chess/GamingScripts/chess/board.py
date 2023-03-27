@@ -284,6 +284,18 @@ class Board:
                     tuple(None for _ in range(11)))
             self.squares[piece.file+str(
                 piece.rank)].piece, self.squares[move].piece = self.squares[move].piece, self.squares[piece.file+str(piece.rank)].piece
+        if move == '00' or move == 'oo':
+            rook = self.squares['A'+king.rank].piece
+            if not king.castle(rook,False,self.squares):
+                print("Invalid move!")
+                move = input("Enter a move: ")
+                self.move(move,True)
+        if move == '000' or move == 'ooo':
+            rook = self.squares['H'+king.rank].piece
+            if not king.castle(rook,True,self.squares):
+                print("Invalid move: ")
+                move = input("Enter a move: ")
+                self.move(move,True)
         if first_letter == 'n':
             possible_positions = Knight.get_possible_positions(formatted_move)
             for file, rank in possible_positions:
