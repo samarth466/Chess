@@ -30,3 +30,33 @@ class Square:
 
     def __str__(self) -> str:
         return f"{self.piece.name} @ {self.file}{self.rank}"
+
+    def get_diagonals(self):
+        diagonals = [[], []]
+        for _ in range(max(self.rank, 8-self.rank)):
+            if ord(self.file)-1 >= ord('A') and self.rank-1 >= 0:
+                diagonals[0].append((chr(ord(self.file)-1), self.rank-1))
+            if ord(self.file)+1 <= ord('H') and self.rank+1 <= 8:
+                diagonals[0].append((chr(ord(self.file)+1), self.rank+1))
+            if ord(self.file)-1 >= ord('A') and self.rank+1 <= 8:
+                diagonals[1].append((chr(ord(self.file)-1), self.rank+1))
+            if ord(self.file)+1 <= ord('H') and self.rank-1 >= 0:
+                diagonals[1].append((chr(ord(self.file)+1), self.rank-1))
+        return [sorted(diagonals[0]), sorted(diagonals[1])]
+
+    def get_ranks(self):
+        ranks = []
+        for _ in range(max(self.rank, 8-self.rank)):
+            if self.rank-1 >= 0:
+                ranks.append((self.file, self.rank-1))
+            elif self.rank+1 <= 8:
+                ranks.append((self.file, self.rank+1))
+        return sorted(ranks)
+
+    def get_files(self):
+        files = []
+        for _ in range(max(ord(self.file)-ord('A'), ord('H')-ord(self.file))):
+            if ord(self.file)-1 >= ord('A'):
+                files.append((chr(ord(self.file)-1), self.rank))
+            elif ord(self.file)+1 <= ord('H'):
+                files.append((chr(ord(self.file)+1), self.rank))

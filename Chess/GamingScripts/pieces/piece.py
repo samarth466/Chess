@@ -30,3 +30,7 @@ class Piece:
 
     def update_attacked_pieces(self, squares: Squares) -> list[GamePosition]:
         return self.attacked_pieces.extend(self._get_possible_positions((self.x, self.y), squares))
+
+    def __str__(self) -> str:
+        color = 'White' if self.color == WHITE else 'Black'
+        return f"{self.file}{self.rank}: {color} {self.name}"

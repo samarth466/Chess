@@ -1,4 +1,5 @@
 from itertools import cycle
+from typing import Union
 import string
 import pygame
 
@@ -87,9 +88,9 @@ class Board:
             },
             WHITE: {
                 'Bishop': [
-                    Bishop('C', 2, BLACK, 0, self.win_width, 0, self.win_height,
+                    Bishop('C', 1, BLACK, 0, self.win_width, 0, self.win_height,
                            self.square_width, self.square_height, self.win_width, self.win_height),
-                    Bishop('F', 2, WHITE, 0, self.win_width, 0,
+                    Bishop('F', 1, WHITE, 0, self.win_width, 0,
                            self.win_height, self.square_width, self.square_height, self.win_width, self.win_height)
                 ],
                 'King': [
@@ -135,7 +136,7 @@ class Board:
         args = tuple(None for _ in range(11))
         self.matterial[WHITE]['Empty'] = self.matterial[BLACK]['Empty'] = [
             Empty(*args) for _ in range(16)]
-        self.squares = {
+        self.squares: dict[str, Square] = {
             'A1': Square(1, 'A', WHITE, self.matterial[WHITE]['Rook'][0], self.square_width),
             'A2': Square(2, 'A', BLACK, self.matterial[WHITE]['Pawn'][0], self.square_width),
             'A3': Square(3, 'A', WHITE, self.matterial[WHITE]['Empty'][0], self.square_width),
@@ -224,7 +225,9 @@ class Board:
         rank = y//self.square_height
         return file, rank
 
-    def move(self, move: str):
+    def move(self, move: str, keep_current_turn: bool = False):
+        if keep_current_turn:
+            next(self.players)
         turn = next(self.players)
         color = turn.color
         first_letter = ''
@@ -244,29 +247,188 @@ class Board:
                     piece = self.squares[square].piece
                     if isinstance(piece, Pawn):
                         if piece.color == color:
-                            if piece.validate(formatted_move, self.squares, king):
-                                self.squares[piece.file+str(
-                                    piece.rank)].piece, self.squares[move].piece = self.squares[move].piece, self.squares[piece.file+str(piece.rank)].piece
+                            if not piece.validate(formatted_move, self.squares.copy(), king):
+                                print("Invalid move!")
+                                move = input("Enter a move: ")
+                                self.move(move, True)
+                            self.squares[piece.file+str(
+                                piece.rank)].piece, self.squares[move].piece = self.squares[move].piece, self.squares[piece.file+str(piece.rank)].piece
                             break
-        elif first_letter == 'k':
-            self.matterial[color]['King'][0].validate(position, self.squares)
-        elif first_letter == 'n':
-            for knight in self.matterial[color]['Knight']:
-                if knight.validate(position, self.squares, self.matterial[color]['King'][0]):
-                    self.update_screen((knight.update_attacked_pieces(
-                    ), (move[0], int(move[1])), (knight.file, knight.rank), knight))
-                    break
-        elif first_letter == 'b':
-            for bishop in self.matterial[color]['Bishop']:
-                if bishop.validate(position, self.squares, self.matterial[color]['King'][0]):
-                    break
-        elif first_letter == 'r':
-            for rook in self.matterial[color]['Rook']:
-                if rook.validate(position, self.squares, self.matterial[color]['King'][0]):
-                    break
+        if first_letter in self.possible_files:
+            piece = self.squares[first_letter+str(int(formatted_move[1])-1)
+                                 ] if color == WHITE else self.squares[first_letter+str(int(formatted_move[1])+1)]
+            if isinstance(Piece, Pawn):
+                if not piece.validate(formatted_move, self.squares.copy(), king):
+                    print("Invalid move!")
+                    move = input("Enter a move: ")
+                    self.move(move, True)
+                other_piece = self.squares[move].piece
+                if other_piece.color != color:
+                    self.matterial[other_piece.color][other_piece.name].remove(
+                        other_piece)
+                    self.squares[move].piece = Empty(
+                        tuple(None for _ in range(11)))
+                self.squares[Piece.file+str(
+                    piece.rank)].piece, self.squares[move].piece = self.squares[move].piece, self.squares[piece.file+str(piece.rank)].piece
+        if first_letter == 'k':
+            piece = self.matterial[color]['King'][0]
+            if not piece.validate(formatted_move, self.squares.copy()):
+                print("Invalid move!")
+                move = input("Enter a move: ")
+                self.move(move, True)
+            other_piece = self.squares[move].piece
+            if other_piece.color != color:
+                self.matterial[other_piece.color][other_piece.name].remove(
+                    other_piece)
+                self.squares[move].piece = Empty(
+                    tuple(None for _ in range(11)))
+            self.squares[piece.file+str(
+                piece.rank)].piece, self.squares[move].piece = self.squares[move].piece, self.squares[piece.file+str(piece.rank)].piece
+        if first_letter == 'n':
+            possible_positions = Knight.get_possible_positions(formatted_move)
+            for file, rank in possible_positions:
+                piece = self.squares[file+str(rank)].piece
+                if isinstance(piece, Knight):
+                    if piece.validate(formatted_move, squares.copy(), king):
+                        other_piece = self.squares[move].piece
+                        if other_piece.color != color:
+                            self.matterial[other_piece.color][other_piece.name].remove(
+                                other_piece)
+                            self.squares[move].piece = Empty(
+                                tuple(None for _ in range(11)))
+                        self.squares[move].piece, self.squares[piece.file+str(
+                            piece.rank)].piece = self.squares[piece.file+str(self.rank)].piece, self.squares[move].piece
+                        break
+            else:
+                print("Invalid move!")
+                move = input("Enter a move: ")
+                self.move(move, True)
+        if first_letter == 'b':
+            diagonals = self.squares[move[1:].upper()].get_diagonals()
+            bishop1, bishop2 = self.matterial[color]['Bishop']
+            if (bishop1.file, bishop1.rank) in diagonals[0] or (bishop1.file, bishop1.rank) in diagonals[1]:
+                if not bishop1.validate(formatted_move, self.squares.copy(), king):
+                    print("Invalid move!")
+                    move = input("Enter a move: ")
+                    self.move(move, True)
+                other_piece = self.squares[move].piece
+                if other_piece.color != color:
+                    self.matterial[other_piece.color][other_piece.name].remove(
+                        other_piece)
+                    self.squares[move].piece = Empty(
+                        tuple(None for _ in range(11)))
+                self.squares[bishop1.file+str(
+                    bishop1.rank)].piece, self.squares[position].piece = self.squares[position].piece, self.squares[bishop1.file+str(bishop1.rank)].piece
+            elif (bishop2.file, bishop2.rank) in diagonals[0] or (bishop2.file, bishop2.rank) in diagonals[1]:
+                if not bishop2.validate(formatted_move, self.squares.copy(), king):
+                    print("Invalid move!")
+                    move = input("Enter a move: ")
+                    self.move(move, True)
+                other_piece = self.squares[move].piece
+                if other_piece.color != color:
+                    self.matterial[other_piece.color][other_piece.name].remove(
+                        other_piece)
+                    self.squares[move].piece = Empty(
+                        tuple(None for _ in range(11)))
+                self.squares[bishop2.file+str(
+                    bishop2.rank)].piece, self.squares[position].piece = self.squares[position].piece, self.squares[bishop2.file+str(bishop2.rank)].piece
+        if first_letter == 'r':
+            if isinstance(specifier, int):
+                if not specifier in move:
+                    print("Invalid move!")
+                    move = input("Enter a move: ")
+                    self.move(move, True)
+                rook1, rook2 = self.matterial[color]['Rook']
+                files = self.squares[move].get_files()
+                if (rook1.file, rook1.rank) in files:
+                    if (rook2.file, rook2.rank) in files:
+                        print("Invalid move: ")
+                        move = input("Enter a move: ")
+                        self.move(move, True)
+                    if rook1.validate(formatted_move, self.squares.copy(), king):
+                        other_piece = self.squares[move].piece
+                        if other_piece.color != color:
+                            self.matterial[other_piece.color][other_piece.name].remove(
+                                other_piece)
+                            self.squares[move].piece = Empty(
+                                tuple(None for _ in range(11)))
+                        self.squares[rook1.file+str(
+                            rook1.rank)].piece, self.squares[move].piece = self.squares[move].piece, self.squares[rook1.file+str(rook1.rank)]
+                if (rook2.file, rook2.rank) in files:
+                    if (rook1.file, rook1.rank) in files:
+                        print("Invalid move: ")
+                        move = input("Enter a move: ")
+                        self.move(move, True)
+                    if rook2.validate(formatted_move, self.squares.copy(), king):
+                        other_piece = self.squares[move].piece
+                        if other_piece.color != color:
+                            self.matterial[other_piece.color][other_piece.name].remove(
+                                other_piece)
+                            self.squares[move].piece = Empty(
+                                tuple(None for _ in range(11)))
+                        self.squares[rook2.file+str(
+                            rook2.rank)].piece, self.squares[move].piece = self.squares[move].piece, self.squares[rook2.file+str(rook2.rank)]
+            elif isinstance(specifier, str):
+                if not specifier in move:
+                    print("Invalid move!")
+                    move = input("Enter a move: ")
+                    self.move(move, True)
+                rook1, rook2 = self.matterial[color]['Rook']
+                ranks = self.squares[move].get_ranks()
+                if (rook1.file, rook1.rank) in ranks:
+                    if (rook2.file, rook2.rank) in ranks:
+                        print("Invalid move: ")
+                        move = input("Enter a move: ")
+                        self.move(move, True)
+                    if rook1.validate(formatted_move, self.squares.copy(), king):
+                        other_piece = self.squares[move].piece
+                        if other_piece.color != color:
+                            self.matterial[other_piece.color][other_piece.name].remove(
+                                other_piece)
+                            self.squares[move].piece = Empty(
+                                tuple(None for _ in range(11)))
+                        self.squares[rook1.file+str(
+                            rook1.rank)].piece, self.squares[move].piece = self.squares[move].piece, self.squares[rook1.file+str(rook1.rank)]
+                if (rook2.file, rook2.rank) in ranks:
+                    if (rook1.file, rook1.rank) in ranks:
+                        print("Invalid move: ")
+                        move = input("Enter a move: ")
+                        self.move(move, True)
+                    if rook2.validate(formatted_move, self.squares.copy(), king):
+                        other_piece = self.squares[move].piece
+                        if other_piece.color != color:
+                            self.matterial[other_piece.color][other_piece.name].remove(
+                                other_piece)
+                            self.squares[move].piece = Empty(
+                                tuple(None for _ in range(11)))
+                        self.squares[rook2.file+str(
+                            rook2.rank)].piece, self.squares[move].piece = self.squares[move].piece, self.squares[rook2.file+str(rook2.rank)]
+            else:
+                ranks = self.squares[move].get_ranks()
+                files = self.squares[move].get_files()
+                rook1, rook2 = self.matterial[color]['Rook']
+                if (rook1.file, rook1.rank) in ranks or (rook1.file, rook1.rank) in files:
+                    if rook1.validate(formatted_move, self.squares.copy(), king):
+                        self.squares[rook1.file+str(
+                            rook1.rank)].piece, self.squares[move].piece = self.squares[move].piece, self.squares[rook1.file+str(rook1.rank)].piece
+                elif (rook2.file, rook2.rank) in ranks or (rook2.file, rook2.rank) in files:
+                    if rook2.validate(formatted_move, self.squares.copy(), king):
+                        self.squares[rook2.file+str(
+                            rook2.rank)].piece, self.squares[move].piece = self.squares[move].piece, self.squares[rook2.file+str(rook2.rank)].piece
         elif first_letter == 'q':
-            if self.matterial[color]['Queen'][0].validate(position, self.squares, self.matterial[color]['King'][0]):
-                pass
+            piece = self.matterial[color]['Queen'][0]
+            if not piece.validate(position, self.squares, self.matterial[color]['King'][0]):
+                print("Invalid move!")
+                move = input("Enter a move: ")
+                self.move(move, True)
+            other_piece = self.squares[move].piece
+            if other_piece.color != color:
+                self.matterial[other_piece.color][other_piece.name].remove(
+                    other_piece)
+                self.squares[move].piece = Empty(
+                    tuple(None for _ in range(11)))
+            self.squares[piece.file+str(
+                piece.rank)].piece, self.squares[move].piece = self.squares[move].piece, self.squares[piece.file+str(piece.rank)].piece
 
     def draw_board(self, positions: PositionDict = {}):
         board = pygame.Surface((self.win_width, self.win_height))
