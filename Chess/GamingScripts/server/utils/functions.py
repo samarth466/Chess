@@ -2,7 +2,7 @@ from typing import Sequence
 import string
 
 import pygame
-from flatten import flatten
+from .flatten import flatten
 
 
 def get_string_from_sequence(seq: Sequence) -> str:

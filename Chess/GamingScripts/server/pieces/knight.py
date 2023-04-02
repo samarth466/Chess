@@ -6,7 +6,7 @@ from chess.CONSTANTS import (SQUARE_WIDTH, WHITE, BLACK, BLUE_GREEN)
 from .piece import Piece
 from .king import King
 from .empty import Empty
-from flatten import flatten
+from utils.flatten import flatten
 from utils.types import (
     GamePosition, Positions, Squares
 )

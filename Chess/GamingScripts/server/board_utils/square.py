@@ -21,12 +21,12 @@ class Square:
 
     def draw(self, win: pygame.Surface, piece=None):
         x, y = self.get_window_pos()
-        self.rect = pygame.Rect(x, y, self.square_length, self.square_length)
-        pygame.draw.rect(win, self.color, self.rect)
+        rect = pygame.Rect(x, y, self.square_length, self.square_length)
+        pygame.draw.rect(win, self.color, rect)
         if self.piece.image:
             piece_x, piece_y = x+self.square_length//2-self.piece.image.get_width()//2, y + \
                 self.square_length//2-self.piece.image.get_height()//2
-            win.blit(self.piece.image, (piece_x, piece_y))
+            win.blit(self.piece.surface, (piece_x, piece_y))
 
     def __str__(self) -> str:
         return f"{self.piece.name} @ {self.file}{self.rank}"

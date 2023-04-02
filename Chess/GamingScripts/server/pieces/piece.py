@@ -12,7 +12,7 @@ class Piece:
         PATH = join(Path(__file__).parent.parent, 'chessmen',
                     f"{COLOR_LETTERING}_{name}.png")
         pygame.init()
-        if PATH.endswith('_none.png') != True:
+        if not PATH.endswith('_none.png'):
             self.image = pygame.image.load(PATH).convert_alpha()
             self.SURFACE = pygame.Surface(
                 (self.image.get_width(), self.image.get_height()), pygame.SRCALPHA)
@@ -34,3 +34,20 @@ class Piece:
     def __str__(self) -> str:
         color = 'White' if self.color == WHITE else 'Black'
         return f"{self.file}{self.rank}: {color} {self.name}"
+
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        image = state.pop("image")
+        state["image_string"] = (pygame.image.tobytes(
+            image, "RGB"), image.get_size())
+        surface = state.pop("surface")
+        state["surface_string"] = (pygame.image.tobytes(
+            surface, "RGB"), surface.get_size())
+        return state
+
+    def __setstate__(self, state):
+        image_string, size = state.pop("image_string")
+        state["image"] = pygame.image.frombytes(image_string, "RGB")
+        surface_string, size = state.pop("surface_string")
+        state["surface"] = pygame.image.frombytes(surface_string, "RGB")
+        self.__dict__.update(state)

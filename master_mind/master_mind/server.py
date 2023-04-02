@@ -30,7 +30,6 @@ class Computer(Player):
 
 # Socket Server
 PORT = 5050
-HEADER = 64
 MESSAGE_SIZE = 4096
 FORMAT = 'UTF-8'
 SERVER = socket.gethostbyname(socket.gethostname())
