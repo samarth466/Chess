@@ -26,7 +26,7 @@ class Square:
         if self.piece.image:
             piece_x, piece_y = x+self.square_length//2-self.piece.image.get_width()//2, y + \
                 self.square_length//2-self.piece.image.get_height()//2
-            win.blit(self.piece.surface, (piece_x, piece_y))
+            win.blit(self.piece.SURFACE, (piece_x, piece_y))
 
     def __str__(self) -> str:
         return f"{self.piece.name} @ {self.file}{self.rank}"

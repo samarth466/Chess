@@ -2,7 +2,7 @@ import pygame
 from typing import Sequence, Literal
 
 from board_utils import Square
-from chess.CONSTANTS import (SQUARE_WIDTH, WHITE, BLACK, BLUE_GREEN)
+from chess.CONSTANTS import (SQUARE_WIDTH, WHITE, BLACK)
 from .piece import Piece
 from .king import King
 from .empty import Empty

@@ -13,14 +13,6 @@ from utils.types import Squares, PositionDict, WindowPosition, GamePosition
 from utils.flatten import flatten
 
 
-def capture_piece(matterial):
-    for color, color_pieces in matterial:
-        for piece_name, piece_list in color_pieces:
-            if piece_list:
-                for i, piece in enumerate(piece_list):
-                    yield (color, piece_name, i)
-
-
 class Board:
 
     def __init__(self, size: tuple[int, int], square_width: int, square_height: int, player1: Player, player2: Player, window: pygame.Surface) -> None:
@@ -224,6 +216,7 @@ class Board:
 
     def move(self, move: str, turn: Player) -> str:
         color = turn.color
+        self._update_square_attackers(color)
         first_letter = ''
         specifier
         promotion_piece = ''
@@ -462,66 +455,23 @@ class Board:
                 piece.rank)].piece, self.squares[move].piece = self.squares[move].piece, self.squares[piece.file+str(piece.rank)].piece
         return ""
 
-    def draw_board(self, positions: PositionDict = {}):
+    def draw(self):
         board = pygame.Surface((self.win_width, self.win_height))
-        self.offset_box_1 = pygame.Surface((self.win_width, self.upper_offset))
-        self.offset_box_2 = pygame.Surface((self.win_width, self.lower_offset))
-        self.offset_box_1.fill(GREY), board.fill(
-            GREY), self.offset_box_2.fill(GREY)
-        if positions:
-            for position, piece in positions:
-                self.squares[position[0]+str(position[1])].draw(board, piece)
-        else:
-            print(self.squares['D2'].piece)
-            print(self.squares['D4'].piece)
-            for square in self.squares.values():
-                square.draw(board)
-        self.WINDOW.blit(board, (0, 0))
-        pygame.display.update()
-
-    def capture_piece(self):
-        while True:
-            captured_pieces = capture_piece(self.matterial)
-            try:
-                color, piece_name, i = next(captured_pieces)
-                x, y = self.matterial[color][piece_name][i].x, self.matterial[color][piece_name][i].y
-                if piece.x == x and piece.y == y:
-                    captured_pieces.close()
-                    captured_piece = self.matterial[color][piece_name].pop(i)
-                    self.captured_pieces.append(captured_piece)
-            except StopIteration:
-                break
-            except GeneratorExit:
-                break
-
-    def _update_square_attackers(self, attackers):
+        board.fill(GREY)
         for square in self.squares.values():
-            if self.get_window_pos(square.rank, square.file) in attackers:
-                square.attacked = True
-            else:
+            square.draw(board)
+        self.WINDOW.blit(board, (0, 0))
+
+    def _update_square_attackers(self, turn_color):
+        updated_squares = set()
+        for piece_list in self.matterial[turn_color].values():
+            for piece in piece_list:
+                for square in piece.find_possible_positions((piece.file, piece.rank)):
+                    square.attacked = True
+                    updated_squares.add(square)
+        for square in self.squares.values():
+            if not square in updated_squares:
                 square.attacked = False
-
-    def update_screen(self, move_info: tuple[list[Piece], WindowPosition, WindowPosition, Piece]):
-        attacked_pieces, new_pos, old_pos, piece = move_info
-        self._update_square_attackers(attacked_pieces)
-        old_pos = get_string_from_sequence(
-            tuple(str(i) for i in self.get_game_pos(*old_pos)))
-        piece = self.squares[old_pos].piece
-        self.squares[old_pos].piece = None
-        new_pos = get_string_from_sequence(
-            tuple(str(i) for i in self.get_game_pos(*new_pos)))
-        old_piece = self.squares[new_pos].piece
-        if not old_piece:
-            self.squares[new_pos].piece = piece
-        else:
-            if old_piece.color != piece.color:
-                self.capture_piece(old_piece.x, old_piece.y)
-                self.squares[old_pos].piece = piece
-        self.update()
-
-    def update(self):
-        self.draw_board()
-        pygame.display.update()
 
     def end(self):
         if self.matterial[BLACK]['King'][0].checkmate(list(self.matterial[WHITE].values())):

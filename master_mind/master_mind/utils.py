@@ -41,3 +41,6 @@ class Player:
                 color_counts['incorrect'] += 1
                 color_counts[color] -= 1
         return color_counts['correct'], color_counts['incorrect']
+
+    def reset(self):
+        return Player(self.status)

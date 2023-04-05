@@ -1,16 +1,16 @@
 import socket
 import threading
-import pickle
 
 from chess import Board, Player
 from pygame.display import set_mode
-from chess.CONSTANTS import WINDOW_WIDTH, WINDOW_HEIGHT, SQUARE_WIDTH, SQUARE_HEIGHT
+from pygame.image import tobytes
+from chess.CONSTANTS import WINDOW_WIDTH, WINDOW_HEIGHT, SQUARE_WIDTH, SQUARE_HEIGHT, BLACK, WHITE
 
 PORT = 5050
 MESSAGE_SIZE = 4096
 FORMAT = 'UTF-8'
-SERVER = socket.gethostbyname(socket.gethostname)
-ADDR = (SERVER, PORT)
+HOST = socket.gethostbyname(socket.gethostname())
+ADDR = (HOST, PORT)
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind(ADDR)
 
@@ -37,16 +37,18 @@ def handle_clients(connections: list, addresses: list):
     player2 = Player(name, BLACK)
     board = Board((WINDOW_WIDTH, WINDOW_HEIGHT), SQUARE_WIDTH,
                   SQUARE_HEIGHT, player1, player2, window)
-    data = pickle.dumps(board.squares, -1)
+    data = tobytes(board.WINDOW, 'RGB')
     for conn in connections:
         conn.send(data)
-    conn = players[board.get_current_player().color]
+    current_turn = board.get_current_player()
+    conn = players[current_turn.color]
     while True:
         move = conn.recv(MESSAGE_SIZE).decode()
         message = board.move(move)
         if message == "Invalid move!":
             conn.send(message)
         else:
+            conn.send(f"Successfully made move:\n{move}".encode(FORMAT))
             break
     try:
         name = board.find_player_by_color(board.end()).username
@@ -54,7 +56,8 @@ def handle_clients(connections: list, addresses: list):
             conn.send(f"{name} won!".encode(FORMAT))
         return
     except:
-        pass
+        for conn in connections:
+            conn.send("Game still in session.".encode(FORMAT))
 
 
 def start() -> None:
@@ -71,3 +74,7 @@ def start() -> None:
             thread.start()
         else:
             conn.send("Waiting for opponent".encode(FORMAT))
+
+
+if __name__ == "__main__":
+    start()

@@ -48,23 +48,28 @@ def handle_client(connection: socket.socket, address: tuple[str, str]):
     if message.upper() == 'PVC':
         computer = Computer('code maker')
         code, msg = computer.play()
+        interrupted = False
         for attempt in range(1, computer.TRIES+1):
             print(attempt)
             message = connection.recv(MESSAGE_SIZE).decode(FORMAT)
             if message == 'Disconnect':
                 connection.send("Message Received.".encode(FORMAT))
+                connection.close()
                 break
             guess = message.upper()
             code, msg = computer.play(code, guess)
             if msg == 'You won.':
                 msg += f' You guessed the code in {attempt} tries.'
                 connection.send(msg.encode(FORMAT))
+                interrupted = True
                 break
             connection.send(msg.encode(FORMAT))
         else:
-            message = f'You lost. The code was {code}'
+            message = f"You lost. The code was \n{code}"
             print(message)
             connection.send(message.encode(FORMAT))
+        if interrupted:
+            connection.send("".encode(FORMAT))
     elif message.upper == 'PVP':
         pass
     connection.close()

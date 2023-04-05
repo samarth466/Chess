@@ -32,12 +32,11 @@ class Person(Player):
 
 # Socket Client
 PORT = 5050
-HEADER = 64
 MESSAGE_SIZE = 4096
 FORMAT = 'UTF-8'
 DISCONNECT_MESSAGE = 'Disconnect'
-SERVER = '192.168.1.181'
-ADDR = (SERVER, PORT)
+HOST = '192.168.1.180'
+ADDR = (HOST, PORT)
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client.connect(ADDR)
 
@@ -50,13 +49,20 @@ def game() -> None:
         client.send(mode.encode(FORMAT))
         player = Person("code breaker")
         print(f"You have {player.TRIES} attempts to guess the code.")
+        turns_left = player.TRIES
         if mode == 'PVC':
             guess = ' '.join(player.play())
             while True:
+                turns_left -= 1
+                print(f"You have {turns_left} turns left to guess the code!")
                 client.send(guess.encode(FORMAT))
                 message = client.recv(MESSAGE_SIZE).decode(FORMAT)
-                if 'won' in message or 'lost' in message:
+                if 'won' in message:
                     print(message)
+                    break
+                msg = client.recv(MESSAGE_SIZE).decode(FORMAT)
+                if msg:
+                    print(msg)
                     break
                 guess = ' '.join(player.play(message=message))
         else:
