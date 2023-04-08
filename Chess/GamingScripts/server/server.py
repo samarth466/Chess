@@ -9,6 +9,7 @@ from chess.CONSTANTS import WINDOW_WIDTH, WINDOW_HEIGHT, SQUARE_WIDTH, SQUARE_HE
 PORT = 5050
 MESSAGE_SIZE = 4096
 FORMAT = 'UTF-8'
+DISCONNECT_MESSAGE = "Disconnect!"
 HOST = socket.gethostbyname(socket.gethostname())
 ADDR = (HOST, PORT)
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
