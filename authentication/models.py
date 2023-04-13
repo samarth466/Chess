@@ -1,5 +1,9 @@
+from django.conf import settings
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from datetime import date
+from rest_framework.authtoken.models import Token
 from authentication.validators import validate_isnumeric
 from tournaments.models import Room
 from authentication.fields import PasswordField
@@ -8,6 +12,12 @@ from django.utils.translation import gettext_lazy as _
 from django.core.mail.message import EmailMessage
 
 # Create your models here.
+
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)
 
 
 class User(AbstractUser):
@@ -36,11 +46,13 @@ class User(AbstractUser):
     ])
 
     def __str__(self):
-        s = "You are signed in as {}"
-        return s.format(self.user_email)
+        s = f"You are signed in as {self.email}"
+        return s
 
     class Meta:
         db_table = "User"
+        verbose_name = "user"
+        verbose_name_plural = "users"
 
     def send_message(self, subject, body, from_email=None, to=None, cc=None, bcc=None, headers=None, path=''):
         if to == None:

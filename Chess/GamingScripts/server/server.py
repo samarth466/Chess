@@ -66,6 +66,8 @@ def start() -> None:
     addresses = connections = []
     while True:
         conn, addr = server.accept()
+        print(conn)
+        print(addr)
         connections.append(conn)
         addresses.append(addr)
         if len(connections) == 2:

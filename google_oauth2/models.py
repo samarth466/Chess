@@ -11,3 +11,8 @@ class GoogleTokens(models.Model):
     access_token = models.CharField(max_length=150)
     expiry = models.DateTimeField()
     token_type = models.CharField(max_length=50)
+
+    class Meta:
+        db_table = "Google_Tokens"
+        verbose_name = "google tokens"
+        verbose_name_plural = "google tokens"

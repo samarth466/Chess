@@ -14,3 +14,5 @@ class Settings(models.Model):
 
     class Meta:
         db_table = "Settings"
+        verbose_name = "settings"
+        verbose_name_plural = "settings"
