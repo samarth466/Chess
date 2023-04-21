@@ -1,7 +1,7 @@
 {% extends 'accessigames/base.html' %}
-        {% load static %}
-        {% block content %}
-        <h1>{{ heading }}</h1>
+{% load static %}
+{% block content %}
+    <h1>{{ heading }} | Authentication</h1>
         {% block form %}
         <form action="{{ action }}" method="{{ method }}" id="form">
             {% csrf_token %}

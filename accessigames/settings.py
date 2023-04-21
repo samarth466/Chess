@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'accessigames',
+    'mathfilters',
     'rest_framework.authtoken',
     'blogs.apps.BlogsConfig',
     'uno.apps.UnoConfig',

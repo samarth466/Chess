@@ -24,11 +24,11 @@ class User(AbstractUser):
     AbstractUser.first_name.max_length, AbstractUser.first_name.blank = (
         400, False)
     AbstractUser.username.max_length, AbstractUser.username.primary_key = (
-        128, True)
+        128, False)
     AbstractUser.last_name.max_length, AbstractUser.last_name.blank = (
         400, False)
-    AbstractUser.email.max_length, AbstractUser.email.blank, AbstractUser.email.unique = (
-        256, False, True)
+    email = models.EmailField(
+        max_length=256, blank=False, unique=True, primary_key=True)
     password = PasswordField()
     birth_date = models.DateField(default=date(2000, 1, 1))
     logged_in = models.BooleanField(default=False)
@@ -44,6 +44,9 @@ class User(AbstractUser):
         ('PT', 'Parent'),
         ('PL', 'Personal')
     ])
+    USERNAME_FIELD = 'email'
+    EMAIL_FIELD = 'email'
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'username', 'birth_date']
 
     def __str__(self):
         s = f"You are signed in as {self.email}"

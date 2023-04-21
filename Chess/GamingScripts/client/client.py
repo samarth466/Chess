@@ -1,7 +1,8 @@
 import socket
 import pygame
+import pickle
 #from thorpy import Inserter
-from voice_recognition import speak
+#from voice_recognition import speak
 
 # PyGame Initializations
 
@@ -60,8 +61,12 @@ def main() -> None:
         clock.tick(FPS)
         SCREEN.fill(GREY)
         #SCREEN.fill((0, 72, 0))
-        data = CLIENT.recv(MESSAGE_SIZE).decode(FORMAT)
-        screen = pygame.image.frombytes(data, 'RGB')
+        data = CLIENT.recv(MESSAGE_SIZE)
+        if "Waiting for opponent".encode(FORMAT) in data:
+            print(data.decode(FORMAT))
+            CLIENT.recv(MESSAGE_SIZE)
+        data = pickle.loads(data)
+        screen = pygame.surfarray.make_surface(data)
         draw(SCREEN, screen)
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:

@@ -1,9 +1,11 @@
 import socket
 import threading
+import pickle
+import random
 
 from chess import Board, Player
 from pygame.display import set_mode
-from pygame.image import tobytes
+from pygame.surfarray import array3d
 from chess.CONSTANTS import WINDOW_WIDTH, WINDOW_HEIGHT, SQUARE_WIDTH, SQUARE_HEIGHT, BLACK, WHITE
 
 PORT = 5050
@@ -17,28 +19,30 @@ server.bind(ADDR)
 
 
 def handle_clients(connections: list, addresses: list):
+    boolean_choice = bool(random.randint(0, 1))
+    print(addresses)
     players = {
-        WHITE: connections[0],
-        BLACK: connections[1]
+        WHITE: connections[int(boolean_choice)],
+        BLACK: connections[int(not boolean_choice)]
     }
     window = set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
-    name = connections[0].recv(MESSAGE_SIZE).decode(FORMAT)
+    name = players[WHITE].recv(MESSAGE_SIZE).decode(FORMAT)
     if name == DISCONNECT_MESSAGE:
-        connections[0].send("Message Recieved.".encode(FORMAT))
-        connections[1].send("Opponent left.".encode(FORMAT))
-        connections[0].close()
+        players[WHITE].send("Message Recieved.".encode(FORMAT))
+        players[BLACK].send("Opponent left.".encode(FORMAT))
+        players[WHITE].close()
         return
     player1 = Player(name, WHITE)
-    name = connections[1].recv(MESSAGE_SIZE).decode(FORMAT)
+    name = players[BLACK].recv(MESSAGE_SIZE).decode(FORMAT)
     if name == DISCONNECT_MESSAGE:
-        connections[1].send("Message Recieved.".encode(FORMAT))
-        connections[0].send("Opponent left.".encode(FORMAT))
-        connections[1].close()
+        players[BLACK].send("Message Recieved.".encode(FORMAT))
+        players[WHITE].send("Opponent left.".encode(FORMAT))
+        players[BLACK].close()
         return
     player2 = Player(name, BLACK)
     board = Board((WINDOW_WIDTH, WINDOW_HEIGHT), SQUARE_WIDTH,
                   SQUARE_HEIGHT, player1, player2, window)
-    data = tobytes(board.WINDOW, 'RGB')
+    data = pickle.dumps(array3d(board.WINDOW))
     for conn in connections:
         conn.send(data)
     current_turn = board.get_current_player()
@@ -63,17 +67,21 @@ def handle_clients(connections: list, addresses: list):
 
 def start() -> None:
     server.listen()
-    addresses = connections = []
+    addresses = []
+    connections = []
     while True:
         conn, addr = server.accept()
-        print(conn)
-        print(addr)
+        # print(conn)
+        # print(addr)
         connections.append(conn)
         addresses.append(addr)
         if len(connections) == 2:
+            for conn in connections:
+                conn.send("Starting game!".encode(FORMAT))
             thread = threading.Thread(
                 target=handle_clients, args=(connections, addresses))
-            connections = addresses = []
+            connections = []
+            addresses = []
             thread.start()
         else:
             conn.send("Waiting for opponent".encode(FORMAT))

@@ -1,8 +1,9 @@
 {% extends 'authentication/form.html' %}
 {% load static %}
 {% block javascript %}
-<script src="{% static 'UserAuth/format.js' %}"></script>
+<script src="{% static 'authentication/format.js' %}" type="text/js"></script>
 {% endblock %}
+{% block title %}Create New User Account | Authentication{% endblock %}
 {% if heading == "The passwords do not match. Try again" %}
     <h1><strong>{{ heading }}</strong></h1>
     <style>
