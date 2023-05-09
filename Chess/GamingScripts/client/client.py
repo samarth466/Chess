@@ -24,7 +24,7 @@ PORT = 5050
 MESSAGE_SIZE = 2240000
 FORMAT = 'UTF-8'
 DISCONNECT_MESSAGE = 'Disconnect!'
-HOST = '192.168.1.180'
+HOST = '192.168.1.86'
 ADDR = (HOST, PORT)
 CLIENT = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 CLIENT.connect(ADDR)
@@ -65,6 +65,13 @@ def main() -> None:
         if "Waiting for opponent".encode(FORMAT) in data:
             print(data.decode(FORMAT))
             CLIENT.recv(MESSAGE_SIZE)
+        data = []
+        while True:
+            packet = CLIENT.recv(MESSAGE_SIZE)
+            if not packet:
+                break
+            data.append(packet)
+        data = b"".join(data)
         data = pickle.loads(data)
         screen = pygame.surfarray.make_surface(data)
         draw(SCREEN, screen)
