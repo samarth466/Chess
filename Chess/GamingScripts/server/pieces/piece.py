@@ -23,6 +23,7 @@ class Piece:
         self.color = color
         self.name = name
         self.possible_files = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+        self.id = '_'.join([self._color_id(), self.name])
 
     def draw(self, win: pygame.Surface) -> None:
         x, y = self.get_window_pos()
@@ -35,19 +36,5 @@ class Piece:
         color = 'White' if self.color == WHITE else 'Black'
         return f"{self.file}{self.rank}: {color} {self.name}"
 
-    def __getstate__(self):
-        state = self.__dict__.copy()
-        image = state.pop("image")
-        state["image_string"] = (pygame.image.tobytes(
-            image, "RGB"), image.get_size())
-        surface = state.pop("surface")
-        state["surface_string"] = (pygame.image.tobytes(
-            surface, "RGB"), surface.get_size())
-        return state
-
-    def __setstate__(self, state):
-        image_string, size = state.pop("image_string")
-        state["image"] = pygame.image.frombytes(image_string, "RGB")
-        surface_string, size = state.pop("surface_string")
-        state["surface"] = pygame.image.frombytes(surface_string, "RGB")
-        self.__dict__.update(state)
+    def _color_id(self) -> str:
+        return "W" if self.color == WHITE else "B"

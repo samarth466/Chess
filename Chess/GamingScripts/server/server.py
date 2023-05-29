@@ -1,11 +1,10 @@
 import socket
 import threading
-import pickle
+import json
 import random
 
 from chess import Board, Player
 from pygame.display import set_mode
-from pygame.surfarray import array3d
 from chess.CONSTANTS import WINDOW_WIDTH, WINDOW_HEIGHT, SQUARE_WIDTH, SQUARE_HEIGHT, BLACK, WHITE
 
 PORT = 5050
@@ -20,7 +19,6 @@ server.bind(ADDR)
 
 def handle_clients(connections: list, addresses: list):
     boolean_choice = bool(random.randint(0, 1))
-    print(addresses)
     players = {
         WHITE: connections[int(boolean_choice)],
         BLACK: connections[int(not boolean_choice)]
@@ -42,7 +40,8 @@ def handle_clients(connections: list, addresses: list):
     player2 = Player(name, BLACK)
     board = Board((WINDOW_WIDTH, WINDOW_HEIGHT), SQUARE_WIDTH,
                   SQUARE_HEIGHT, player1, player2, window)
-    data = pickle.dumps(array3d(board.WINDOW))
+    data = json.dumps(
+        {pos: piece.id for pos, piece in board.SQUARES.items()}).encode(FORMAT)
     for conn in connections:
         conn.send(data)
     current_turn = board.get_current_player()
@@ -70,21 +69,23 @@ def start() -> None:
     addresses = []
     connections = []
     while True:
-        conn, addr = server.accept()
-        # print(conn)
-        # print(addr)
-        connections.append(conn)
-        addresses.append(addr)
-        if len(connections) == 2:
-            for conn in connections:
-                conn.send("Starting game!".encode(FORMAT))
-            thread = threading.Thread(
-                target=handle_clients, args=(connections, addresses))
-            connections = []
-            addresses = []
-            thread.start()
-        else:
-            conn.send("Waiting for opponent".encode(FORMAT))
+        try:
+            conn, addr = server.accept()
+            server.send("".encode(FORMAT))
+            connections.append(conn)
+            addresses.append(addr)
+            if len(connections) == 2:
+                for conn in connections:
+                    conn.send("Starting game!".encode(FORMAT))
+                thread = threading.Thread(
+                    target=handle_clients, args=(connections, addresses))
+                connections = []
+                addresses = []
+                thread.start()
+            else:
+                conn.send("Waiting for opponent".encode(FORMAT))
+        except Exception as e:
+            server.send(str(e).encode(FORMAT))
 
 
 if __name__ == "__main__":

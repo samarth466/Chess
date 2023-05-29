@@ -1,6 +1,7 @@
 import socket
 import pygame
-import pickle
+import json
+from os.path import join
 #from thorpy import Inserter
 #from voice_recognition import speak
 
@@ -17,6 +18,8 @@ WINDOW_WIDTH = WINDOW_HEIGHT = min(
     pygame.display.Info().current_w, pygame.display.Info().current_h)
 BLUE_GREEN = (13, 152, 186)
 GREY = (128, 128, 128)
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
 
 # Socket Constants
 
@@ -28,10 +31,30 @@ HOST = '192.168.1.86'
 ADDR = (HOST, PORT)
 CLIENT = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 CLIENT.connect(ADDR)
+msg = CLIENT.recv(MESSAGE_SIZE).decode(FORMAT)
+if msg:
+    print(msg)
+    exit()
 
 
-def draw(window: pygame.Surface, screen: pygame.Surface):
-    window.blit(screen, (0, 0))
+def draw(window: pygame.Surface, data: dict):
+    file = "A"
+    rank = 1
+    square_size = WINDOW_HEIGHT/8
+    for i in range(0, WINDOW_WIDTH, square_size):
+        for j in range(0, WINDOW_HEIGHT, square_size):
+            color = BLACK
+            if ord(file) % 2 == 0 and rank % 2 == 1:
+                color = WHITE
+            elif ord(file) % 2 == 1 and rank % 2 == 0:
+                color = WHITE
+            pygame.draw.rect(window, color, (i, j, square_size, square_size))
+            if (file, rank) in data:
+                window.blit(pygame.image.load(
+                    join("Chessmen", data[(file, rank)])), (i, j))
+                rank += 1
+            rank = 1
+            file = chr(ord(file)+1)
     pygame.display.update()
 
 
@@ -65,16 +88,8 @@ def main() -> None:
         if "Waiting for opponent".encode(FORMAT) in data:
             print(data.decode(FORMAT))
             CLIENT.recv(MESSAGE_SIZE)
-        data = []
-        while True:
-            packet = CLIENT.recv(MESSAGE_SIZE)
-            if not packet:
-                break
-            data.append(packet)
-        data = b"".join(data)
-        data = pickle.loads(data)
-        screen = pygame.surfarray.make_surface(data)
-        draw(SCREEN, screen)
+        data = json.loads(CLIENT.recv(MESSAGE_SIZE).decode(FORMAT))
+        draw(SCREEN, data)
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
             run = False
