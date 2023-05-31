@@ -26,7 +26,7 @@ def database_check(response):
         email = form.cleaned_data['email']
         try:
             if User.objects.get(email=email):
-                return redirect('/register/login/?next='+response.GET.get('next'))
+                return redirect("login", next=response.GET['next'])
         except User.DoesNotExist:
             msg = f"{email} does not exist."
             return render(response, "authentication/error.html", {'error': msg, 'next': response.GET['next']})
@@ -85,11 +85,12 @@ def login(response):
             user = authenticate(response, email=email, password=password)
             if user:
                 login(response)
-                if response.GET['next']:
+                if not (response.GET['next'] is None):
                     return redirect(response.GET['next'])
-                return redirect('blogs:home')
+                else:
+                    return redirect('blogs:home')
             else:
-                return redirect(reverse('register')+'?next='+response.GET['next'])
+                return redirect("create_user_account", next=response.GET['next'])
     else:
         form = LogInForm()
         context_vars = {'form': form, 'heading': 'Please sign in to your account here.',

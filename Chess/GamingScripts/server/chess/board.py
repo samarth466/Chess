@@ -216,9 +216,9 @@ class Board:
 
     def move(self, move: str, turn: Player) -> str:
         color = turn.color
-        self._update_square_attackers(color)
+        #self._update_square_attackers(color)
         first_letter = ''
-        specifier
+        specifier = None
         promotion_piece = ''
         if '=' in move:
             move, promotion_piece = move.split('=')

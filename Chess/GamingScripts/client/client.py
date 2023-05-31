@@ -31,16 +31,12 @@ HOST = '192.168.1.86'
 ADDR = (HOST, PORT)
 CLIENT = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 CLIENT.connect(ADDR)
-msg = CLIENT.recv(MESSAGE_SIZE).decode(FORMAT)
-if msg:
-    print(msg)
-    exit()
 
 
-def draw(window: pygame.Surface, data: dict):
+def draw(window: pygame.Surface, data: dict) -> None:
     file = "A"
     rank = 1
-    square_size = WINDOW_HEIGHT/8
+    square_size = WINDOW_HEIGHT//8
     for i in range(0, WINDOW_WIDTH, square_size):
         for j in range(0, WINDOW_HEIGHT, square_size):
             color = BLACK

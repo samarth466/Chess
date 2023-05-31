@@ -41,14 +41,14 @@ def handle_clients(connections: list, addresses: list):
     board = Board((WINDOW_WIDTH, WINDOW_HEIGHT), SQUARE_WIDTH,
                   SQUARE_HEIGHT, player1, player2, window)
     data = json.dumps(
-        {pos: piece.id for pos, piece in board.SQUARES.items()}).encode(FORMAT)
+        {pos: square.piece.id for pos, square in board.squares.items()}).encode(FORMAT)
     for conn in connections:
         conn.send(data)
     current_turn = board.get_current_player()
     conn = players[current_turn.color]
     while True:
         move = conn.recv(MESSAGE_SIZE).decode()
-        message = board.move(move)
+        message = board.move(move, current_turn)
         if message == "Invalid move!":
             conn.send(message)
         else:
@@ -69,23 +69,19 @@ def start() -> None:
     addresses = []
     connections = []
     while True:
-        try:
-            conn, addr = server.accept()
-            server.send("".encode(FORMAT))
-            connections.append(conn)
-            addresses.append(addr)
-            if len(connections) == 2:
-                for conn in connections:
-                    conn.send("Starting game!".encode(FORMAT))
-                thread = threading.Thread(
-                    target=handle_clients, args=(connections, addresses))
-                connections = []
-                addresses = []
-                thread.start()
-            else:
-                conn.send("Waiting for opponent".encode(FORMAT))
-        except Exception as e:
-            server.send(str(e).encode(FORMAT))
+        conn, addr = server.accept()
+        connections.append(conn)
+        addresses.append(addr)
+        if len(connections) == 2:
+            for conn in connections:
+                conn.send("Starting game!".encode(FORMAT))
+            thread = threading.Thread(
+                target=handle_clients, args=(connections, addresses))
+            connections = []
+            addresses = []
+            thread.start()
+        else:
+            conn.send("Waiting for opponent".encode(FORMAT))
 
 
 if __name__ == "__main__":
