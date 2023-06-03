@@ -84,8 +84,12 @@ def main() -> None:
         if "Waiting for opponent".encode(FORMAT) in data:
             print(data.decode(FORMAT))
             CLIENT.recv(MESSAGE_SIZE)
-        data = json.loads(CLIENT.recv(MESSAGE_SIZE).decode(FORMAT))
-        draw(SCREEN, data)
+        msg = CLIENT.recv(MESSAGE_SIZE).decode(FORMAT)
+        if "Successfully" in msg or "try" in msg:
+            print(msg)
+        else:
+            data = json.loads(msg)
+            draw(SCREEN, data)
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
             run = False
@@ -101,11 +105,15 @@ def main() -> None:
         # if (keys[pygame.K_LCTRL] and keys[pygame.K_e]) or (keys[pygame.K_RCTRL] and keys[pygame.K_e]):
             # move_textbox.enter()
         #move = move_textbox.get_value()
-        move = input("Enter a move: ")
-        CLIENT.send(move.encode(FORMAT))
-        message = CLIENT.recv(MESSAGE_SIZE).decode(FORMAT)
-        if message:
-            print(f"{message} Please try again.")
+        while True:
+            move = input("Enter a move: ")
+            CLIENT.send(move.encode(FORMAT))
+            message = CLIENT.recv(MESSAGE_SIZE).decode(FORMAT)
+            if "try" in message:
+                print(message)
+            elif "Success" in message:
+                print(message)
+                break
         message = CLIENT.recv(MESSAGE_SIZE).decode(FORMAT)
         if 'won' in message:
             print("Game over. {message}")

@@ -50,7 +50,7 @@ def handle_clients(connections: list, addresses: list):
         move = conn.recv(MESSAGE_SIZE).decode()
         message = board.move(move, current_turn)
         if message == "Invalid move!":
-            conn.send(message)
+            conn.send(f"{message} Please try again.".encode(FORMAT))
         else:
             conn.send(f"Successfully made move:\n{move}".encode(FORMAT))
             break
