@@ -13,6 +13,18 @@ from utils.types import Squares, PositionDict, WindowPosition, GamePosition
 from utils.flatten import flatten
 
 
+def _pawn_move(squares: dict, piece, move: str, king: King, matterial: dict, color: tuple) -> tuple[dict, dict]:
+    if not piece.validate(formatted_move, squares.copy(), king):
+        return squares, matterial
+    other_piece = squares[move].piece
+    if other_piece.color != color:
+        matterial[other_piece.color][other_piece].remove(squares[move].piece)
+        squares[move].piece = Empty(tuple(None for _ in range(11)))
+        squares[piece.file+str(piece.rank)
+                ].piece, squares[move].piece = squares[move].piece, squares[piece.file+str(piece.rank)].piece
+        return squares, matterial
+
+
 class Board:
 
     def __init__(self, size: tuple[int, int], square_width: int, square_height: int, player1: Player, player2: Player, window: pygame.Surface) -> None:
@@ -216,7 +228,7 @@ class Board:
 
     def move(self, move: str, turn: Player) -> str:
         color = turn.color
-        #self._update_square_attackers(color)
+        # self._update_square_attackers(color)
         first_letter = ''
         specifier = None
         promotion_piece = ''
@@ -252,21 +264,42 @@ class Board:
                                 piece.rank)].piece, self.squares[move].piece = self.squares[move].piece, self.squares[piece.file+str(piece.rank)].piece
                             break
         if first_letter in self.possible_files:
-            piece = self.squares[first_letter+str(int(formatted_move[1])-1)
-                                 ] if color == WHITE else self.squares[first_letter+str(int(formatted_move[1])+1)]
-            if isinstance(Piece, Pawn):
-                if not piece.validate(formatted_move, self.squares.copy(), king):
-                    return "Invalid move!"
-                other_piece = self.squares[move].piece
-                if other_piece.color != color:
-                    self.matterial[other_piece.color][other_piece.name].remove(
-                        other_piece)
-                    self.squares[move].piece = Empty(
-                        tuple(None for _ in range(11)))
-                self.squares[Piece.file+str(
-                    piece.rank)].piece, self.squares[move].piece = self.squares[move].piece, self.squares[piece.file+str(piece.rank)].piece
+            if int(formatted_move[1]) == 5 and color == BLACK:
+                if isinstance(self.squares[f"{formatted_move[0]}6"], Pawn):
+                    temp = self.squares
+                    self.squares, self.matterial = _pawn_move(self.squares.copy(
+                    ), self.squares[f"{formatted_move[0]}6"].piece, move, king, self.matterial.copy(), color)
+                    if temp == self.squares:
+                        return "Invalid move!"
+                if isinstance(self.squares[f"{formatted_move[0]}7"], Pawn):
+                    temp = self.squares
+                    self.squares, self.matterial = _pawn_move(self.squares.copy(
+                    ), self.squares[f"{formatted_move[0]}7"].piece, move, king, self.matterial.copy(), color)
+                    if temp == self.squares:
+                        return "Invalid move!"
+            if int(formatted_move[1]) == 4 and color == WHITE:
+                if isinstance(self.squares[f"{formatted_move[0]}3"], Pawn):
+                    temp = self.squares
+                    self.squares, self.matterial = _pawn_move(self.squares.copy(
+                    ), self.squares[f"{formatted_move[0]}3"].piece, move, king, self.matterial.copy(), color)
+                    if temp == self.squares:
+                        return "Invalid move!"
+                if isinstance(self.squares[f"{formatted_move[0]}2"], Pawn):
+                    temp = self.squares
+                    self.squares, self.matterial = _pawn_move(self.squares.copy(
+                    ), self.squares[f"{formatted_move[0]}2"].piece, move, king, self.matterial.copy(), color)
+                    if temp == self.squares:
+                        return "Invalid move!"
+            else:
+                pos = f"{formatted_move[0]}{int(formatted_move[1])-1}" if color == WHITE else f"{formatted_move[0]}{int(formatted_move[1])+1}"
+                if isinstance(pos, Pawn):
+                    temp = self.squares
+                    self.squares, self.matterial = _pawn_move(self.squares.copy(
+                    ), self.squares[pos].piece, move, king, self.matterial.copy(), color)
+                    if temp == self.squares:
+                        return "Invalid move!"
         if promotion_piece:
-            if position[1] != 8 and color == WHITE:
+            if position[1] != 8 and color == WHITE:d
                 return "Invalid move!"
             if position[1] != 1 and color == BLACK:
                 return "Invalid move!"

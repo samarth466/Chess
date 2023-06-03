@@ -27,7 +27,7 @@ PORT = 5050
 MESSAGE_SIZE = 2240000
 FORMAT = 'UTF-8'
 DISCONNECT_MESSAGE = 'Disconnect!'
-HOST = '192.168.1.86    '
+HOST = '192.168.1.86'
 ADDR = (HOST, PORT)
 CLIENT = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 CLIENT.connect(ADDR)
