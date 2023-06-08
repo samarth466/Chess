@@ -33,24 +33,30 @@ CLIENT = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 CLIENT.connect(ADDR)
 
 
-def draw(window: pygame.Surface, data: dict) -> None:
+def draw(window: pygame.Surface, data: str) -> None:
+    if not data:
+        data = {}
+    data = eval(data)
     file = "A"
     rank = 1
     square_size = WINDOW_HEIGHT//8
     for i in range(0, WINDOW_WIDTH, square_size):
+        print(file)
         for j in range(0, WINDOW_HEIGHT, square_size):
             color = BLACK
             if ord(file) % 2 == 0 and rank % 2 == 1:
                 color = WHITE
-            elif ord(file) % 2 == 1 and rank % 2 == 0:
+            if ord(file) % 2 == 1 and rank % 2 == 0:
                 color = WHITE
             pygame.draw.rect(window, color, (i, j, square_size, square_size))
-            if (file, rank) in data:
+            if f"{file}{rank}" not in data:
+                pass
+            elif data[f"{file}{rank}"].endswith(str(None)):
                 window.blit(pygame.image.load(
-                    join("Chessmen", data[(file, rank)])), (i, j))
-                rank += 1
-            rank = 1
-            file = chr(ord(file)+1)
+                    join("Chessmen", data[f"{file}{rank}"])), (i, j))
+            rank += 1
+        rank = 1
+        file = chr(ord(file)+1)
     pygame.display.update()
 
 
@@ -88,8 +94,9 @@ def main() -> None:
         if "Successfully" in msg or "try" in msg:
             print(msg)
         else:
-            data = json.loads(msg)
-            draw(SCREEN, data)
+            #print(msg)
+            #exit()
+            draw(SCREEN, msg)
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
             run = False

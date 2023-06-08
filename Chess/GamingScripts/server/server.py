@@ -61,7 +61,7 @@ def handle_clients(connections: list, addresses: list):
         return
     except:
         for conn in connections:
-            conn.send("Game still in session.".encode(FORMAT))
+            conn.send("".encode(FORMAT))
 
 
 def start() -> None:
