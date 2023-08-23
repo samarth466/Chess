@@ -1,0 +1,9 @@
+{% extends 'accessigames/base.html' %}
+{% block title %}Create New Post | Blogs{% endblock title %}
+{% block Content %}
+<form method="post" action="#">
+    {% csrf_token %}
+    {{form.as_div()}}
+    <button type="submit" id="submit">Submit</button>
+</form>
+{% endblock %}

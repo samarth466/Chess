@@ -1,0 +1,17 @@
+{% extends 'accessigames/base.html' %}
+{% block title %}home | Blogs{% endblock %}
+{% block content %}
+{% load mathfilters %}
+{% load static %}
+<h1>blogs</h1>
+<a href="/blogs/create-post">Create blog</a>
+{% for post in posts %}
+<h2>{{post.title}}</h2>
+<p>by {{ post.author.first_name }} {{ post.author.last_name }}</p>
+<button type="button" class="downvote" onclick="{{ post.votes|sub:1 }}">Downvote</button>
+<p>{{post.votes}}</p>
+<button type="button" class="upvote" onclick="{{ post.votes | addition:'1' }}">Upvote</button>
+<button type="button" class="delete-post">delete post</button>
+{% endfor %}
+<script src="{% static 'blogs/delete_post.js' %}" type="text/js"></script>
+{% endblock %}

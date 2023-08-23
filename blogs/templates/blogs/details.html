@@ -1,0 +1,29 @@
+{% extends 'accessigames/base.html' %}
+{% block title %}Details | Blogs{% endblock %}
+{% block content %}
+{% load mathfilters %}
+<h1>Details for "{{post.title}}"</h1>
+<h2>{{post.title}}</h2>
+<p>by {{post.author.first_name}} {{post.author.last_name}}</p>
+<button type="button" id="downvote-post" onclick="{{ post.votes | sub:'1' }}">Downvote</button>
+<p>{{post.votes}}</p>
+<button type="button" id="upvote-post" onclick="{{ post.votes | addition:'1' }}">Upvote</button>
+<button type="button" class="delete-post">Delete post</button>
+<h2>Commoents</h2>
+<button type="button" id="add">Add comment</button>
+<ul>
+    {% for comment in post.comments %}
+    <li>
+        <h3>{{comment.author.first_name}} {{comment.author.last_name}}</h3>
+        <button type="button" class="downvote-comment" onclick="{{ comment.votes | sub:'1' }">Downvote</button>
+        <p>{{comment.votes}}</p>
+        <button type="button" class="upvote-comment" onclick="{{ comment.votes | addition:'1' }}">Upvote</button>
+        <p>posted on {{comment.publication_date}}</p>
+        <p>{{post.content}}</p>
+        <button type="button" class="delete-comment">Delete comment</button>
+    </li>
+    {% endfor %}
+</ul>
+<script src="{% static 'blogs/delete_post.js' %}" type="text/js"></script>
+<script src="{% static 'blogs/delete_comment' %}" type="text/js"></script>
+{% endblock %}
