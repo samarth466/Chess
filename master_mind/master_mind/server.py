@@ -16,7 +16,7 @@ class Computer(Player):
         if self.status == 'code maker':
             if not code:
                 code = self._generate_code()
-            elif message:
+            if message:
                 guess = message.split(' ')
                 correct_pos, incorrect_pos = self._check_code(guess, code)
                 if correct_pos == self.CODE_LENGTH:

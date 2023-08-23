@@ -299,7 +299,7 @@ class Board:
                     if temp == self.squares:
                         return "Invalid move!"
         if promotion_piece:
-            if position[1] != 8 and color == WHITE:d
+            if position[1] != 8 and color == WHITE:
                 return "Invalid move!"
             if position[1] != 1 and color == BLACK:
                 return "Invalid move!"

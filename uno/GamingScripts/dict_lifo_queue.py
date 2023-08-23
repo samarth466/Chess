@@ -11,4 +11,4 @@ class DictLifoQueue(LifoQueue):
         self.queue[item[0]] = item[1]
     
     def _get(self) -> _VT:
-        return self.queue.pop(list(self.queue.keys())[-1])
+        return list(self.queue.keys())[-1],self.queue.pop(list(self.queue.keys())[-1])

@@ -3,6 +3,6 @@
     Registration Homepage | Authentication
 {% endblock %}
 {% block content %}
-    <h1>Registration Homepage | Authentication</h1>
-    <p>Sign in with: <br><a class="link-primary link-info" href="/register/sign-in/?next={{next}}">email</a><br>or<br><a class="link-primary link-info" href="/google/make-request/">Google</a></p>
+    <h1>Registration Homepage</h1>
+    <p>Sign in with: <br><a class="link-primary link-info" href="/register/sign-in/?next={{next}}">email</a><br>or<br><a class="link-primary link-info" href="{% url 'socialaccount_login' 'google' %}">Google</a></p>
 {% endblock %}

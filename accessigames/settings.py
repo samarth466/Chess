@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 import os
 from pathlib import Path
+import json
+
+with open('secrets.json','r') as f:
+    data = json.load(f)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-%9p!hsa_-l(y9^etuu+l@9_i%-1h=z_vm2slqgsj!=q+q9-q1b'
+SECRET_KEY = data['secret_key']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -32,6 +36,11 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'allauth',
+    'allauth.account',
+    'django_otp',
+    'django_otp.plugins.otp_totp',
+    'two_factor',
     'accessigames',
     'mathfilters',
     'rest_framework.authtoken',
@@ -55,9 +64,11 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.common.BrokenLinkEmailsMiddleware',
 ]
 
 ROOT_URLCONF = 'accessigames.urls'
@@ -191,3 +202,44 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ]
 }
+# Two-Factor Authentication
+
+TWO_FACTOR_AUTHENTICATION_BACKENDS = (
+    'two_factor.authentication.MultiFactorAuthenticationBackend',
+)
+
+TWO_FACTOR_SMS_GATEWAY = 'two_factor.gateways.twilio.gateway.Twilio'
+
+TWO_FACTOR_CALL_GATEWAY = 'two_factor.gateways.twilio.gateway.Twilio'
+
+# Twilio configurations for SMS and Call
+
+#TWILIO_ACCOUNT_SID = ''
+
+#TWILIO_AUTH_TOKEN = '
+
+#TWILIO_FROM_NUMBER = '
+
+# Customize available two-factor methods
+
+TWO_FACTOR_PATCH_ADMIN = True
+
+TWO_FACTOR_TOTP_ENABLED = True
+
+TWO_FACTOR_SMS_ENABLED = True
+
+TWO_FACTOR_ENABLED = True
+
+# OAuth
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': data['google']['client_id'],
+            'secret': data['google']['secret'],
+            'SCOPES': data['google']['scopes']
+        }
+    },
+}
+
+ACCOUNTS_URL = ''

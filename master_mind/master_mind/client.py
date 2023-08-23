@@ -42,36 +42,37 @@ client.connect(ADDR)
 
 
 def game() -> None:
-    while True:
-        print("Welcome to Master Mind")
-        mode = "PV" + \
-            input("Do you want to play against the computer or another player? (P for another player, C for computer): ").upper()
-        client.send(mode.encode(FORMAT))
-        player = Person("code breaker")
-        print(f"You have {player.TRIES} attempts to guess the code.")
-        turns_left = player.TRIES
-        if mode == 'PVC':
-            guess = ' '.join(player.play())
-            while True:
-                turns_left -= 1
-                print(f"You have {turns_left} turns left to guess the code!")
-                client.send(guess.encode(FORMAT))
-                message = client.recv(MESSAGE_SIZE).decode(FORMAT)
-                if 'won' in message:
-                    print(message)
-                    break
-                msg = client.recv(MESSAGE_SIZE).decode(FORMAT)
-                if msg:
-                    print(msg)
-                    break
-                guess = ' '.join(player.play(message=message))
-        else:
-            pass
-        replay = input("Do you want to play again? Y/N: ").upper()
-        if replay == 'N':
-            client.close()
-            break
+    print("Welcome to Master Mind")
+    mode = "PV" + \
+        input("Do you want to play against the computer or another player? (P for another player, C for computer): ").upper()
+    client.send(mode.encode(FORMAT))
+    player = Person("code breaker")
+    print(f"You have {player.TRIES} attempts to guess the code.")
+    turns_left = player.TRIES
+    if mode == 'PVC':
+        guess = ' '.join(player.play())
+        while turns_left > 0:
+            turns_left -= 1
+            print(f"You have {turns_left} turns left to guess the code!")
+            client.send(guess.encode(FORMAT))
+            message = client.recv(MESSAGE_SIZE).decode(FORMAT)
+            print(message)
+            if 'won' in message:
+                break
+            msg = client.recv(MESSAGE_SIZE).decode(FORMAT)
+            if msg:
+                print(msg)
+                break
+            guess = ' '.join(player.play(message=message))
+    else:
+        pass
 
 
 if __name__ == "__main__":
-    game()
+    while True:
+        game()
+        replay = input("Do you want to play again? (y/n): ")
+        if replay.lower() == "y":
+            continue
+        else:
+            client.send(DISCONNECT_MESSAGE.encode(FORMAT))

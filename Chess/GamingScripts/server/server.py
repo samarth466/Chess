@@ -17,6 +17,24 @@ server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind(ADDR)
 
 
+def format_move(move: str) -> str:
+    possible_files = ['A','B','C','D','E','F','G','H']
+    if len(move) == 3 and move[0] in possible_files:
+        return f"{move[0]} takes {move[1:]}"
+    elif len(move) == 2:
+        return move
+    elif move.startswith('r'):
+        return f"Rook {move[1:]}"
+    elif move.startswith('q'):
+        return f"Queen {move[1:]}"
+    elif move.startswith("n"):
+        return f"Knight {move[1:]}"
+    elif move.startswith('k'):
+        return f"King {move[1:]}"
+    elif move.startswith('b'):
+        return f"Bishop {move[1:]}"
+
+
 def handle_clients(connections: list, addresses: list):
     boolean_choice = bool(random.randint(0, 1))
     players = {
@@ -38,6 +56,8 @@ def handle_clients(connections: list, addresses: list):
         players[BLACK].close()
         return
     player2 = Player(name, BLACK)
+    players[WHITE].send(player2.username.encode(FORMAT))
+    players[BLACK].send(player1.username.encode(FORMAT))
     board = Board((WINDOW_WIDTH, WINDOW_HEIGHT), SQUARE_WIDTH,
                   SQUARE_HEIGHT, player1, player2, window)
     data = json.dumps(
@@ -52,7 +72,8 @@ def handle_clients(connections: list, addresses: list):
         if message == "Invalid move!":
             conn.send(f"{message} Please try again.".encode(FORMAT))
         else:
-            conn.send(f"Successfully made move:\n{move}".encode(FORMAT))
+            for connection in players.values():
+                connection.send(format_move(move).encode(FORMAT))
             break
     try:
         name = board.find_player_by_color(board.end()).username

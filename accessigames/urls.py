@@ -21,5 +21,7 @@ urlpatterns = [
     path('settings/', include('settings.urls')),
     path('google/', include('google_oauth2.urls')),
     path('blogs/', include('blogs.urls')),
+    path('accounts/',include('two_factor.urls')),
+    path('oauth/',include('allauth.urls')),
     path('admin/', admin.site.urls),
 ]

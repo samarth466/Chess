@@ -27,7 +27,7 @@ PORT = 5050
 MESSAGE_SIZE = 2240000
 FORMAT = 'UTF-8'
 DISCONNECT_MESSAGE = 'Disconnect!'
-HOST = '192.168.1.86'
+HOST = '192.168.1.180'
 ADDR = (HOST, PORT)
 CLIENT = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 CLIENT.connect(ADDR)
@@ -36,7 +36,8 @@ CLIENT.connect(ADDR)
 def draw(window: pygame.Surface, data: str) -> None:
     if not data:
         data = {}
-    data = eval(data)
+    else:
+        data = eval(data)
     file = "A"
     rank = 1
     square_size = WINDOW_HEIGHT//8
@@ -82,6 +83,8 @@ def main() -> None:
         else:
             CLIENT.send(name.encode(FORMAT))
             break
+    opponent_name = CLIENT.recv(MESSAGE_SIZE).decode(FORMAT)
+    print(f"Playing against {opponent_name}")
     while run:
         clock.tick(FPS)
         SCREEN.fill(GREY)
@@ -91,11 +94,7 @@ def main() -> None:
             print(data.decode(FORMAT))
             CLIENT.recv(MESSAGE_SIZE)
         msg = CLIENT.recv(MESSAGE_SIZE).decode(FORMAT)
-        if "Successfully" in msg or "try" in msg:
-            print(msg)
-        else:
-            #print(msg)
-            #exit()
+        print(msg)
             draw(SCREEN, msg)
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
@@ -118,7 +117,7 @@ def main() -> None:
             message = CLIENT.recv(MESSAGE_SIZE).decode(FORMAT)
             if "try" in message:
                 print(message)
-            elif "Success" in message:
+            else:
                 print(message)
                 break
         message = CLIENT.recv(MESSAGE_SIZE).decode(FORMAT)
